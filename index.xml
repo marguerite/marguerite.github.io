@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog for Marguerite Su</title>
+    <link>https://marguerite.github.io/</link>
+    <description>Recent content on Blog for Marguerite Su</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 31 Dec 2016 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</title>
+      <link>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</link>
+      <pubDate>Sat, 31 Dec 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</guid>
+      <description>之前的 Ghost 管理密码丢了 :-(
+昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。 不过这个坑就不一定哪天来填啦。
+考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的， 博客要么丢文章要么丢评论。还是用 github 来做博客好了。
+Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。 它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。 但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。
+所以我参考了 Smashing Magazine 上面的 Build A Blog With Jekyll And Github Pages ，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 Grover Chou 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我预览 。
+要是有想要用我这套主题建博客的，建立过程很简单：</description>
+    </item>
+    
+    <item>
+      <title>Introducing the brand new nodejs packaging</title>
+      <link>https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/</link>
+      <pubDate>Sat, 23 Jan 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/</guid>
+      <description>There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&amp;rsquo;t mean it&amp;rsquo;s dead. It&amp;rsquo;s actually evolving.
+Today the brand-new nodejs-packaging answers all the questions.
+For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:</description>
+    </item>
+    
+    <item>
+      <title>本周开发札记</title>
+      <link>https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</link>
+      <pubDate>Sat, 23 Jan 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</guid>
+      <description>盘点一下本周自己在 openSUSE 上面做的工作：
+解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
+对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。</description>
+    </item>
+    
+    <item>
+      <title>脑洞大开的周末</title>
+      <link>https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</link>
+      <pubDate>Mon, 18 Jan 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</guid>
+      <description>这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿</description>
+    </item>
+    
+    <item>
+      <title>高手创造工具</title>
+      <link>https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Tue, 12 Jan 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</guid>
+      <description>今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。
+现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。</description>
+    </item>
+    
+    <item>
+      <title>RPM specfile 中  值的研究</title>
+      <link>https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</link>
+      <pubDate>Sun, 02 Aug 2015 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</guid>
+      <description>研究这个问题是因为论坛上的一个讨论：zypper reinstall package 略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：
+第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：
+if [ $1 == 0 ] ; then  $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
+http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm
+第二个是 RPM reinstall 的作业流程是怎样的，是遵循升级的流程也就是：
+软件包升级的过程是先安装新包后卸载旧包，只有来自旧包的差异文件会被删除。也就是 pre -&amp;gt; install -&amp;gt; post; preun -&amp;gt; uninstall -&amp;gt; postun
+还是另有一个流程。$1 值的变化可以推测出这个问题的答案。
+第三个是使用 zypper 和 rpm 分别进行重装，$1 值的变动是不是一致的。
+这个问题我们需要做一个实证，代码在这里：
+https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo
+相应的测试用 RPM 也可以在那边取得。下面直接上结果：
+sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm drwxr-xr-x 1 root root 0 8 月 2 22:25 demo  通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。</description>
+    </item>
+    
+    <item>
+      <title>关于 Deepin 用户开发者大会的浅见</title>
+      <link>https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</link>
+      <pubDate>Fri, 11 Jul 2014 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</guid>
+      <description>这篇文章是唱反调的，可能会不舒服的可以离席了。
+最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
+先说两点：
+(1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
+第一，我没有直观感受过 Deepin 作为一个发行版有多少用户（不是 Deepin Music 这些应用软件），这不像 Ubuntu 那么明显，所以从用户基数的角度来看，我没有概念，也就没有说酸的基础。
+第二，我这里说的是他们的战略大方向，他们拥抱了哪些技术，营销的定位，这些东西，而不是去像黑 Ubuntu 那样，“哈 U 的用户用 U 都是为了让别人知道它在用 Linux 而不是为了解决自己的需求”。
+深度团队是 Linux 中文圈里比较靠谱的团队。另一个比较靠谱的我认为是安同。而优麒麟处在第二梯队，遗产流的那种。后面如果还记得优麒麟的话，可能会拉它出来做反例。唉，我也勉强算 Linux 中文圈的大前辈了，这种褒贬倾向真不该轻易流露，会给别人造成负担的。
+首先深度团队的人比较 nice。我记得有一个陈祥帮吧，曾经在 openSUSE 中文论坛给我发私信说两个社区合作的事情，当时正好生活上有一些变动，后来就不了了之了（欢迎重启）。但总体印象较好。现在的“国产操作系统”的人有一点不好，为了吸引用户而越来越没下限了，有些时候觉得跟百度 Linux 吧的人差不多。深度算是有一些水准的，相对于同样没有经历过大发行版社区培养的人来说。
+其次深度的人相对比较能够出活儿。他们有 30 多个人，武汉有深之度公司，连中文圈比较稀缺的画师娘都招了，像「深谈」这样的应用程序还是很惊艳的。当然激情上面应该比安同（骚年强则中国强）要差一些，毕竟是领钱干活的个人有个回报率和职业发展的考量，但比起优麒麟眉毛胡子一把抓，开发者不少，成果稀少（估计是瞄准高端定制市场和政府采购去了），还是要好一些。
+第三他们有想法，并且一定程度上比较能够遵守规则，虽然对上游的贡献不是很多，但是对自己的成果的态度还是很开放的。
+所以真心希望他们能够出彩。
+铺垫完了，下面开黑：
+Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没什么好黑的。甚至还有点小艳羡，比如那一大堆赞助伙伴和合作媒体，有公司实体，我们这些爱好者群体和国外机构在华分支在本地化上确实比不了。
+主要黑两点：
+默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
+我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
+首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
+先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</link>
+      <pubDate>Sat, 12 Oct 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</guid>
+      <description>做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk  下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解压：</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 特殊国情有关的 FAQ</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</link>
+      <pubDate>Tue, 26 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</guid>
+      <description>引子 —— 能解决的是技术，不能解决的是人心。
+为什么我们开发者要用 Gtalk 和 IRC？ 跟 Google 没一毛钱关系。我们需要一个全球性的网络，因为我们面对的不只是用户，还有其它国家地区的开发者。就 openSUSE 来说，我没有理由去要求台湾地区的开发者用 QQ，也没有理由去要求他们的用户在官方论坛转简体。我们需要开放而成熟的技术，以便于进行二次开发。二次开发就是「修复」一些原本没有「坏」的东西来满足自己的需要，非开放而不能为。Gtalk 后面的 XMPP 协议坏了吗？没有，但是我需要与 IRC #opensuse-cn 互通的机器人、需要群组机器人、需要网页的聊天记录，于是我「修复」了它。现在我们有了 ~~talk@suse.ws，有了 https://talk-marguerite.rhcloud.com。~~Update: Gtalk 群组地址变更为 talk@suse.org.cn。（IRC/Gtalk/QQ 群三网合一），聊天记录地址变更为 https://forum.suse.org.cn/log.html 而 IRC 就像你们的 QQ 一样，我一样不爱用。我至今不会它的指令，也不会每天挂着。但是有需要我还是会去，就像开会要去会议室一样。你可以不参加会议，你可以选择不去会议室听自己非常想听的东西，但你不能要求别人围着你的桌子开会。
+为什么我们要用论坛？ 我们需要一个 default to open 的地方，能够存档我们回复过的东西，避免重复工作。
+我们需要一个延时的地方。避免你滴滴滴滴吵到我们的工作和生活。
+我们需要一个多人的氛围。
+为什么我们要用维基、文档甚至 manpage？ 我们需要一个说明书性质的东西。
+说明书一个人是写不完的，在所有人都有权利去写的情况下，说维基、文档不全实际上是在骂你自己，不全？你干嘛了？
+为什么我们不用 QQ 群？ Update：1. 勇敢地像现实低头 2. Gentoo 社区的 microcai 博士开发了搞定 QQ 的 avbot， Fcitx 社区的 csslayer 翁学天博士友善帮助在自己的服务器运行它，Ubuntu 社区的 shellexy 大神帮助推荐了印度阿三的人肉验证码识别服务 3. 我的一些个人思想转变。于是支持了。但是，QQ/贴吧永远只会是你 Linux 生涯的一个暂住之地，如果你非要永久居留，那你是体会不到 Linux 社区的魅力的。我们为你点亮了一盏灯，而不是帮你推倒窝棚鸟枪换炮，真正的风景在 openSUSE 中文论坛 它不是 default to open 的。</description>
+    </item>
+    
+    <item>
+      <title>培育开源 NGO 的一些思考</title>
+      <link>https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link>
+      <pubDate>Sat, 23 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</guid>
+      <description>这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
+大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
+首先提到 openSUSE，大家想到的应该是：
+ 华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。  一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
+ 宣传不到位 沉默的大多数  这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
+宣传不到位 宣传不到位的常见原因有以下几种：
+ 投入不够 政策错 没有细分用户  投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
+金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。
+为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？
+很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 中文社区面临的若干问题</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Thu, 21 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</guid>
+      <description>一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
+（一） 中文社区
+Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区，Fedora 肯定是最爱交际的中文社区，openSUSE 肯定是最宅的中文社区。
+首先我们应该没有多少活跃的大学用户。我们的用户据我观察应该是企业用户居多。这种人的优点在于他们都非常强，缺点在于他们都非常懒。如果我能解决自己的问题，而且我只用 openSUSE 挣口粮，那我为什么要帮助你使用 openSUSE？你能想象一群 Intel 员工，SuSE 员工，中兴的软件开发科长做你的成员，然后中文社区的基础设施是一个人生前 22 年没见过立式服务器的女生搭建的么？就像我在 Gtalk 群里怒喷的一样：你们呀，什么都会，就是不帮我，对吧。
+其次我们一直是一个单核心的社区。我不是说开发，是说社区建设。开发牛人多了去了，我这种 CPP 指针数组都不会的肯定排不上号。苏哲时代（SuSE 9），我在上初中，但提 SuSE 9 老人都知道，几乎就是：Linux 是 SuSE 9 与硬件通信的工具。Thruth 时代，我在上大学，「用 SuSE 就是用 Thruth」，这也不是我说的。现在是缝缝补补吃老本的玛格丽特时代。我不会开发啊，只能根据长老们灌顶得到的经验盲修 bug，修好了，说明我逻辑和交际比较强。我一般是，看到 bug，用人类逻辑而不是机器逻辑去猜，不能开机？好，systemd，然后去找 Lennart; btrfs？去找 John; GNOME？Vincent/DimStar; Build Service？Adrian/Coolo; 输入法坏了？翁学天出列; Bash 支援？花花; Python？以前是 Hicro Kee 现在是 Felix Yan。懂了吧，openSUSE 的社区管理对我来说就是打牌，我就是拿着满手不情不愿看你是女生帮帮你的大王，用户出什么我都出大王，用户出大王？好，是用户你的不对，我不赢钱白跟你玩牌，你怎么能出大王赢我呢？
+但我给自己的定位是 Coordinator，中文翻译为办公室主任。我希望 openSUSE 有几个强有力的男性领导，各管一摊，有推广的，有集会的，有开发的，有答疑的，有翻译的，有维基的…然后我就每天上线发 task 定 deadline 随手卖个萌就好。但是没有。于是手比较贱（处女座就是你骂我一句我下套也要还回去，不然今天就不完美了我睡不安稳），慢慢就都抓自己手上了。一个单核心的社区是没有活力和前途的。商业上是该给那个核心上巨额保险。但开源事业不行，我要钱干嘛？我就要东西。你能跑到保险公司去说哦如果玛格丽特不用 openSUSE 了你赔我一个能妥妥的骑住微软的 openSUSE 吗？</description>
+    </item>
+    
+    <item>
+      <title>OpenShift 搭建 rawdog 实现部落格聚合</title>
+      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</link>
+      <pubDate>Tue, 19 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</guid>
+      <description>因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet 。</description>
+    </item>
+    
+    <item>
+      <title>openshift 搭建和 IRC 频道互通的 Gtalk 群聊</title>
+      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</link>
+      <pubDate>Sun, 17 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</guid>
+      <description>Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
+Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：
+ 不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。 在线时间不能保证。也就是说你没有 schduled_maintenance 的权利，只能它在线你就聊，它离线你就歇息。 大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。  所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。
+打听了一下，这种群聊是使用依云(@lilydjwg 写的两个软件在 VPS 上搭建的，分别是 xmpptalk 和 ircbindxmpp 。
+但问题出来了，我没有 VPS。当时 openshift 这种 PaaS 已经出现了，只是还比较新鲜，我不会用。于是去年 9 月的一次尝试就可耻地失败了。
+当时（甚至至今）网上关于这两个软件的文章只有两篇：
+ 依云自己的介绍性文章 ，但是太粗略了。 StarBrilliant 的稍微详细一些的文章 ，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。  于是逼迫我们群里的 douglarek 写了一篇在 openshift 上折腾它们的文章给我：
+Openshift 折腾 xmpptalk 但实际上这篇文章很水。反正看过就知道啦，到处都是「凑合」。实际上你看它也根本架设不起来（好多致命细节都没说）。</description>
+    </item>
+    
+    <item>
+      <title>openshift 安装 owncloud 取代 Google Reader</title>
+      <link>https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</link>
+      <pubDate>Fri, 15 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</guid>
+      <description>Google Reader’s sunset is the dawn of ownCloud news.
+翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。
+相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000+。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
+是小企鹅输入法的作者翁学天让我意识到了：哦，好在还有替代。虽然我是它的简体中文翻译者，但是我以前真的不知道嘿嘿。
+首先这个替代目前装起来还是有一点困难的。所以需要一个这样的中文教学来教大家怎么才能装上有 News 的 ownCloud。
+我们开始吧。（以 openSUSE 为例）
+下载 首先我们需要 Git。因为现在只有 Git 版的 ownCloud Apps 才有这个功能。
+sudo zypper in git  安装好了 Git，我们需要下载这些源码
+git clone https://github.com/owncloud/core  这是核心组件。
+git clone https://github.com/owncloud/apps  这是带 News 的 apps。
+git clone https://github.com/owncloud/themes  这是新的 responsive 主题。
+git clone https://github.com/owncloud/3rdparty  这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。</description>
+    </item>
+    
+    <item>
+      <title>SUSE 新年飨礼</title>
+      <link>https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</link>
+      <pubDate>Fri, 08 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</guid>
+      <description>亲爱的 openSUSE 贡献者们，
+为了感谢您在过去的一年中为 openSUSE 项目所做的杰出贡献，值此新版发布在即，SUSE Desktop Team 的 FJKong 孔叔从 SUSE 市场部虎口夺食，抢到了一些礼品送给大家（实物图见下文）。礼品价值不是很高、数量也很少（因为我们没有社区经费，礼物也不是 SUSE 官方支出，纯属孔叔和市场部员工的个人情宜（？哈哈）得到的，所以我们会尽量把礼物交给已经证明最能呵护它们的贡献者），主要是为了表达一份微不足道的心意，openSUSE 没有忘记你们，正是你们或多或少的在他人眼里可能很怪很傻很宅的贡献，支持着 openSUSE 一直有勇气有动力面对不可知的未来，在这个 complicated 的世界里艰难前行。
+同时新官上任的 SUSE Desktop Lead 梁辰晔（Da Liang）梁叔（原 SUSE 北京服务器组的 Senior）携 Desktop Team 全体同仁 Lance， 王伶卓，向 openSUSE 中文圈的用户们致意。（郑宇 jzheng 郑叔从 SUSE 暂时跳槽到 Canonical 准备创业中，但仍然在 openSUSE 社区和论坛上积极出没）
+先上图（由于我个人并不参与此次礼品赠送，所以内部细节我可能描述的不是很清楚）：
+手包（似乎是装卡的，不知能否装钞票）：
+水晶笔（似乎是 SUSE 标的中性笔杆）：
+马克杯（去年我收到一个，图也是去年的）：
+Novell 杯具
+数量：  手包：6/8 个 水晶笔：7/9 个 马克杯：1 只 公仔：0/1 只  领取人：  hillwood，重庆道桥，公仔一只 douglarek，英特尔北京，手包一只，笔一只  一些说明： 公仔是可遇不可求的，因为这是 SuSE 中国的营销道具，至少需要提前一年预定（hillwood 是补去年的货，他也不参与今年的礼品赠送），稀缺到了什么程度呢，全日本就两只（SUSE JP 持有），全台湾据我所知个人持有的只有 swyear 一只。</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 下的 Fcitx 输入法</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</link>
+      <pubDate>Tue, 05 Mar 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</guid>
+      <description>这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
+Youku：
+Download:
+http://115.com/u/26338483 </description>
+    </item>
+    
+    <item>
+      <title>openSUSE Linux 战渣浪详解教程</title>
+      <link>https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Sun, 24 Feb 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</guid>
+      <description>自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
+“战渣浪” 原理  Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。  来战！
+查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 下玩围棋</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</link>
+      <pubDate>Sun, 24 Feb 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</guid>
+      <description>Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
+引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
+不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
+围棋引擎流行的能跑在 Linux 下的有这些：Fuego （棋力 9 段，9×9 棋盘）, GNU Go （棋力 12 级）, MoGo , Pachi （棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
+当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
+另外关于围棋程序比较好的网站是：Sensei&amp;rsquo;s Library ，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+ gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。  这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：</description>
+    </item>
+    
+    <item>
+      <title>openshift 搭建 wordpress 教程</title>
+      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Mon, 18 Feb 2013 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</guid>
+      <description>最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git ，半个小时包教包会。
+你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc ，具体的 Ruby 新新人指南可以看我的上一篇文章 。
+安装 WordPress 生成 ssh 密钥对 并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.</description>
+    </item>
+    
+    <item>
+      <title>Ruby on Rails 学习笔记－安装和 Hello World</title>
+      <link>https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</link>
+      <pubDate>Sun, 11 Nov 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</guid>
+      <description>因为想给 Open Build Service 加 i18n 支持，所以要学习下 Ruby on Rails。
+什么是 Ruby on Rails？ 推特上有 Ruby 程序员说是「肉夹馍」的关系，意思是其实硬菜在 Ruby。
+对新手这么要求可能太苛刻了，初心者应该是「荷叶包饭」的关系，意思是你真正一开始吃的部分是 Rails。
+但是要想学好 Ruby on Rails，其实应该是「鸡蛋灌饼」的关系，就是 Ruby &amp;amp; Rails，两手都要硬，毕竟所有的东西都是用 Ruby 写，要是没有系统学习过 Ruby 可能登不了大雅之堂。但 Rails 不熟悉啥都当 C++ 写那用它开发就没意思了。
+科学的解释是这样的，Ruby 是屌丝松本行弘有感于白富美们漂亮的胸不大，胸大的腿不长，腿长的说话声音不好听，声音好听的长相又不是 S 级而自主研发的一个女神，同时兼顾了其他屌丝的需求（几乎所有的内置方法都可以由类在运行时重定义，眼前的加不是加，你说的 &amp;lt; 是什么 &amp;lt;，什么的）。gem 类似于芭比娃娃的衣橱（类似 perl 的 CPAN，python 的 PYPI，带平台的分发格式）。Rails 是其中一个 gem，一个网络框架。于是 Ruby on Rails 就有点像，Wordpress on PHP 的意思，然后你就是在 WordPress 上开发主题。。。
+不要怪我吐槽它啊。。。less is more：()少做多。还有：Ruby 是让程序员「快乐」的一门语言。。。。您再想想？
+开发环境 教材：Ruby on Rails Tutorial 3rd editon（好象是新浪爱问上下载的）</description>
+    </item>
+    
+    <item>
+      <title>[Solved] btrfs 开机 initramfs 加载时间过长</title>
+      <link>https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/</link>
+      <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/</guid>
+      <description>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
+最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
+这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录 ，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
+中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。</description>
+    </item>
+    
+    <item>
+      <title>当梦想照进现实  记 Ubuntu Tweak 的烂尾</title>
+      <link>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</link>
+      <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</guid>
+      <description>本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情 大家已经很清楚了，所以就是社论。（明明是胡勒！）
+大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：
+ 针对超级大牛：SuSE/RedHat -&amp;gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&amp;gt; Canonical -&amp;gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&amp;gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&amp;gt; forever  不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&amp;gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &amp;lt;-&amp;gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
+其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
+主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。</description>
+    </item>
+    
+    <item>
+      <title>CJK 的尊嚴（三）塵埃</title>
+      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</link>
+      <pubDate>Wed, 16 May 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</guid>
+      <description>首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
+虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節 它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
+但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
+正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西 ，但這取決於 GNOME 的要求，大策略是他們定的 。」
+意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。
+另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。
+這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。
+但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。
+這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
+@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
+「在 KDE 活着自由得多」—— @csslayer</description>
+    </item>
+    
+    <item>
+      <title>CJK 的尊嚴（三）聖戰</title>
+      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</link>
+      <pubDate>Tue, 15 May 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</guid>
+      <description>前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
+前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。
+但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。
+標題的含義 我們其實一直都很沒有尊嚴。請不要民族主義衝頭反駁。下面是一些普通用戶不知道的開發細節，解釋了爲什麼。這是爭論的基礎。不要對它爭論，因爲你真的不懂。你可以要求更多的例子和細節，但請不要就此爭論。沒有結果。
+中文在開源界一直處於「二流」的位置。這是 GNOME 開發者說的。
+爲什麼想必不用說了。他們自以爲是核心的開發者。我們做的是敲邊鼓。所以他們不懂我們的語言不重要。我們會用他們的語言來發。這就給他們自大的誤解說，他們很大。其實很多工作是我們做的。包括核心。GNOME 上游的 Network Manager 誰維護的？中國人。
+大到什麼程度呢？大到他們可以自以爲能夠決定我們的事。一次兩次叫做沒有考慮到，總是這樣那就叫不在意。
+早些年，使用 Linux 的人是不是會發現無論我們做了什麼本地化定製，都會被上游下一個版本的一些改動覆蓋掉，導致我們被逼去重新做這些定製？
+舉例來說，Wine 模擬器的中文字體。我們有補丁，上游不收。再舉例，openSUSE 的 freetype2 補丁，上游不收。爲什麼呢？有什麼都不懂的西文用戶說，會影響我的 liberation sans。實際上這個補丁根本就沒有碰過它。於是怎樣呢？我們現在默認還沒有。那麼我就要問，爲什麼影響他們就那麼重要，影響我們就屁都不是？我們沒有貢獻嗎？不是。是整個項目的走向就沒考慮過我們。
+所以我們的中文維護者一直在做的就是：重造各種輪子。
+這是 Linux 的悲哀。Linux 世界的很多推倒重來都是源於一開始考慮的就不夠，而不是技術發展。因爲他們一開始做的就是滿足自己需要的東西。後來有各種人加入了他們的需要。它慢慢變的重要起來了。再後來，一些人發現前面一些人考慮的不完善，導致他的需要添加不進去了。於是要麼忍，要麼滾。於是推倒重來把所有人的需要再重新設計一遍。
+這還僅僅是設計，還不包括實現。知道前面 X11 做了一件什麼事嗎？加了有史以來最大的一個 patch，一萬多行代碼。幹了什麼事情呢？報道這個消息的 Phoronix 都無奈了，什麼特性都沒加，把那些渣實現改掉了。不知道同學們是怎麼看的，我當時的想法是，幸虧我不懂代碼，不然我這個潔癖知道系統上用了一萬多行的渣代碼，我會瘋掉的。
+所以爲什麼不在做事情的時候都負責任一點呢！？以前做的不好，至少現在起，我們做好它，之前的錯誤，想要加特性的人幹不了，總會有牛人能幹的。當然，牛人肯幹，GNOME 收不收還是兩說。GNOME 被紅帽和西施社區背後的公司影響很深，就好比這次如果只是幾個輸入法開發者去鬧的話，沒結果的。他們是因爲西施的 CJK 決定放棄 IBus 了。所以才停掉的。
+所以有人說我「挾西施以令 GNOME」也好，說我自以爲是 Hero 也好，不重要的，因爲這就是事實。被輸入法開發者承認並尊重的事實。就像小企鵝輸入法作者說的「I’d be happy」。因爲他們之前也鬧過，Lauchpad/Unity/GNOME/KDE/GTK/…，他們的郵件打印出來嚇死你。結果呢？兩手空空。實力不對等的爭吵，都是撒嬌。不管你是小企鵝，還是 IBus，又或是你能想像得到的任何中文開發面向中文用戶的東西。不要以爲你有十四億人口就可以是老大了，在人家眼裏，你叫少數族裔。「CJK 不可放棄」，那是憐憫，霸道的時候還沒到。強推，又怎樣？又能怎樣？你們這些自以爲是大爺吵來吵去的傢伙們，最後不也都捏着鼻子認了？
+重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。</description>
+    </item>
+    
+    <item>
+      <title>CJK 的尊嚴</title>
+      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</link>
+      <pubDate>Sun, 13 May 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</guid>
+      <description>好吧，這名字起的有點義和團的 feeling？
+民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
+首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
+其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。
+這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。
+起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
+答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。
+承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查 。然後投遞到了 G+，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法 。
+主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法 ; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬 。
+由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
+也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）</description>
+    </item>
+    
+    <item>
+      <title>Instagram 中國式小資的末日狂歡</title>
+      <link>https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</guid>
+      <description>這事件最近炒的盛嚣直上的，甚至搞出來所謂的互聯網鄙視鏈。
+其實和香港選特首民衆自導自演的鬧劇一樣滑稽。港人選出符合預期的特首的公敵絕不是CCP，而是自己。CCP才沒有闲情雅致就一彈丸之地拉扯，官與民斗有理弱三分，它的政治智慧沒有那麼低能。董，曾，梁，每个背著萬民傘上台的民选特首都如一丘之貉，那絕對要在自己身上找原因，而不是歸咎於北京。嫑說你們沒有選，因為讓你們選會更差。每個合格的政客都明白拉攏一小撮聰明人比忽悠一大票選民困難得多，因為聰明人只相信拿在手裡的利益而選民相信不著邊際的前景，我覺得港人和有八十年歷史對付過民國蘇聯和美帝的中宣部直接剛上那才叫人間悲劇。港人若不能明白政治就是妥協基礎上的周旋，見人騙人見鬼蒙鬼的敷衍，那永遠只能沉迷在亞洲民主先鋒的空中樓閣裏自瀆，還不如像我們一樣相信隨機。（剛開頭就離題，瑪麗蘇你是要鬧哪樣。。。
+好吧，讓我們先來回顧一下instagram的歷史。instagram最初是創立於聖佛朗西斯科的一個多功能HTML5手機圖片簽到項目Burbn。像我一樣對項目名字的發音和拼寫有着異乎尋常的執着的孩子們是不是被雷蒙了，聽名字這就是個被語文老師死的早的序員們玩壞了永遠完成不了的一個坑啊。後來僥倖拿到了兩筆不知名風投於是華麗轉身，變成了所謂的互聯網未來之星，甚至國內的IT媒體所謂的「不聯網」。紅了大概有一年吧，形勢急轉直下，先是發佈了android應用，然後以迅雷不及掩耳盜鈴之勢賣給了臉書。這下哭爹喊娘、義憤填涌的人都傻眼了。
+與其說instagram是互聯網的未來，HTML5,勝利在今天，不如說是表妹這樣的美工和概念炒作的勝利，畢竟寶麗來還是拍立得都是老物（我家裏還有一部寶麗來相機。。），是所有在柯達時代拍不好相片的大孩子們的怨念藉助新工具在新時代的集體借屍還魂。至於銳推的很厲害的那個Flickr 3500 萬、instagram 10億的帖子，姐知道你們什麼意思，不就是想說instagram很碉堡麼。但還記得Flickr的slogan上面那個「高質量的」和當初用flic.kr同步OS截圖到推特遭到的同一幫人的白眼麼，這都表明了Flickr不是你我一樣的普通人的菜;還有臉書正在上市預備期，想象得到有同樣充沛的現金流的G家或者A家搶到instagram對投資者預期的影響麼？（臉書如果還有收購計劃，應該是Spotify）這明顯是漲停板上搶籌碼，沒有什麼理性和估值可言的。
+我認識instagram緣起於小丸子表妹的「椅子操」，我想上面的人大概都是一樣有趣的吧。於是掏出mp3註冊了一個。後來發現上面有好多用卡通頭像推友的真身，這太八卦了。比如可以通過東九區落日斜角推演出熊貓黍的海拔高度。後來不用也很簡單，一些不知節操爲何物的推友總是午夜發吃吸引仇恨，還有一些精神不正常的推友總是用技術手段開粉嫩嫩的午餐肉罐頭，還有一些被photoshop玩壞了的推友總是給他顯像管壞掉的mba加濾鏡，讓我覺得即使是只看，要忍住不吐槽也很難。至於用，車裏、家裏、單位都有單反，甚至手機的像素也要比iphone高，沒有理由降低生活質量啊。
+相機產生之初是爲了照人臉、頂多擴大到風景，而不是爲了飯菜、桌椅。畢竟第一批使用者是攝影師，而不是廚師或木匠。人類也有體驗上述的更好工具，就是筷子和刀叉。關於人臉，只要不是拍攝一代證件照出身，關鍵點在於你是赫本還是羅玉鳳，不然就不是拍攝而是災難修復; 關於風景，任何使用濾鏡的風景都不是真的風景。攝影師使用的是相機的功能而不是濾鏡。濾鏡能把切爾諾貝里變成紐約曼哈頓。另外談到濾鏡，一個做HTML5出身的在技術上能比得過做建築圖紙出身的Pixlr-o-matic？還有不知道你們是否還記得上一個拍照不露身的是誰，至少我還記得那個不穿高跟鞋棉布碎花裙子男衫抽菸獨自旅行濫交寂靜深不可測的你們的，安。
+所以instagram只是一個手機圖片共享網站。一個，圖牀兒。（注意那個兒化音，在魔都帝都開墾團工作的同僚都知道這個帝都舶來詞帶有的輕蔑和不屑。）那麼有什麼理由阻止它推廣到全手機平臺？又有什麼理由阻止它接入地球上最大的社交網絡？
+我想這裏面有點名器之爭的味道。你們在乎的不是instagram還是pleasekill.me還是stupie.com，在乎的是由於開發者缺失造成的暫時性真空能夠彰顯你們的「不一樣」，就像「此消息發自 iPhone QQ」一樣，然後徒勞無力的希望這種不一樣能夠永久，努力的說服自己這種不一樣是開發者的本意。就像沒有領悟到左手只是輔助的櫻木花道，以爲扒了赤木剛憲的球褲就能勝券在握。就像我和shellex說的，優越性就是我有就要千方百計的阻止你有。「獨佔應用」，這玩意和一邊唱着讓人民有尊嚴一邊維穩有什麼本質區別？「不聯網」，一個不聯網的共享服務就如同一個和全世界80後爲敵的80後領袖金三世一樣可笑。 至於爲什麼說它是中國式小資的末日狂歡。首先因爲外國式小資不和我們的一樣。可以參考下某些歐黨的作爲（美黨全苦逼，更加風騷的澳黨我不識。BTW，新西蘭到底是不是澳大利亞的呀？），有過之而無不及。人家根本沒有什麼時間泡網，再說南北極哪裏有網。至於分享，人家在乎的是XX一時爽，至於全家火葬場，你政府愛埋不埋，不埋就零落成泥。我吃你看那叫什麼事兒～同樣像我們這麼幹的，生怕別人不知道你今天吃飯了，還要擺盤再拍; 海淘個國外拾荒者的工裝也要趕緊秀一下的，也有，叫EMO。
+中國式小資的幾個特徵：心口不一，嫌貴不叫嫌貴，叫無愛它不是我的菜; 邏輯沒有普遍適應性，生活上堅持的就是政治上反對的，獨佔可以，獨裁不行; 違反一切經濟學規律，他們的馬斯洛需求金字塔是倒着的，出生先把能賣的臟器全賣了換上一套蘋果，然後再回過頭考慮去這個工地搬磚還是那個工地搬磚的問題; 毫無人類情感，沒爹可以，沒喬布斯不行，外表還要裝出很可愛的樣子，因爲要拍照的嘛。
+至於末日狂歡，那就更簡單了。就像jason5ng32黍說的那樣，一旦使用臉書帳號登陸，都不用牆了。
+昨天這篇本章就寫到這裏，後來 iPad 不給力的 wordpress 丟失了。說真的當時不知道如何結尾，因爲我不想把它寫成一篇說明文，來給中國式小資下個定義怎樣，也不想再深入的討論蘋果怎樣，因爲公關戰要找個比你強的踩，贏了有面子輸了不丟人，我一個大活人和幾臺設備過不去幹嘛; 再說蘋果公司又沒什麼錯，它的東西有人拿來墊桌腳，是腦殘非要指望它傳家。但今天我就知道如何結尾了。因爲瓜瓜再一次在關鍵時刻跳出來拯救了他的那一票「一夜的爹」。
+以下是閃花眼的結尾：
+Instagram的狂歡已經結束，但請放心，就像搜索「instagram 替代」突然冒出來的那些結果一樣，這種狂歡一定會再回來的。（下面是亮點）就像若干年後，在某個大院後院的小院，有位曬太陽的老人對你說，當年王爺府領事館咱也是進過的，一樣，而那個小院，一個世紀以前，有位同樣的老人也說，當年太后娘娘咱也是伺候過的。#不傳謠不信謠
+PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑撿的。」by shellexy。每個給人分等級的人都固定的處在他所劃分的等級的最低一檔。</description>
+    </item>
+    
+    <item>
+      <title>开源软件的使用者算不算是吸血者</title>
+      <link>https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</link>
+      <pubDate>Wed, 04 Apr 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</guid>
+      <description>这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
+回答： 我觉得你应该修改问题。使用者，是个很中性好笼统的词。下定义就是这样，你定义的越笼统，越中性，越细节，越带感情色彩和主观因素。使用者分种类的，玩游戏不也有人民币玩家、金币农民、苦逼青少年、称霸服务器的搬砖工嘛。你可能会用“傻逼”也很笼统来反驳我，但下定义虽然可以衍生但不是词语组合，组合就一定会带上该词或字原来的某种属性; 吸血者，是个很负面好恐怖的词。一个中性是不是负面，答案永远是否定的。所以，不算。就跟你说，这个杯子是不是犯二，回答的人会想，what the xxxx？
+不过考虑到您的思维路径可能是，看到我对于发行版是否吸血的解答，认为普通用户只使用不作为是不是也是吸血？下面就讨论下这个。
+先来定义吸血。吸血是拿了别人的东西用完还回去却不尊重别人规定的使用范围（比如借别人洗脸的盆子洗脚）或者干脆就不还或少还（比如借钱不还或少还），或者不征求同意直接偷（比如吸血蝙蝠），总体来说，就是不讲究的透支或挪用了别人的资源来做自己的事或谋求自己和别人之间的某种超然地位（商业间谍知己知彼百战不殆）。这个意义上说，吸血的实例很多，但因为大部分行为有了它自己的定义，所以明确说XX吸血反而比较少见。比如，拿着爸妈养老的钱去炒股，就是在吸爸妈的血，因为爸妈可以自己吃药看病甚至是炒股啊; 借了作家没有人知道的小说看，然后写上自己名字发表了，就是在吸作家的血，因为他可以自己来啊，他借你只是让你看的啊; 房地产开发商赖着银行钱不还去押地搞开发，就是在吸银行的血，因为银行可以自己押啊; 比如贪官挪用公款享乐就是吸了公民的血，因为公民可以自己享乐啊。但四种行为都有了自己的定义，第一个叫啃老，第二个叫冒名，第三个叫骗贷，第四个叫贪腐。如果没有这些定义，那他们都是吸血。
+吸血个人看来分两种，一种是腾讯那样公然的自主创新，verycd那种公然改了开源电骡的mod却不照常开源（这点纯疑，没有研究过电骡的协议，也许可以商业使用）和迅雷那种接入p2p网络却篡改了它的精神，搞小圈子特殊化和差别化对待，这是显式的吸血; 隐式的吸血在开源中比较常见，不特意关注发现不了，技术上的例子很少或者天然壁垒去排出普通用户发现它，或者集中在道德层面，阐述的方法也就讲究起来，稍微变一下说话的方式味道就可能全然不同，比较仁者见仁智者见智。
+比如我举个例子，微软和因特尔的联盟算不算吸血？算与不算都可以。我觉得，微软算，因特尔不算。因为他们在用法律正确的不道德手段吸取其他硬件厂商和整个硬件市场的用户资源（当然现在法律上也不正确了，这种在这个年代绝对被裁定垄断）。因特尔是硬件厂商，他那叫发扬优势合理竞争，引入活鱼盘活臭水; 微软一个软件厂商，相当于利用自己在软件操作系统领域的垄断特征来扶植硬件行业的代理人（本身并没有错误，潜移默化的让用视窗系统的人优先选择intel，视窗用户基数很大，帮助intel奠定市场霸主地位），然后利用这种硬件上游强强联合的不正当实际垄断地位去反馈到软件行业（用了intel，自然首先考虑微软），强迫使用其他硬件的人使用它的软件（intel多，微软就多，等微软垄断了下游，上游想不用都不行），它吸了硬件厂商的自主权来壮大自己的软件，祸害了整个硬件市场，不然 ipad 什么的早就出来了，不会都新世纪了提到个人电脑还清一色的 PC 机，因为intel 不会做，其他硬件厂商不敢做，OMG，你做的芯片装不了视窗？那就滚吧。
+再举个例子，微软和网景。抄了人家浏览器，然后利用网景不做操作系统的劣势来在它的操作系统上免费，利用操作系统的市场份额快速获取浏览器市场份额（有人会说微软也拓宽了浏览器市场，但归根结底还是个1/2和2/3哪个大的问题），搅乱浏览器市场，然后让你用浏览器就只能选微软系统（当年的情况，现在有苹果机有linux），这不是强行捆绑浏览器市场的用户，吸浏览器市场的血是什么呢。要知道，当年浏览器是可以收费的，相当于这些金都进了微软口袋，而且进的多得多，因为操作系统比浏览器贵多了（即使是当年，视窗的替代也是很多，收费替代没有，免费的麻烦替代品还是有点的，比如你可以不装视窗，不用论坛，用命令行版的 IRC，或者直接用bsd，从分工上说，在操作系统这个层面上（不是应用软件），商业免费或“被动免费”很大程度上断绝了折腾开源的可能，好比国内的视窗），但贪小便宜的普通用户是发现不了的。如果不是这个事件，unix 早就做起来了（当年好像还没linux），苹果也不用等乔布斯用ipod打江山。
+另外从本例可以看出，第一，吸血跟人之初性本恶一样，是普遍存在的，但大多数时候你认识不到它。比如上面那些免费的 ie 用户，它们是不认为自己在助纣为孽吸网景的血的。写到这里，我不禁想了一下，第一个说吸血鬼之前全部是人类的神话作家，那真是哲学家啊。
+第二，吸血行为不因专利法垄断法等判决而变化，大多数时候只受良心审判。当年网景也没有胜诉，因为微软一个为人类发展，就在道德层面上用繁衍，比吸血更是人类生存目的的东西，轻描淡写掉了它的错误。根据马斯洛需求层次理论（自己维基），吃饭总比泡妞重要。看，我这么一表述，你们大多数男人都反对了，“老子就是为了女神而活的！”，不好意思，那是你们生殖器的生命意义，你还可以干别的比如搅基。但用言语一混淆，一升华，你们就做出相反的判断了，比如为了活着还是为了党国，那你们就为活着了。就跟现在再提这个事情，大家又都认为网景好可怜，mozilla 是对的了，是一样的。为了大多数人活而吃人是对是错，吸血行为的道德本源在这里。问你吃人对否？你答否，问你为了大多数人活而吃人对否？你逻辑不强兴许答对。但后者也是吃人么，跟前者在行为学上是相同的，但在法律学上前者是重犯，后者叫“法律不评价”。比如微软和苹果一起偷施乐。。。没有专利法搞它们，不去偷施乐两家公司都得死，虽然大家管它叫企业家原罪，但实际不是吸血是什么呢。
+好了，背景知识普及完毕。
+下面正儿八经的回答问题。
+开源软件的使用者算不算是吸血者？
+用户跟开发者的立场不一样，虽然看似满足我的吸血定义，因为开发者贡献肯定最大，用户贡献比不过，又不像商业软件那样付费，因此算是“少还”的类型，应该算，但问题是这是在开源啊，开发者就没在乎你还不还啊，你只是受到你自己的良心审判啊。良心多的，就 buy me a beer（老外要捐款经常用的句子，酒吧用语，请我一杯啤酒），良心少的，就博客写篇文，朋友问就说下等等。做早做晚，做多做少，这不是问题，不构成开源事业中吸血的要件，问题是，做与不做。就是个 bool 值的开关状态而已。如果不做任何事，只是使用，不反馈，碰到问题就不用了，不宣传推广（不是一个软件有缺陷就可以不推广，不然木马病毒产业链和社会主义初级阶段早就没了），那你必然在吸血，吸开源事业的血（因为你就是一路过打酱油的，完全就没有参与啊，使用是开源最大的支持，这句话的原型是一个开源项目发布它的软件，拉人气的。。。鼓励你用不到但也去用，那已经是参与了啊。一般我们讨论问题指的是用户自主选择，所以我很少讨论预装的事儿，人人有 ie 有几个真用的。。）。直到有一天，你做出了这样的事，比如朋友问你随口说了一句，那么之前吸的血就原地满血满状态了，因为你已经还回去了。对用户的要求和对开发者的不一样，作为一个开发者你不能说我把我的补丁的前两行注释反馈给上游，或者我有三个补丁反馈两个意思意思尽尽人事就完了，搞笑么。虽然大多数人都这样做，但不代表就是对的，全中国人都用盗版，不代表盗版本身就对的（穷是国家的问题，用盗版是你的问题）。
+吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 的人气为何远不如 Ubuntu 和 Fedora?</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</link>
+      <pubDate>Sat, 31 Mar 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</guid>
+      <description>某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
+我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。
+DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。
+更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。
+缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。
+好了，我下面集中谈一下为什么人气不高。
+一。openSUSE 确实是好发行版。
+它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。</description>
+    </item>
+    
+    <item>
+      <title>openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游</title>
+      <link>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</link>
+      <pubDate>Sat, 31 Mar 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</guid>
+      <description>本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
+春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。
+深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。
+我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。
+这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？
+从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。
+再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。</description>
+    </item>
+    
+    <item>
+      <title>WPS for Linux 预览</title>
+      <link>https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</link>
+      <pubDate>Fri, 30 Mar 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</guid>
+      <description>前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.</description>
+    </item>
+    
+    <item>
+      <title>Novell 的新年礼物 # 我膨胀了</title>
+      <link>https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_#_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</link>
+      <pubDate>Mon, 26 Dec 2011 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_#_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</guid>
+      <description>諸位兄弟姊妹, 如果有一天你收到號稱開心大殺器的”We’re glad to inform you”, “因為你對 Mac OS X 作業系統的卓越貢獻, 我們很榮幸送上 Appstore $1000 金元券一張. by Apple.”, 一定開心的飛起來了吧?! 是的, 蘇現在就是這個感受, 美呆了~
+從來沒有想過哪一天, 一個我沒有花費1分錢在它上面的作業系統會送給我這樣貴重的禮物. 這是這個耶誕節我收到的最好的禮物. 五年來從來沒有一天像今天這樣因為我使用的作業系統而驕傲和自豪, 以後我出門可以說, hi, 我是對作業系統有貢獻的人哦~ 一幫 Windows 會說:”OMG! 蘇你真的是太不可思議了!” 是的, #我膨脹了.
+今年算是對 SUSE 貢獻比較大的一年, 因為我參與了 openSUSE Build Service 并很榮幸成為泛中華地區打包打的最好的人~ 當然啦, 這除了我英文比平均水平要高那麽一點, 可以翻譯英文 Wiki 到國語之外, 還要感謝 sh 家族的 @shellex 和 @shellexy 啦, 號稱腳本皇帝和 Stackoverflow 中文客服的花花對我的幫助真的好大好大呢! 他提供我的好多腳本都值得寫進 wiki 呢. 由于跨年比較忙, 這個等到農歷新年的時候我整理到 wiki 上吧.
+于是耶誕節前, 官方中文論壇的斑竹 F.J. Kong 郵件聯系我說要送點小禮物把我. 經過假意推脫之後, 蘇的好奇寶寶性格又發作了, 于是點名要 SUSE 的公仔一只.</description>
+    </item>
+    
+    <item>
+      <title>恶性卖萌的胜利</title>
+      <link>https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</link>
+      <pubDate>Wed, 07 Dec 2011 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</guid>
+      <description>今天下午还在gtalk上问火炬@virushuo关于@hecaitou和@chinesedancer的闹剧，晚上突然从别人的RT上看到他宣布退出推特的消息，我很惋惜。
+一、支持率是哄出来的，永远别管大众要答案
+每个人，在一个社群里都有自己的定位。虽然不一定是他想要的，但一定在他努力方向上的某个点。推特虽然多元，人欲也不过于此。比如北风想当大哥，虽然过程不是很美，至少现在无人不知（这件事之后我决定fo上北风，退出推北者list，北风可能还是一个小人，那又怎样，七情六欲谁都逃不过，他已经不再是左手酒右手刀的延庆太子了。火炬，life is short, you should try anything once）; 比如空姐; 比如艾未。每个人来这都有个不可为外人道的目的，这个层面上大家都是阴谋论。如果没有一个目的就来了，那她一定呆不长。民那桑，这些年昙花一现有多少，还要到following里面去数吗？
+认识火炬这两年，每当有个大事件发生，我错过了想知道，那么一定会去问他。可能得不到事情的全貌，但至少会有一个正确的意见。但即使所有的路都通向正确，它们也不是完全相同的。比如我不需要知道什么是ks转就知道@chinesedancer绝对有问题，因为她骂人的方式已经出离了泼妇的定义了。任何人都没有资格去绑架别人和你走同一条正确的路。
+他在推特的定位是说正确的话的那类人。所以我能理解他的愤怒他悲哀的点在哪里：一人成军。但其实，某个时间点上，这个时间点可能很多，大众可能需要一个正确做参考系，但不代表他们一定要站到参考系上去。
+大众本来就是蓝绿营都可以拉拢的对象，所能做的只能是迎合它，民众会对取悦的效果用脚投票。如果认为美国人真的是人人以为伊拉克有大规模杀伤性武器，产生了一种“God chose America”的感嚼，才去死磕萨达姆，那就错了，同样，为了石油也是错，无非是看G.W.布什拉票时傻的可爱而已。所以一起搞北风的不代表北风惹他了，或者对左拉多么支持，可能只是反感他骂人而已。给艾未捐钱不代表认同他了，可能只是可怜一个脱离不了父亲阴影的胖子，物伤其类而已。他们站在了你的看台上，不代表就是你的支持者，其他地方没位置坐挤不进罢了。之所以法不责众，因为看戏确实有理。这个理，可能和任何人都不一样，但反正不是你要的那个理，和大众要道理是很幼稚的行为。
+娱乐不但是大众的态度，而且是大众最大的态度。我两个人都烦，但他们掐在一起很有趣，这你让人怎么说观点？而且，凭什么你让说就说？中国人是为了feel different为了多套领导班子连祖宗都可以卖的民族，本来不关心你的甚至有点小赞同的都必须跳出来反对你，以示和大众有点区别。
+如果两个不相关的人打架，如果我很忙，那我会路过;如果我不忙，那自然是希望打的持久些。让人表态，难道互相加油吗？两人打架，一人挨揍说“优雅”，是唾面自干; 你在旁边的说“优雅”，算是怎么回事？
+二、讲道理什么的弱爆了，卖萌杀才是无视防御的。
+对于恶性卖萌，很明显火炬也没有办法。其实办法还是有的，只是有些事，寇可往我不可往。对付恶性卖萌，当众打脸是最有效的办法。每当@csslayer说出我靠，我就知道到了有事起奏无事退朝的时间了。不过你已经逼到一个四十几岁的人恶性卖萌，很明显你已经没有对手了，要知道那个年龄段的人，认错可以，卖萌几无可能。还非要搞一场表演赛，把自己赛感伤了，何苦。就像某些孩子为了骗支持率，连屁股和老婆屁股都拿出来秀了，对这类人民娱乐家，你又能说些什么？何苦拉低下限。21世纪选择唱京剧，就要时常一个人面对空荡荡的看台，不是么？
+至于推特有没有体系化，答案是任何一个输出观点的群体都是体系化的。体系化的世界里，必然有依附体系生存的一类人，俗称“捧臭脚的”，是指明代好小脚的士大夫。在时间改变他们或者消灭他们之前，没有谁能改变。但即使他们是捧臭脚的，也可以不捧你的脚。你可以说他们的良心被狗吃了，但这世界就是这样，良心在我身上，有时宁肯喂狗也不给你。
+体系化的世界的统御之术叫做平衡，不平衡就会有独夫。比如有一个北风就必须有一个左拉，有一个火炬就必须有一个花落去，有一个艾未必须有个？，不然就会有裸照门这种荒诞。当然你们觉得是优雅，可能山顶洞人会表示英雄所见略同，时装界的是绝对不这么想的。为国家省布料是对的，我们国家还很穷，但好歹你穿点，就穿点，给产业界留点活路。
+体系化+卖萌=超必杀。
+想想”我们来晚了“的故事吧，真想来，都不用你请，王仲夏不是在京广桥就经历过么。再看看推特上那个伸手要钱的胖子。诸君中枪了吗？要是某人没签证德国去不了，姜大姐说句”伦家，伦家舍不得你受这万里奔波之苦嘛，艾桑！“ 肿么办？！写下这行文字的时候我大脑一片空白，这样一张笑脸，你怎么打？
+你们真应该庆幸我没有进入系统，不然这套必然会用于诸君身上。当初我说过对付一个求名声的人，说他经济犯罪是没有用的，只要装装可怜没有人信。必须在道德上找突破口。记得两天之后发生了什么吧。这就叫把握了体系的脉搏啊。同样，这次为什么没有说你非法集资，因为体系内有善于学习的能人啊。把一件事情办好需要纪律，把一件事搅浑需要的是创造性，公务猿执行力太强啊。还记得七十年代美国谴责我们向境外移民的答复吗？”要多少，3000万还是一个亿“ 那个瞬间国会无语了，我一共2亿人，你给我送来一亿，那美国到底还是什么啊？同样，提分币那是我欺负你，3000万1毛捐款，这手写借据和包邮的教育绝对大的很。户部给你弄假户籍全到新疆西藏，反正那地方常年支持你这种人的么。机打发票？那随便一个五毛党都能把这事办妥，凭什么你们就是手写的我的就是机打的？再来一拨人隔三差五催一催，我不催债，催借据，恐怕连上推特的心情都没有了吧？至于3000万1毛借据，文章可大了，五斗米教也不过捐五斗米。治理邪教向来是首恶必除的哦～至于不要，嘿，借你钱还挑三捡四，给脸不要脸，又是随便一个五毛党都能办妥的事。
+扯远了。
+三、求仁而得仁，何怨？
+所以我同意火炬说的“真无聊。犬儒，懦弱，愚蠢的中庸。这些东西随处可见，我为什么需要翻洋过海来这里看？”，但不同意“沉默的围观者可耻，比沉默围观更可耻的就是消费和娱乐这一切。”。其实没人不让你享受“个人表达气氛”，但可以不支持你的观点呀，他们已经用娱乐模式告诉你了呀。因为那个点上，大众不需要正确。之所以沉默的围观，可耻的消费，只是因为你没踩对拍子踩人脚了。
+但有些事是有些人一定会去做的，哪怕没有支持也会做的，所以，无关对错，求仁而得仁，又何怨？
+出发点不是为了娱乐大众，大众自娱自乐了，你应该欣慰这种群体智慧，而不是苦恼它们。你说的道理他们不懂吗？是装作不懂，或者那个时刻就没想懂。要相信时间和群体智慧。恐怕那种调侃里，某人的尴尬不如伸脖子一刀吧，流言，杀人不用刀。
+BTW，你不是没有盟友，只是他们不在服务区。但即使在了，也不过是闹剧多几个龙套。因为没人能不当众打脸的情况下战胜恶性卖萌，就像没人能在不揪失德这个小辫子就搞垮求清名的人一样。
+最后，不许联想，不许转国内。</description>
+    </item>
+    
+    <item>
+      <title>HP Veer 初心：一个备胎的自我修养</title>
+      <link>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</link>
+      <pubDate>Wed, 26 Oct 2011 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</guid>
+      <description>我的小白是十一假期被@tualatrix放毒买的，在那家传奇的淘宝店我发现了大陆linux中文界一个个响当当的ID。刚复工就收到了。过了这么长时间，相信该有的也都有了，当然裂裂@thruth那种每天降价100收购的自然是没有。开箱图在picplz有，这里放张小白近照：
+简单说，veer适合以下种群使用：
+ 对邮件和IM上瘾的。  从默认图标的放置就可以看出来，webOS其实是排斥短信的。虽然它有一个领先世界的实现——整合了短信和IM的Synergy Messaging（大多数时间我都是在gtalk），但其实它的目的是取代短信而不是增强它。也许未来世界就是老美的模样，sms只是在没网络接入的时候骚扰下你的线上联系人。
+它的邮件真的是非常爽，多账户（在system-accounts添加，可以选择性同步）、邮件地址自动补全、带附件、一键发送、自动push，配合webOS的提示系统，我找到了初中用西门子时在上海地铁上“嘎吱嘎吱”发短信的感嚼。
+ 对社交网络轻度成瘾者。  话痨、微博图党（仅指sina和twitter，其他是没有native的（可以试试微博通，据说免翻墙发推））、四方党和Reader党（以上四种的任何程度）会十分忍不了。如果你以上都是，还是个没认清初级阶段国情的付费派，那还是转身离开吧，除非你是想治治这些病。
+marguerite作为保护推里面klout最高的那类，对其十分诟病。虽然它又有一个领先世界的实现就是卡片式管理，真正的多任务，就像@tualatrix说的，它们是真的在后台会动的。
+但它真的是瞎子身上的眼睛，因为：
+首先webOS下无论免费的phnx还是付费的twitter客户端carbon，都不能刷新太长的时间线，更不能开自动更新，你要真的花美刀那是你naive了（好像还不能退钱？）。
+微冷的早晨躺在残留昨夜香气的暖被窝里追会儿推这种事是干不了的，会卡的你不停的滑来滑去，“小白你肿么了？”“小白你不能死”（PS：veer是没有自动重启的，键盘上的白方块（论坛里说方块我曾一度按住左边的音量）+Sym+R或按住电源键来回拨动三次上面的开关）。
+其次它不能发图。
+新浪微博是可以的，推特党第一它没有iPhone（注意大小写！）和android下那些堪比专业单反的相机，有的都是骗小孩的PhotoFunia（把你的头像弄到蒙娜丽莎上巴拉巴拉）、类photoshop的photo effects（所有的效果都要你自己调。随手拍，调，没等解救呢人家脱团了），说真的它的照片质量让我想起我高中130w像素的爪机; 第二即便你拍了也没法传，intragram、picplz都没有，内置的传图没法用，目前唯一的好方法是用老大哥twitpic给你配的那个邮箱发图地址，用它唯一好用的邮件发过去。[还有用Flickr AIR发到flickr，但F是图片展示网站不是图片社交网站啊] PS：新浪微博的刷新时间居然只有6秒钟！android最小30秒呀！5倍速！但还是不要主力用它，原因同twitter。
+第三它的地理位置程序要求开启background data collection才能用，不然基本是your location is currently unavailable，但那是任何“优化”教学在第一军团就要求关闭的服务，毕竟没人想不可拆卸电池早早的就报废（Tips：点金石会废掉你的电池哦）。
+第四，它没有一个能用的Google Reader程式。
+试用了呼声最高的Feeder，登陆了帐号它就不知道干嘛去了，无助的停在刷新界面却一条feed item也刷不出，而且webOS打洞较难，re不reset完全算人品。发现一个看起来很美的NomNomNom，结果人家是给webOS 3.0的平板用的，拜托700块的爪机你都伺候的姐不满意，怎么奢望的我买你家的平板的？
+总之，如果这些只是你生活的点缀而不是准备把余生都耗费在它们上面，veer能做到让你凑合着过;如果想抓个手机就是一天，那它会让你抓狂的，当然它的电量会在你抓狂之前告罄。
+ 像霍金那样除了大拇指全身没一个地方好使的人。  手势操作是webOS领先世界的又一个实现，个人觉得只有android的swipe输入法和apple的magic mouse能与之相比。向左滑动是退出，向上滑动是进入卡片式管理，双指放大缩小，android 4.0才有的slash删除item它早有了，甚至连主页面的5个icon你都可以用单指滑动打开哦！加上手机本身的体积都在灵长类大拇指的接触范围内，霍金也能玩的转吧。在某些高考作弊是约定俗成的省份，经过一定专业训练盲发个选择题什么的简直就是神器呀。
+当然对于连linux下快速键都能记住的高玩来说，怎能三言两语就带过秒杀一切触摸设备的功能？于是有了这个教学 。PS：在system-screen&amp;amp;lock里把advanced gestures打开。
+ 女生，爱美胜过爱自己的女生，有不回短信权利的女生（不是每个女生都有权利不回短信，比如我如果不回，下次就没人找了;奶茶如果不回，扑哧，人家本来就不应该回，你们懂的）。  对于啥都不懂的女生，外观就是一切（这也是我对hotot的看法）。veer鹅卵石的圆润外型，不说秒杀iPhone但至少各有千秋的内饰（但重点是它只要700块啊，比高档Hiphone还便宜呀），就像鞋跟越高脚越疼越趋之如骛一样，你不买，会有人买了在你身边秀的。
+ Linux教徒。  该宗教的表现可以用两种不同的语言来表达：1, 不是自己参与创造的（这里不是指“下一步+下一步+下一步×（n-2）”或“解压+扔+用”的软件安装方式）的东西不用; 2,不折腾不舒服斯基。于是here you are：preware（各色GNU软件和webOS的patch）+internalz（1,在options里开启了master mode可以改系统文件;2, 它可以直接打开安装ipk软件;3,默认目录是/media/internal）+tamoggemon editor（纯文本编辑器）+ terminus （终端，2.1下使用点链接）。
+这些对普通用户基本就够用了。至少改个/etc/hosts（前两行是127.0.0.1 localhost.localadmin和127.0.0.1 palm-webos，其他就是#twitter #google #youtube什么的，你懂的）或编辑个openvpn.conf是没问题的。再进阶的使用就要用到WQI（webOS Quick Install 4.3.1）在电脑上操作了，我除了安装preware那次其他基本没用过。具体可以看webos-internals.org。
+ 有iPod或用不着iPod的人。  如果你是音乐发烧党+正版派，那我建议你真的不要买爪机，iPod Classic是你最好的选择。veer的正版固件的音乐默认是和amazon连接，视频默认是和facebook/youtube连接，相信我已经不用再说下去了，基本没有本地多媒体应用。豆瓣电台是有的，还有国人做的google音乐WebOS Musicbox。flash是支持的。本地音频播放器可以用Koto Player（2.</description>
+    </item>
+    
+    <item>
+      <title>HP Veer 初心：一个备胎的自我修养（二）</title>
+      <link>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</link>
+      <pubDate>Wed, 26 Oct 2011 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</guid>
+      <description>～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+我的blog有音乐，控制器在最下面。我知道我有音乐，那是给我自己听的谢谢，别像谢耳朵一样到别人家收拾屋子。
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+我真的不想把这吐槽搞成连载的，毕竟只是个电子产品，有摩尔定律在作业。但推上晒它的又太讨厌，自己吞了苍蝇，胳膊折了袖里藏就好了，非要挖坑把全民都拉进来。。。搞普通青年文艺青年二逼青年。。。
+其实我更觉得veer是个弃子，palm亲妈不要，HP领养了，发现确实没什么出息，于是卖到窑子里面去了，偏偏窑姐们母爱泛滥，加上窑姐们最近刚死了亲爹。。。你们懂得。 好多人都问我说当ip4的备机veer适合不适合，拜托，一个粉嫩可爱古灵精怪的小萝莉姐姐牵着一个慢吞吞骨子里面是个外星人各种不兼容地球的弟弟的设定，这里不是起点中文啊。。。
+这是一部适合普通青年的爪机。两部爪机拍坦克它是肯定干不了，只能做点一次性偷袭的工作，当个鹅卵石丢丢。毕竟不吐豆的马里奥要踩死火龙，挺累的不是么。
+它的配置在这个价格，确实无可吐槽。价格，对中式geek们来说，不能说是唯一决定力量，但绝对是很大的力量。当你发现在国贸三期吃不了一顿饭、三里屯摆不了一个大炮的钱能让你玩的很high很有面子，那结果自然不用说了。
+但问题是为什么会出现这个价格，就像我前面说的，“卖到窑子里面去了”，好在它尾货确实不多，不然山寨厂该排队跳亚龙湾了。相信无论怎么吐槽HP的晕色特，它的自知之明是无从吐槽的。就像我朋友一直挂在嘴边的，“什么年纪就该干什么年纪的事”，HP其实已经很老了，就跟网购一样，不适合老年人，当你的人生经验积累到一定境界必然谨小慎微，宁愿为了那摸一摸多花钱，年轻人的appstore是接受不了的，它不是没挣扎，app catalog就是个失败，那为什么还要保留一个基于网络的操作系统和基于移动互联网的爪机？难道要像某人一样信佛吃素不动手术？
+webOS真的会假死，不管pre3 pixi2是什么情况，至少veer上是的。在这件事上HP确实犯了理想主义盲动错误，我猜测它对这部爪机的初始要求应该会有这么两个：一成本要低，二体验要好。但这真的不是1949年吃小龙虾度日的年代了呀。
+我之所以一直叫它备胎，因为我觉得使用它的理想状态就是备胎被使用到的情况：你的爪机么电了，从公司一直暗中倾慕你的男同事抽屉里拿出它，更新msn状态：ip无电，这个小时的爪机号码为xxx。自己爪机充满电，扔回抽屉。连插拔卡都不用。
+因为它的开机真的好慢，要想无缝切换那就要和主力机一起待机，但问题是它的电量，主力机还没关机它先扛不住了，就好比四哥每天夹着尾巴苦哈哈等老子薨了自己监国，突然有一天就被若熙给带回去了。。。
+我为我的veer只花过一块钱，就是买有人给我留言推荐的锁屏补丁。结果非常失望，还是precentral论坛那个笑话的改版，旁有，你确定freeworkzz的锁屏补丁只锁浏览器的方向？不，它连浏览器的方向都不锁。它只锁浏览器里网页的方向。摆脱，你躺被窝刷G+还得翻个身才能开新tab，我买的不是runkeeper啊。
+下面是回答上篇文章的提问： Q：为什么说点金石会毁电池啊苏酱？ A：原理我解释不清楚，但论坛有人这么讲。另外你确定无线充电是充到爪机里不是学特斯拉吸收所有以为他在充电的人的电量，去搞一次通古斯大爆炸？ Q：发图请用pixelpipe。 A：这跟我老板对我说在家请穿便装、我的IT SUPPORT对我说请用公司邮箱一样毫无道理。只有机器适应人类，没有人类适应机器，贾伯斯就是想明白了这一点。用android请上facebook，用veer请上人人。我就是不想注册账户。 Q：终端问题 A：还是上文的那句话，“如果这些只是你生活的点缀而不是准备把余生都耗费在它们上面，veer能做到让你凑合着过”。如果你已经是个linuxer了，那么terminus也好sdlterminal也好还是按照那些类似于教你如何写一个OS一样的教程port过来的vim/vi也好，对你都一样，因为命令你已经可以盲打了。veer的终端字真的太小了，HP这里犯的错误是它在把手机屏幕缩小到娇小的同时，把屏幕上的字也给娇小了，很傲娇，嗯。能用internalz pro还是用它吧。PS：sdlterminal无法用preware安装，precentral的zip是个损坏的，按照我出了名的张嘴就要的性格（见@csslayer的博文：推油印象篇 。当然不是为了吐槽我，是为了吐槽花花@shellexy），这是个废软。 Q：流量问题 A：每当月初交宽带使用费的时候我都会想到一句话：“有限的流量即是有限的互联网体验”，送给你们，另附送半句：“尤其是你不知道那些流量都干什么去了的时候。” Q：版本问题 A：webOS的版本分1,2,3。基本吸引你过来的和你正需要的功能都有1和3的版本，但很可惜你是2. Q：收费问题 A：我不是绝对反对收费，毕竟劳动有价值，他帮忙你还得还人情不是，但我相信在国内还没有美帝那种正好够你在曼谷玩一年的救济金制度的时候，每一张人民币的去向最好值得。至于那些开发者和人为低估自己劳动的开发者，我只想说一你们选错了平台，至于为什么选错了平台我觉得不应该来我这看，应该去看readwriteweb或者wired; 二你们心贱所以人贱，想普世就直接选择开源，想赚钱就直接卖出值得你熬夜的价，做了婊子立牌坊没有意义，赔本赚吆喝只能让人第一印象以为这就是你们的成本，误人误己误国。番茄花园的哥哥为了他们去坐牢，出狱后有人为了他买个android爪机没有？当然如果你们真的觉得你们写的玩意确实就只值那几个，算我白说。
+正文到这里就结束了。刚看到某猫的小情人在推特上说的：革命分工不同啊。恍然。
+PS0:
+突然想到的，如果整个webOS就是个星球大战一样的骗局，那么一切看起来就自然多了。多任务后台刷新 = 浏览器的多tab+ajax，手势操作 = 浏览器的mouse gestures，这样的对应在veer上可以找出很多，再对比Palm和HP这么多年的研发能力，我宁愿相信让geek如痴如醉的东西很可能就是新瓶装老酒而已。毕竟chrome OS都没搞出来，它有那么多不完美简直太应该了，搞不好背后是最近被吐槽正凶的javascript呢。从来没有见过任何一个操作系统，有这么多的补丁，然后这些补丁中的任何一个，都没有推动过这个操作系统向前任何一步的事情。
+PS1：
+刚才在看利比亚政变真相，比如半岛电视台反水投靠CIA，反动派屠的黎波里城，北约暴力介入内幕，利比亚屠奴事件等。之前我真的好奇怪推上那帮家伙的心态和逻辑，一方面各种要民主，一方面容不得不同的声音，他们难道没听过弗兰克林的“民主即是妥协”？因为对爸爸不满就一定要勾结外人来杀了自己亲妈弟弟和妹妹？到最后还是爸爸站出来，发了菜刀给妈妈弟弟妹妹来对抗自己的儿子，这样就不难理解为什么卡扎菲死的时候脸上那茫然的表情了，也不难理解为什么会被爆菊了，屠城都干了，爆个菊花算的了什么，至于伊斯兰法，那一瞬间他们都认为自己是默哈穆德了（当然北非人大部分真叫这个名字），还管伊斯兰法？
+这件事情教育了那些不爽天朝的人要成熟。
+不能整天教育别人政府非国家国家非政府，然后政府卖了塔吉克斯坦地就幸灾乐祸，拜托土地是国家的，你妹嫁了个孙子被揍了，你应该纠集弟弟们先去狠揍那孙子一顿再抽你妹俩嘴巴因为你妹挑事，好不好？不然小马哥为什么要去南海去钓鱼岛演戏给菲律宾给日本看，按你们的逻辑那不是他们的海，玩票呢？
+不能因为一个人表现的怎样就真的以为怎样，万一它是在下一盘很大的棋呢？当时我就没说话：
+ 因为两相对比，外交方面天朝那个姜大姐要比推上这帮“言语上的侩子手，行动上的窝囊废”要成熟的多，至于CCAV为什么不报道真相，a 宣传喉舌什么时候有过真相？ b 我朝除了新闻时间全部转发朝鲜人民，你们是不是吐了？拜托，好歹我们也是泱泱上国，附属国互相打去，页眉页脚给个脚注就ok，要是真惹了宗主国不爽，嘿早就偷摸过鸭绿江了报道个啥子？不动即是真不在乎。 万一人家卡扎菲是抱着地狱不空我不成佛的心态来接触，曲线拯救你们这帮水深火热呢？若干年后wikileaks一出，你们这帮“言语上的侩子手，行动上的窝囊废”是不是又两边不是人了？  视频在此：
+PS2： PS1里面刺到的那些自不量力自以为是的家伙，建议读下面书籍镀镀金：
+ 《美国种族简史》，托马斯索威尔，当当网，amazon，tb商城有售 《乌合之众》，古斯塔夫勒庞  </description>
+    </item>
+    
+  </channel>
+</rss>
