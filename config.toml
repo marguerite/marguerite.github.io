@@ -1,4 +1,4 @@
 baseURL = "https://marguerite.github.io"
 languageCode = "zh-cn"
-title = "Blog for Marguerite Su"
-theme = "codex"
+title = "Marguerite Su: Golang/Ruby Programmer, openSUSE Member"
+theme = "blank"
