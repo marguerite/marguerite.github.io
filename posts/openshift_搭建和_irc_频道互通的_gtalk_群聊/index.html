@@ -1,93 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>openshift 搭建和 IRC 频道互通的 Gtalk 群聊 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A\/",
-      "name": "openshift 搭建和 IRC 频道互通的 Gtalk 群聊",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>openshift 搭建和 IRC 频道互通的 Gtalk 群聊</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">openshift 搭建和 IRC 频道互通的 Gtalk 群聊</h1>
-            <time datetime="2013-03-17 00:00:00 &#43;0800 CST" class="post__date">Mar 17 2013</time> 
-          </header>
-          <article class="post__content">
-              
-<p>Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 <a href="mailto:opensuse_zh@im.partych.at">opensuse_zh@im.partych.at</a>。</p>
+	
+	<main>
+		<article>
+			<h1>openshift 搭建和 IRC 频道互通的 Gtalk 群聊</h1>
+			<time>17.03.2013 00:00</time>
+			<div>
+				<p>Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 <a href="mailto:opensuse_zh@im.partych.at">opensuse_zh@im.partych.at</a>。</p>
 <p>Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：</p>
 <ul>
 <li>不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。</li>
@@ -95,43 +30,15 @@
 <li>大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。</li>
 </ul>
 <p>所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。</p>
-<p>打听了一下，这种群聊是使用依云(<a href="http://lilydjwg.is-programmer.com/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->@lilydjwg</a>
- 写的两个软件在 VPS 上搭建的，分别是 <a href="https://github.com/lilydjwg/xmpptalk" 
-  
-   target="_blank" rel="noreferrer noopener" 
->xmpptalk</a>
- 和 <a href="https://github.com/lilydjwg/ircbindxmpp" 
-  
-   target="_blank" rel="noreferrer noopener" 
->ircbindxmpp</a>
-。</p>
-<p>但问题出来了，我没有 VPS。当时 <a href="https://openshift.redhat.com/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->openshift</a>
- 这种 PaaS 已经出现了，只是还比较新鲜，我不会用。于是去年 9 月的一次尝试就可耻地失败了。</p>
+<p>打听了一下，这种群聊是使用依云(<a href="http://lilydjwg.is-programmer.com/">@lilydjwg</a> 写的两个软件在 VPS 上搭建的，分别是 <a href="https://github.com/lilydjwg/xmpptalk">xmpptalk</a> 和 <a href="https://github.com/lilydjwg/ircbindxmpp">ircbindxmpp</a>。</p>
+<p>但问题出来了，我没有 VPS。当时 <a href="https://openshift.redhat.com/">openshift</a> 这种 PaaS 已经出现了，只是还比较新鲜，我不会用。于是去年 9 月的一次尝试就可耻地失败了。</p>
 <p>当时（甚至至今）网上关于这两个软件的文章只有两篇：</p>
 <ul>
-<li>依云自己的<a href="http://lilydjwg.is-programmer.com/2012/5/14/xmpptalk-chatroom-bot-and-xmpp-group-recommandation.33537.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->介绍性文章</a>
-，但是太粗略了。</li>
-<li>StarBrilliant 的稍微详细一些的<a href="http://m13253.blogspot.jp/2012/08/xmpptalk-get-started.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->文章</a>
-，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。</li>
+<li>依云自己的<a href="http://lilydjwg.is-programmer.com/2012/5/14/xmpptalk-chatroom-bot-and-xmpp-group-recommandation.33537.html">介绍性文章</a>，但是太粗略了。</li>
+<li>StarBrilliant 的稍微详细一些的<a href="http://m13253.blogspot.jp/2012/08/xmpptalk-get-started.html">文章</a>，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。</li>
 </ul>
 <p>于是逼迫我们群里的 douglarek 写了一篇在 openshift 上折腾它们的文章给我：</p>
-<p><a href="http://blog.icocoa.me/xmpptalk-on-openshift/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Openshift 折腾 xmpptalk</a>
-</p>
+<p><a href="http://blog.icocoa.me/xmpptalk-on-openshift/">Openshift 折腾 xmpptalk</a></p>
 <p>但实际上这篇文章很水。反正看过就知道啦，到处都是「凑合」。实际上你看它也根本架设不起来（好多致命细节都没说）。</p>
 <p>当时我就是在这种情况下开始折腾的。</p>
 <p>首先我开了 <code>Do it yourself</code> 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…</p>
@@ -164,11 +71,7 @@ make install
 </code></pre>
 <p>需要注意的就是：<code>--prefix=${OPENSHIFT_DATA_DIR}/pythonX.X/</code> 一定要有，而且必须写在最后，否则不起作用。至于原因我也不知道，openshift 就是这样的。如果你看了 douglarek 的文章的话，你可能会知道一个 <code>${OPENSHIFT_RUNTIME_DIR}</code>，这个也作废了。</p>
 <h4 id="编译-python3-distribute">编译 python3-distribute</h4>
-<p>去 PYPI 下载 <a href="https://pypi.python.org/pypi/distribute" 
-  
-   target="_blank" rel="noreferrer noopener" 
->distribute</a>
-。</p>
+<p>去 PYPI 下载 <a href="https://pypi.python.org/pypi/distribute">distribute</a>。</p>
 <p>这时编译需要用我们前面刚制作好的 python 3.3 来编译它。所以我们需要修改一下系统的 <code>PATH</code> 和 <code>LDLIBRARYPATH</code> 让系统能够找到 python3</p>
 <pre><code>export PATH=${OPENSHIFT_DATA_DIR}/python3.3/bin:$PATH
 export LD_LIBRARY_PATH=${OPENSHIFT_DATA_DIR}/python3.3/lib:$LD_LIBRARY_PATH
@@ -190,11 +93,7 @@ python3 setup.py install --prefix=${OPENSHIFT_DATA_DIR}/python3.3/
 </code></pre>
 <p>以后的编译方法同 distribute。</p>
 <h4 id="编译-pymongo">编译 pymongo</h4>
-<p>下载在 <a href="https://pypi.python.org/pypi/pymongo" 
-  
-   target="_blank" rel="noreferrer noopener" 
->PYPI</a>
-。</p>
+<p>下载在 <a href="https://pypi.python.org/pypi/pymongo">PYPI</a>。</p>
 <p>编译方法同 distribute。</p>
 <h4 id="安装-mongodb-的预制包">安装 mongodb 的预制包</h4>
 <p>前面已经说了，在 openshift 上编译的话内存会耗尽，所以我们用编译好的。下载在 mongodb.org，要下载 Linux 64-bit 的版本。</p>
@@ -237,11 +136,7 @@ git clone https://github.com/lilydjwg/ircbindxmpp
 <p>你需要两个 xmpp 账户，一个用来做 Gtalk 群聊，比如 <a href="mailto:talk@suse.org.cn">talk@suse.org.cn</a>，另一个用来转发 IRC 上的消息，比如 <a href="mailto:irc@suse.org.cn">irc@suse.org.cn</a>。xmpp 账户怎么来你可以看 StarBrilliant 的文章学习配置 prosody，也可以像我一样直接在我的 Google Apps 里新建两个账户（Google 的服务据说发送太多链接和说话太勤对方会收不到，但是目前我还没遇到）。所以我就用 Google Apps 为例了。怎么使用 prosody 我也不会，我的 bundle 里也没有 prosody 的依赖和主包，估计 openshift 在你不绑定域名（见我搭建 wordpress 那篇文章）的情况下也跑不起来（因为要设 SRV 记录，红帽提供的二级域名肯定没这功能）。</p>
 <p>注册 Google Apps，需要你有一个个人持有的域名。这个教学我省略了，因为太多了。只讲几个新建账户的注意事项：</p>
 <p>你建完账户是 temporary password，可以在该账户的明细里看到，首次登入是会要你改的，所以不要建完就去配置了，那样不会成功。一定要登入改密码。</p>
-<p>如果你用 Google Apps 弄过 Gtalk 就知道需要<a href="http://support.google.com/a/bin/answer.py?hl=zh-Hans&amp;answer=34143" 
-  
-   target="_blank" rel="noreferrer noopener" 
->设置一个 DNS 的 SRV 记录</a>
-，才能在非 Google 的客户端比如 Pidgin 上登入。但是这段 SRV 记录并不全，你之所以能在 Pidgin 上登入是你告诉了 Pidgin 我这就是 Google Talk。xmpptalk 是不知道的，它会一直 ping 你的域名的 A 记录，但那上面通常都是个博客或者别的什么，肯定不是 xmpp 服务器。所以你要多加下面一段 SRV 记录，和 Google 给的一起，加到你的 DNS 服务商比如 cloudns.net（不是每个 DNS 服务商都支持用 SRV 记录，至少我知道的免费的就这一个，反正你的域名注册商甚至共享主机商提供的 DNS 都不行），至于怎么改域名的 DNS 请自行搜索。</p>
+<p>如果你用 Google Apps 弄过 Gtalk 就知道需要<a href="http://support.google.com/a/bin/answer.py?hl=zh-Hans&amp;answer=34143">设置一个 DNS 的 SRV 记录</a>，才能在非 Google 的客户端比如 Pidgin 上登入。但是这段 SRV 记录并不全，你之所以能在 Pidgin 上登入是你告诉了 Pidgin 我这就是 Google Talk。xmpptalk 是不知道的，它会一直 ping 你的域名的 A 记录，但那上面通常都是个博客或者别的什么，肯定不是 xmpp 服务器。所以你要多加下面一段 SRV 记录，和 Google 给的一起，加到你的 DNS 服务商比如 cloudns.net（不是每个 DNS 服务商都支持用 SRV 记录，至少我知道的免费的就这一个，反正你的域名注册商甚至共享主机商提供的 DNS 都不行），至于怎么改域名的 DNS 请自行搜索。</p>
 <pre><code>_xmpp-client._tcp.你的域名. IN SRV 5 0 5222 xmpp-server.l.google.com.
 _xmpp-client._tcp.你的域名. IN SRV 20 0 5222 alt1.xmpp-server.l.google.com.
 _xmpp-client._tcp.你的域名. IN SRV 20 0 5222 alt2.xmpp-server.l.google.com.
@@ -344,19 +239,11 @@ git push
 <p>然后 <code>.openshift/action_hooks/start</code> 就会在服务器跑，就会把那个网页服务器跑起来了。</p>
 <h4 id="额外">额外</h4>
 <h6 id="prosody">Prosody</h6>
-<p>这个确实不懂。不过需要提醒大家注意的一点是，如果你打算在 openshift 上编译并搭建它，你需要了解 openshift 不是每个端口都可以对外的。大部分你熟悉的端口都已经<a href="https://openshift.redhat.com/community/kb/kb-e1038-i-cant-bind-to-a-port" 
-  
-   target="_blank" rel="noreferrer noopener" 
->在内外两边都为官方应用保留了</a>
-，内部你只可以用 15000 – 35530，对外只可以 bind 到 <code>${OPENSHIFT_INTERNAL_PORT}</code> 也就是 8080，会通过 80 端口转发给外部。</p>
+<p>这个确实不懂。不过需要提醒大家注意的一点是，如果你打算在 openshift 上编译并搭建它，你需要了解 openshift 不是每个端口都可以对外的。大部分你熟悉的端口都已经<a href="https://openshift.redhat.com/community/kb/kb-e1038-i-cant-bind-to-a-port">在内外两边都为官方应用保留了</a>，内部你只可以用 15000 – 35530，对外只可以 bind 到 <code>${OPENSHIFT_INTERNAL_PORT}</code> 也就是 8080，会通过 80 端口转发给外部。</p>
 <h6 id="群日志">群日志</h6>
 <p>在 mongodb 数据库里。可以用 mongoexport 导出。</p>
 <p>[Update] 今天他们非要一个 IRC 日志，我就直接把日志做成 cron jobs 放到我们之前跑起来的那个 ruby 网页服务器上了。</p>
-<p>[Update1] 他们非要 HTML 格式的日志。好吧：<a href="https://talk-marguerite.rhcloud.com/index.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->https://talk-marguerite.rhcloud.com/index.html</a>
-</p>
+<p>[Update1] 他们非要 HTML 格式的日志。好吧：<a href="https://talk-marguerite.rhcloud.com/index.html">https://talk-marguerite.rhcloud.com/index.html</a></p>
 <p>把以下内容保存为 log_to_web.sh，放在 .openshfit/cron/hourly 并 <code>chmod +x</code> 后提交：</p>
 <pre><code>${OPENSHIFT_DATA_DIR}/openshift-xmpptalk-ircbindxmpp-bundle/bin/mongoexport --host ${OPENSHIFT_INTERNAL_IP}:27017 -d talk -c log --csv -f time,jid,msg -o ${OPENSHIFT_REPO_DIR}/diy/chat.txt
 ${OPENSHIFT_DATA_DIR}/text2html.sh ${OPENSHIFT_REPO_DIR}/diy/chat.txt &gt; ${OPENSHIFT_REPO_DIR}/diy/index.html
@@ -386,11 +273,7 @@ echo '&lt;/div&gt;
 </code></pre>
 <p><!-- raw HTML omitted --></p>
 <h6 id="备份方案">备份方案</h6>
-<p>你当然可以使用我在之前搭建 wordpress 的文章里讲的 snapshot 方法。不过下面介绍一种自动的：使用 <a href="https://github.com/andreafabrizi/Dropbox-Uploader" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Dropbox-Uploader</a>
- 配合 openshift 的 Cron Cartridge。</p>
+<p>你当然可以使用我在之前搭建 wordpress 的文章里讲的 snapshot 方法。不过下面介绍一种自动的：使用 <a href="https://github.com/andreafabrizi/Dropbox-Uploader">Dropbox-Uploader</a> 配合 openshift 的 Cron Cartridge。</p>
 <p>首先在网页版的 My Applications 里点进去，然后进入你的 Do-it-yourself 应用，点 add cartridge，加一个 Cron 1.4 的 cartridge。</p>
 <p>然后 ssh 进你的应用程序：</p>
 <pre><code>cd $OPENSHIFT_DATA_DIR
@@ -456,85 +339,38 @@ git push
 <li>douglarek</li>
 </ul>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">openshift 安装 owncloud 取代 Google Reader</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >OpenShift 搭建 rawdog 实现部落格聚合</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

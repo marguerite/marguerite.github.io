@@ -1,99 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>本周开发札记 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0\/",
-      "name": "本周开发札记",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>本周开发札记</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">本周开发札记</h1>
-            <time datetime="2016-01-23 00:00:00 &#43;0800 CST" class="post__date">Jan 23 2016</time> 
-          </header>
-          <article class="post__content">
-              
-<p>盘点一下本周自己在 openSUSE 上面做的工作：</p>
+	
+	<main>
+		<article>
+			<h1>本周开发札记</h1>
+			<time>23.01.2016 00:00</time>
+			<div>
+				<p>盘点一下本周自己在 openSUSE 上面做的工作：</p>
 <h4 id="解决了-wine-的-desktop-file-长期以来位于未知类别的-bug">解决了 wine 的 desktop file 长期以来位于未知类别的 bug</h4>
-<p>openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 <a href="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->desktop entry specification</a>
- 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。</p>
+<p>openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 <a href="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html">desktop entry specification</a> 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。</p>
 <h4 id="对-devellanguagesnodejs-源进行了-big-cleanup">对 devel:languages:nodejs 源进行了 big cleanup</h4>
 <p>主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。</p>
 <h4 id="对-golang-packaging-做了三次-bugfix-release">对 golang-packaging 做了三次 bugfix release</h4>
@@ -128,85 +59,38 @@
 <p>写文章的话准备写一下我的博客程序 ghost 是怎么搭建的，或者谈一下我对 devel:languages:nodejs 源自动化打包的蓝图设计。</p>
 <p>至于论坛活动啊，调试 ocserv/telepathy-kde/privoxy，这些长期的或者尚未取得进展的活动就不值得预告了。</p>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">脑洞大开的周末</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >Introducing the brand new nodejs packaging</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

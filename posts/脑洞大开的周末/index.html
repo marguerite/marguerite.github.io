@@ -1,115 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>脑洞大开的周末 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB\/",
-      "name": "脑洞大开的周末",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>脑洞大开的周末</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">脑洞大开的周末</h1>
-            <time datetime="2016-01-18 00:00:00 &#43;0800 CST" class="post__date">Jan 18 2016</time> 
-          </header>
-          <article class="post__content">
-              
-<p>这个周末其实只打算维护下我的 <a href="https://github.com/marguerite/upsteam-notifier" 
-  
-   target="_blank" rel="noreferrer noopener" 
->upstream-notifier</a>
- 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。</p>
+	
+	<main>
+		<article>
+			<h1>脑洞大开的周末</h1>
+			<time>18.01.2016 00:00</time>
+			<div>
+				<p>这个周末其实只打算维护下我的 <a href="https://github.com/marguerite/upsteam-notifier">upstream-notifier</a> 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。</p>
 <p>写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。</p>
 <p>好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。</p>
 <p>然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。</p>
-<p>结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 <a href="http://github.com/marguerite/obs-scam-autoupdater" 
-  
-   target="_blank" rel="noreferrer noopener" 
->obs-scm-autoupdater</a>
- 就这么诞生了😈</p>
+<p>结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 <a href="http://github.com/marguerite/obs-scam-autoupdater">obs-scm-autoupdater</a> 就这么诞生了😈</p>
 <p>写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。</p>
 <p>关于这个问题有三个办法：</p>
 <p>第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿</p>
 <p>第一个是在现有的包管理系统里选个最简单的学。但是 openSUSE 的 rpm 是最难的那个，总不能换系统吧=。= puppy linux 的包管理在我看来最省心，但是不好移植啊。check_install 我又看不上。</p>
 <p>第二个就是自己做一个“比本地编译简单或者至少差不多，学习成本不高，省心的”包管理系统。类似 puppy linux 那种。好吧我其实又选了最难的选项，强迫症就是如此啊！</p>
-<p>于是就有了这个 <a href="https://github.com/marguerite/epm" 
-  
-   target="_blank" rel="noreferrer noopener" 
->epm</a>
-。我号称它是最简单的包管理系统，给我这种贪懒奸猾的人用的😂。</p>
+<p>于是就有了这个 <a href="https://github.com/marguerite/epm">epm</a>。我号称它是最简单的包管理系统，给我这种贪懒奸猾的人用的😂。</p>
 <p>设计起来想的挺简单的。</p>
 <p>configure 命令自动判断是 autotool，cmake，qmake 还是别的工程（看源代码目录就知道），然后不管它调用什么我这里一律是 easy_configure。你说参数？直接 passthrough，省心，原来能用什么现在就能用什么，最多 runtime tweak 一下 libdir 什么的让它指向我定义的编译专用目录 easy_build。</p>
 <p>make 就不管了，make_install 改成 easy 命令，也是接受参数确保装到 easy_build 又不让新人感觉到。</p>
@@ -122,85 +45,38 @@
 <p>然后整理下发现自己幻想了好多，其实一开始就是想更新几个软件包的…活就是这么来的。我这也算是自我驱动了…</p>
 <p>PS：我的博客又由 hexo 切换到 ghost 了，因为 ghost 可以在手机上码字。什么年代了谁还会坐在电脑前中规中矩的写博客！</p>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">高手创造工具</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >本周开发札记</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

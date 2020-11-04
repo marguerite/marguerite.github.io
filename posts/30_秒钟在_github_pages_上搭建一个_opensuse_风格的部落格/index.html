@@ -1,93 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC\/",
-      "name": "30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</h1>
-            <time datetime="2016-12-31 00:00:00 &#43;0800 CST" class="post__date">Dec 31 2016</time> 
-          </header>
-          <article class="post__content">
-              
-<p>之前的 Ghost 管理密码丢了 :-(</p>
+	
+	<main>
+		<article>
+			<h1>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</h1>
+			<time>31.12.2016 00:00</time>
+			<div>
+				<p>之前的 Ghost 管理密码丢了 :-(</p>
 <p>昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。
 不过这个坑就不一定哪天来填啦。</p>
 <p>考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的，
@@ -95,19 +30,7 @@
 <p>Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。
 它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。
 但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。</p>
-<p>所以我参考了 Smashing Magazine 上面的 <a href="https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Build A Blog With Jekyll And Github Pages</a>
-，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 <a href="https://groverchou.com/blog" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Grover Chou</a>
- 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我<a href="https://marguerite.github.io/fulltest/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->预览</a>
-。</p>
+<p>所以我参考了 Smashing Magazine 上面的 <a href="https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/">Build A Blog With Jekyll And Github Pages</a>，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 <a href="https://groverchou.com/blog">Grover Chou</a> 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我<a href="https://marguerite.github.io/fulltest/">预览</a>。</p>
 <p>要是有想要用我这套主题建博客的，建立过程很简单：</p>
 <ol>
 <li>去 github 上面 fork 我的 marguerite.github.io，然后点 Settings，把仓库名改成 <code>yourname.github.io</code>。</li>
@@ -189,80 +112,38 @@ end
 <p>保存，再运行一遍 <code>jekyll build --trace</code>，这回的出错信息更具体了。直接把出错的内容都输出了。对应改就好。</p>
 <p>另外如果你是想在本地改 CSS 而不是去找编译错误的话，用 <code>jekyll serve</code> 然后访问 127.0.0.1:4000 即可。</p>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">Introducing the brand new nodejs packaging</span>
-    </a>
-  
-
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

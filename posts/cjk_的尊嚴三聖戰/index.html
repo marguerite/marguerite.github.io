@@ -1,93 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>CJK 的尊嚴（三）聖戰 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0\/",
-      "name": "CJK 的尊嚴（三）聖戰",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>CJK 的尊嚴（三）聖戰</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">CJK 的尊嚴（三）聖戰</h1>
-            <time datetime="2012-05-15 00:00:00 &#43;0800 CST" class="post__date">May 15 2012</time> 
-          </header>
-          <article class="post__content">
-              
-<p>前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。</p>
+	
+	<main>
+		<article>
+			<h1>CJK 的尊嚴（三）聖戰</h1>
+			<time>15.05.2012 00:00</time>
+			<div>
+				<p>前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。</p>
 <p>前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。</p>
 <p>但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。</p>
 <h4 id="標題的含義">標題的含義</h4>
@@ -162,11 +97,7 @@
 <p>不過顯然 GNOME 不這麼想。</p>
 <h4 id="fcitx-真的那麼好嗎">FCITX 真的那麼好嗎？</h4>
 <p>不盡然。是的它的設計實現都很新，特性也多。技術上比 IBUS 強是懂輸入法的人的共識。但仍需要打磨拋光。至少要小修小補一段時間，才適合作爲發行版甚至 GNOME/KDE 的默認輸入法。這是作者自己的話。</p>
-<p>爲什麼西施做了？因爲用戶選了。因爲作者是我的好朋友，我收到 BUG 他一兩個小時就能搞定。他認爲基友的需要永遠排在第一位什麼的。實際上 FCITX 現在近乎是西施專用輸入法。<a href="http://fcitx-im.org/wiki/Distribution_Package_Status" 
-  
-   target="_blank" rel="noreferrer noopener" 
->發行版包狀態</a>
-</p>
+<p>爲什麼西施做了？因爲用戶選了。因爲作者是我的好朋友，我收到 BUG 他一兩個小時就能搞定。他認爲基友的需要永遠排在第一位什麼的。實際上 FCITX 現在近乎是西施專用輸入法。<a href="http://fcitx-im.org/wiki/Distribution_Package_Status">發行版包狀態</a></p>
 <p>就像我在郵件列表裏說，翁雪天已經試圖取悅我們那麼長時間了，是時候做點什麼來取悅他了。就這麼簡單。</p>
 <p>所以不怕大家不願意，事實上，目前沒有一個中國人開發的 CJK 輸入法適合作爲 GNOME 的默認輸入法。未來可能會有，但那是 FCITX。</p>
 <h4 id="fcitx-要真那麼好用戶自己就來了">「FCITX 要真那麼好，用戶自己就來了」</h4>
@@ -230,85 +161,38 @@
 <p>真心希望不要再有臭到樓上樓下的評論出現了。LINUXTOY 不是 CNBETA。</p>
 <p>另外上文我是發表在自己的博客。所以說我脾氣大，我的博客，愛看不看。至少有人愛看，所以轉了。</p>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">CJK 的尊嚴</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >CJK 的尊嚴（三）塵埃</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

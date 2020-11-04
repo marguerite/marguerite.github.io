@@ -1,93 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>openSUSE Linux 战渣浪详解教程 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B\/",
-      "name": "openSUSE Linux 战渣浪详解教程",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>openSUSE Linux 战渣浪详解教程</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">openSUSE Linux 战渣浪详解教程</h1>
-            <time datetime="2013-02-24 00:00:00 &#43;0800 CST" class="post__date">Feb 24 2013</time> 
-          </header>
-          <article class="post__content">
-              
-<p>自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。</p>
+	
+	<main>
+		<article>
+			<h1>openSUSE Linux 战渣浪详解教程</h1>
+			<time>24.02.2013 00:00</time>
+			<div>
+				<p>自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。</p>
 <h4 id="战渣浪-原理">“战渣浪” 原理</h4>
 <ul>
 <li>Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。</li>
@@ -135,19 +70,7 @@ ID_CHAPTERS=0
 <p>打开 Mediainfo，打开文件后，使用 HTML/Text 模式查看（Easy 模式不显示 overall bitrate 平均码率)。</p>
 <h4 id="分离视频和音频">分离视频和音频</h4>
 <p>为什么要分离视频和音频？因为其实它们是分开编码的，比如 H264/MPEG-4 这些是视频编码，而 AAC/AC3 这些是音频编码，编码之后再用封装容器装起来，比如 MKV/MP4/FLV 都是封装格式。</p>
-<p>而各个编码器内部还有不同的实现/标准，有些好一些有些差一些，比如 FFMpeg 中的 FAAC 音频编码器就非常基础了，不支持 HE-AAC 标准。当然还有更强的标准比如 Apple AAC 和 Fraunhofer AAC，那就需要商业软件比如 Apple Quicktime 来支持了。Linux 下能用上的最强 AAC 编码就是 Nero 公司的 Nero AAC 了。下载在<a href="http://www.nero.com/enu/company/about-nero/nero-aac-codec.php" 
-  
-   target="_blank" rel="noreferrer noopener" 
->此</a>
-。解压就是三个可执行文件。当然爱用 RPM 的来<a href="https://www.box.com/s/5auhujfoecrb1u1mtjji" 
-  
-   target="_blank" rel="noreferrer noopener" 
->这里</a>
-下，省得你注册了。关于各种 AAC 的比较见 Doom 9 论坛的<a href="http://forum.doom9.org/archive/index.php/t-164813.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->帖子</a>
-。</p>
+<p>而各个编码器内部还有不同的实现/标准，有些好一些有些差一些，比如 FFMpeg 中的 FAAC 音频编码器就非常基础了，不支持 HE-AAC 标准。当然还有更强的标准比如 Apple AAC 和 Fraunhofer AAC，那就需要商业软件比如 Apple Quicktime 来支持了。Linux 下能用上的最强 AAC 编码就是 Nero 公司的 Nero AAC 了。下载在<a href="http://www.nero.com/enu/company/about-nero/nero-aac-codec.php">此</a>。解压就是三个可执行文件。当然爱用 RPM 的来<a href="https://www.box.com/s/5auhujfoecrb1u1mtjji">这里</a>下，省得你注册了。关于各种 AAC 的比较见 Doom 9 论坛的<a href="http://forum.doom9.org/archive/index.php/t-164813.html">帖子</a>。</p>
 <p>由于我们要用 Nero AAC 来处理音频，而现实中我们下载的视频也经常是要么都不合格，要么视频不合格，要么音频不合格，总之总是要处理，我们就把这个分离作为标准步骤了。狗耳也可以使用 FAAC，那样不用分离要简单很多。</p>
 <p>现在除了蓝光，1080p 和 720p 的视频基本都是用 MKV 封装的。解封装要用到 mkvtoolnix，重新封装为 MP4 要用到 gpac。当然你也可以使用 ffmpeg 单纯复制音频或单纯复制视频的方法做，那太低端太“俗手”了，所以我们只传授“正着”（都是围棋术语）。</p>
 <p>先查看 MKV 封装的轨道：</p>
@@ -172,15 +95,7 @@ ID_CHAPTERS=0
 <pre><code>neroAacEnc -br 64000 -2pass -if ./audio.wav -of ./audio.aac
 </code></pre>
 <p>-if 输入文件，-of 输出文件，-br 比特率，-2pass 跑两遍，第一遍大局观，第二遍压制。</p>
-<p>码率小于 48 KBit/s 使用 HE-AAC v2; 介于 48～96 KBit/s 使用 HE-AAC，大于 96 使用 LC-AAC（会剔除高频，当然 96～256 都是 MP3 的优势范围，可惜渣浪不让用）。具体技术说明请见<a href="http://en.wikipedia.org/wiki/High-Efficiency_Advanced_Audio_Coding" 
-  
-   target="_blank" rel="noreferrer noopener" 
->维基百科</a>
-和<a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=59284" 
-  
-   target="_blank" rel="noreferrer noopener" 
->这个帖子</a>
-。我们使用 NeroAAC 的目的就是为了在低码率环境下使用 HE-AAC 尽量保持好音质，而 Linux 的 FAAC 只支持 LC-AAC。</p>
+<p>码率小于 48 KBit/s 使用 HE-AAC v2; 介于 48～96 KBit/s 使用 HE-AAC，大于 96 使用 LC-AAC（会剔除高频，当然 96～256 都是 MP3 的优势范围，可惜渣浪不让用）。具体技术说明请见<a href="http://en.wikipedia.org/wiki/High-Efficiency_Advanced_Audio_Coding">维基百科</a>和<a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=59284">这个帖子</a>。我们使用 NeroAAC 的目的就是为了在低码率环境下使用 HE-AAC 尽量保持好音质，而 Linux 的 FAAC 只支持 LC-AAC。</p>
 <p>可以使用</p>
 <pre><code>neroAacEnc -help
 </code></pre>
@@ -188,21 +103,9 @@ ID_CHAPTERS=0
 <p>另外要保持和视频文件的和谐。如果你对一个 1080p 的画质使用 48 KBit/s 的渣音质，很容易造成音画不同步。</p>
 <p>处理好用 SMPlayer 试听一下，发现音质没什么损失，但是文件大小降低了 6 倍。</p>
 <h4 id="处理视频">处理视频</h4>
-<p>根据 Doom9 的<a href="http://forum.doom9.org/archive/index.php/t-108401.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->这个帖子</a>
-，目前 x264 开源项目处理的质量比商业软件还要高，所以没说的就它了。</p>
+<p>根据 Doom9 的<a href="http://forum.doom9.org/archive/index.php/t-108401.html">这个帖子</a>，目前 x264 开源项目处理的质量比商业软件还要高，所以没说的就它了。</p>
 <p><em><strong>关于 x264 的版本</strong></em>：</p>
-<p>x264 有三个版本，x264 vanilla, x264 kMod, x264 tMod。具体的分辨见 Doom9 的<a href="http://forum.doom9.org/showthread.php?t=164506" 
-  
-   target="_blank" rel="noreferrer noopener" 
->这个帖子</a>
-。其中用的比较多的是 x264_tMod（开发者似乎是个中国人？他的 wordpress 博客是中文名字）。一般发行版都没有带，openSUSE 比较强啦，RPM 在<a href="https://www.box.com/s/oywdggnrbserz1epqchh" 
-  
-   target="_blank" rel="noreferrer noopener" 
->此</a>
-（现在 Packman 服务器怠机中，好了会推送过去）。编译也不是很难，用以下参数</p>
+<p>x264 有三个版本，x264 vanilla, x264 kMod, x264 tMod。具体的分辨见 Doom9 的<a href="http://forum.doom9.org/showthread.php?t=164506">这个帖子</a>。其中用的比较多的是 x264_tMod（开发者似乎是个中国人？他的 wordpress 博客是中文名字）。一般发行版都没有带，openSUSE 比较强啦，RPM 在<a href="https://www.box.com/s/oywdggnrbserz1epqchh">此</a>（现在 Packman 服务器怠机中，好了会推送过去）。编译也不是很难，用以下参数</p>
 <pre><code>configure --prefix=/usr \
 --enable-pic \
 --enable-visualize \
@@ -211,11 +114,7 @@ ID_CHAPTERS=0
 --enable-nonfree \
 --enable-lto
 </code></pre>
-<p>就都编上了。也可以用我的 <a href="https://github.com/marguerite/openSUSE-SPEC-Non-Free/blob/master/x264_tMod.spec" 
-  
-   target="_blank" rel="noreferrer noopener" 
->spec</a>
-，git clone 了源码后，做成我要求的压缩包，然后放到 /usr/src/packages/SOURCES 和 /usr/src/packages/SPECS 后运行：</p>
+<p>就都编上了。也可以用我的 <a href="https://github.com/marguerite/openSUSE-SPEC-Non-Free/blob/master/x264_tMod.spec">spec</a>，git clone 了源码后，做成我要求的压缩包，然后放到 /usr/src/packages/SOURCES 和 /usr/src/packages/SPECS 后运行：</p>
 <pre><code>rpmbuild -ba x264_tMod.spec
 </code></pre>
 <p>然后到 /usr/src/packages/RPMS/x86_64 目录下去找 RPM 即可。</p>
@@ -224,21 +123,9 @@ ID_CHAPTERS=0
 <p>考虑到压片的黑魔法属性，一开始就投入技术参数的樊笼中只能作茧自缚。黑魔法属性是说，比如 x264 自己就有 100+ 个参数，每个参数又有 10 个档位，计算机可以算出排列组合但它没有视觉无法知道压出的片是不是可口; 而可悲的人类，哈哈，错一个参数都可能导致别人压出的是高清而你压出的是睾清，给你一个礼拜你都找不出来错哪儿了。另外看不懂宅们的思路，去 B 站投稿么，要的就是一个开心，找一个乐子（要不我煮碗面给你吃？），等你把所有参数都大彻大悟融汇贯通之后，人家早就发片过百部啦。</p>
 <p>如果你依然毅然决然地决定踏上技术参数的不归路，有以下几篇堪称“人生哲学”的神文在此：</p>
 <ul>
-<li><a href="http://www.nmm-hd.org/doc/X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D" 
-  
-   target="_blank" rel="noreferrer noopener" 
->x264使用介绍</a>
-</li>
-<li><a href="http://www.nmm-hd.org/doc/X264%E8%A8%AD%E5%AE%9A" 
-  
-   target="_blank" rel="noreferrer noopener" 
->x264设定</a>
-</li>
-<li><a href="http://blog.sina.com.cn/s/blog_3df9d2330100zcy4.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->尽量不浪费压制时间的简单视频高压要点</a>
-</li>
+<li><a href="http://www.nmm-hd.org/doc/X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D">x264使用介绍</a></li>
+<li><a href="http://www.nmm-hd.org/doc/X264%E8%A8%AD%E5%AE%9A">x264设定</a></li>
+<li><a href="http://blog.sina.com.cn/s/blog_3df9d2330100zcy4.html">尽量不浪费压制时间的简单视频高压要点</a></li>
 </ul>
 <p>另外：</p>
 <pre><code>x264_tMod --fullhelp
@@ -249,11 +136,7 @@ ID_CHAPTERS=0
 </code></pre>
 <p>之后把 –pass 1 改成 2 压第二遍。–bitrate 950 是比特率; –preset 和 –tune 是预设方案，这里我选的是慢速压电影; –vbv-bufsize 预缓冲秒数用的也是电影的预设 auto_high。</p>
 <p>需要说明一下 video filter –vf。resize 是要把你的视频分辨率调整为多少，它和下面的 pad 相加才会得到最终的分辨率，所以不要在这里想当然地输入 512×384（哔哩哔哩的播放器尺寸），这样会生成一个 512x(384+48×2) 的分辨率。</p>
-<p><em><strong>注意</strong></em> x264 vanilla 是没有这个 pad 和之后的 subtitle filter 的。这就是为什么我们要用 x264_tMod 的原因。还有一个原因是搬运工在 Windows 上常用的 MeGUI 的后端就是这个版本，转换比较容易一些，参数也好扒。不然的话也可以使用 FFMpeg 的 pad filter，但据 DOOM9 论坛<a href="http://forum.doom9.org/archive/index.php/t-143215.html" 
-  
-   target="_blank" rel="noreferrer noopener" 
->讲</a>
-，不用 x264 加黑边会造成码率偏高。</p>
+<p><em><strong>注意</strong></em> x264 vanilla 是没有这个 pad 和之后的 subtitle filter 的。这就是为什么我们要用 x264_tMod 的原因。还有一个原因是搬运工在 Windows 上常用的 MeGUI 的后端就是这个版本，转换比较容易一些，参数也好扒。不然的话也可以使用 FFMpeg 的 pad filter，但据 DOOM9 论坛<a href="http://forum.doom9.org/archive/index.php/t-143215.html">讲</a>，不用 x264 加黑边会造成码率偏高。</p>
 <p>另外提醒一下，去找别人分享的参数时一定要看清楚对方压的是什么片！现在 B 站贴吧里比较活跃的是新番，我曾套用新番的参数压出一个 56 MB 的电影，RMVB 睾画质…基本所有的教程里截图的参数都不能用来压电影。</p>
 <p><em><strong>字幕问题</strong></em></p>
 <p>（写教程时我压这片是渲染好字幕的，所以只能凭借去年 10 月研究的感觉来写）</p>
@@ -279,16 +162,8 @@ ID_CHAPTERS=0
 </code></pre>
 <p>PS: Windows 下一般都用 Avisynth 脚本来做这种字幕，Linux 下的移植 Avxsynth 我没研究，因为太烦了，FFMpeg 和 Mplayer 方法见下面：</p>
 <ul>
-<li>MPlayer 见<a href="http://ubuntuforums.org/showthread.php?t=1155877" 
-  
-   target="_blank" rel="noreferrer noopener" 
->此文</a>
-，看到那些参数了吧，哈哈</li>
-<li>FFMpeg 见<a href="http://ffmpeg.org/trac/ffmpeg/wiki/How%20to%20burn%20subtitles%20into%20the%20video" 
-  
-   target="_blank" rel="noreferrer noopener" 
->此文</a>
-，相比 MPlayer 简单一些，用滤镜的。</li>
+<li>MPlayer 见<a href="http://ubuntuforums.org/showthread.php?t=1155877">此文</a>，看到那些参数了吧，哈哈</li>
+<li>FFMpeg 见<a href="http://ffmpeg.org/trac/ffmpeg/wiki/How%20to%20burn%20subtitles%20into%20the%20video">此文</a>，相比 MPlayer 简单一些，用滤镜的。</li>
 </ul>
 <h4 id="合并视频和音频">合并视频和音频</h4>
 <p>现在我们已经分别处理好我们的音频和视频了。下面用 FFMpeg 将它们拼接为 FLV。</p>
@@ -302,11 +177,7 @@ ID_CHAPTERS=0
 </ul>
 <h4 id="其它黑科技">其它黑科技</h4>
 <ul>
-<li>Linux 的 Avisynth 移植 <a href="https://github.com/avxsynth/avxsynth" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Avxsynth</a>
-。由于是官方移植，Windows 的脚本也通用的。等 Packman 恢复后提交过去。</li>
+<li>Linux 的 Avisynth 移植 <a href="https://github.com/avxsynth/avxsynth">Avxsynth</a>。由于是官方移植，Windows 的脚本也通用的。等 Packman 恢复后提交过去。</li>
 <li>前黑后黑。我的想法是使用 Kdenlive 做一段全黑屏视频，然后使用 MPlayer/FFMPEG/GPac 截取定长时间（算法见此)，然后使用 GPac 合并视频。</li>
 <li>红色有角 N 倍速和 FLV Bug 我没找到技术规格。想来实现也不是很难。</li>
 </ul>
@@ -316,85 +187,38 @@ ID_CHAPTERS=0
 <li>推荐一个图形界面？似乎可以使用 avidemux。</li>
 </ul>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">openSUSE 下玩围棋</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >openSUSE 下的 Fcitx 输入法</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>

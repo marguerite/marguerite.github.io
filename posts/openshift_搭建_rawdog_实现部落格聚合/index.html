@@ -1,111 +1,34 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <title>OpenShift 搭建 rawdog 实现部落格聚合 | Blog for Marguerite Su</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.b60e0932fe1c50c3d7c5b4f83ee9e4592363654d0f2abf05bbd0678d5b8a214c.css" integrity="sha256-tg4JMv4cUMPXxbT4PunkWSNjZU0PKr8Fu9BnjVuKIUw="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/marguerite.github.io\/posts\/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88\/",
-      "name": "OpenShift 搭建 rawdog 实现部落格聚合",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>OpenShift 搭建 rawdog 实现部落格聚合</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
 </head>
-
 <body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
 
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">OpenShift 搭建 rawdog 实现部落格聚合</h1>
-            <time datetime="2013-03-19 00:00:00 &#43;0800 CST" class="post__date">Mar 19 2013</time> 
-          </header>
-          <article class="post__content">
-              
-<p>因为 <a href="https://planet.opensuse.org/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Planet openSUSE</a>
- 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：<del>community.suse.org.cn</del> Update: 挂了</p>
-<p>这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 <a href="http://blog.felixc.at/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->Felix Yan</a>
- 帮写的，所以在前面感谢一下 co-worker。
+	
+	<main>
+		<article>
+			<h1>OpenShift 搭建 rawdog 实现部落格聚合</h1>
+			<time>19.03.2013 00:00</time>
+			<div>
+				<p>因为 <a href="https://planet.opensuse.org/">Planet openSUSE</a> 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：<del>community.suse.org.cn</del> Update: 挂了</p>
+<p>这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 <a href="http://blog.felixc.at/">Felix Yan</a> 帮写的，所以在前面感谢一下 co-worker。
 准备</p>
 <p>你要去开一个新 <code>Application</code>，类型是 <code>Python 2.7 Community Cartridge</code>，然后要新添加一个 <code>Cron 1.4 Cartridge</code>。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。
 rawdog 架设</p>
 <p><code>rawdog</code> 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。</p>
-<p>另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 <a href="https://github.com/marguerite/susews-planet" 
-  
-   target="_blank" rel="noreferrer noopener" 
->susews-planet</a>
-。</p>
+<p>另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 <a href="https://github.com/marguerite/susews-planet">susews-planet</a>。</p>
 <p>ssh 进你的 application，然后</p>
 <pre><code>cd $OPENSHIFT_DATA_DIR
 git clone https://github.com/marguerite/susews-planet.git
@@ -208,17 +131,9 @@ git commit -m &quot;add cron and soft link&quot;
 git push
 </code></pre>
 <p>本教学到此就结束了，如果您想去绑定域名，请看我这篇文章：</p>
-<p><a href="http://marguerite.su/openshift-host-wordpress-tutorial" 
-  
-   target="_blank" rel="noreferrer noopener" 
->openshift 搭建 wordpress 教程</a>
-</p>
+<p><a href="http://marguerite.su/openshift-host-wordpress-tutorial">openshift 搭建 wordpress 教程</a></p>
 <p>如果您想弄个备份，请看我这篇文章：</p>
-<p><a href="http://marguerite.su/openshift-setup-a-gtalk-group-chat-with-a-bind-in-irc-channel" 
-  
-   target="_blank" rel="noreferrer noopener" 
->openshift 搭建和 IRC 频道互通的 Gtalk 群聊</a>
-</p>
+<p><a href="http://marguerite.su/openshift-setup-a-gtalk-group-chat-with-a-bind-in-irc-channel">openshift 搭建和 IRC 频道互通的 Gtalk 群聊</a></p>
 <p>Enjoy life！</p>
 <h4 id="2013-10-01-update-nginx-相关">2013-10-01 Update: Nginx 相关</h4>
 <p>Nginx 相对要简单一些，只需要本地捡出，然后相应修改，传到你的 htdocs/子文件夹。写对配置就可以，这是迁移到 community.suse.org.cn 后由我和 phonixlzx 共同修改的 nginx 配置，写到 /etc/nginx/nginx.conf 还是 /etc/nginx/vhosts.d/xxx.conf 要看你的需求了。</p>
@@ -237,85 +152,38 @@ git push
 }
 </code></pre>
 
+			</div>
+			
+			
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
+				
+				<li><a href="/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></li>
+				
+				<li><a href="/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
 
-              
-          </article>
-          
 
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">openshift 搭建和 IRC 频道互通的 Gtalk 群聊</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >openSUSE 中文社区面临的若干问题</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-  
-     
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.49e4d8a384357d9b445b87371863419937ede9fa77737522ffb633073aebfa44.js" integrity="sha256-SeTYo4Q1fZtEW4c3GGNBmTft6fp3c3Ui/7YzBzrr&#43;kQ=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
 
 </body>
-
 </html>
