@@ -6,7 +6,34 @@
     <description>Recent content on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 31 Dec 2016 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Color Emoji in openSUSE</title>
+      <link>https://marguerite.github.io/posts/color_emoji_in_opensuse/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/color_emoji_in_opensuse/</guid>
+      <description>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。</description>
+    </item>
+    
+    <item>
+      <title>fontconfig 几个常见的坑</title>
+      <link>https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</guid>
+      <description>最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+##第一个坑：从 monospace 中清除 sans-serif
+比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&amp;lt;match&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;sans-serif&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;monospace&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;edit name=“family” mode=“delete”/&amp;gt; &amp;lt;/match&amp;gt;  意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.</description>
+    </item>
+    
     <item>
       <title>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</title>
       <link>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</link>
