@@ -13,7 +13,7 @@
 </head>
 <body>
 	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	<a href="https://marguerite.su">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
 	
 </header>
 
@@ -22,836 +22,198 @@
 		
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></h1>
+	<h1><a href="https://marguerite.su/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></h1>
 	<time>04.11.2020 00:00</time>
 	
 	<div>
+	        上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。
 		
-		<p>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。</p>
-<p>为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。</p>
-<p>我们先来回忆一下之前的说法：</p>
-<p>除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。</p>
-<p>据我摸索的经验，字体的匹配分为三种场景</p>
-<p>第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。</p>
-<p>这部分的支持很简单，比如它要 Apple Color Emoji 或者 Segoe UI Emoji 我没有，可以写个 alias：</p>
-<pre><code>&lt;alias&gt;
-  &lt;family&gt;Apple Color Emoji&lt;/family&gt;
-  &lt;accept&gt;&lt;family&gt;Noto Color Emoji&lt;/family&gt;&lt;/accept&gt;
-&lt;/alias&gt;
-</code></pre>
-<p>第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）</p>
-<p>这部分的支持也很简单，fontconfig 已经默认把 emoji 字体的 default family 全设置成 emoji 了，我们只需要通过 prefer 来实现发行版默认的 Colored Emoji 字体就行了，如果默认的是 Noto Color Emoji 那么什么都不用做。</p>
-<p>第三种是字符级别的（glyph），比如你所有的 sans-serif 字体里都没有这个 unicode codepoint 对应的 glyph。这个时候 pattern match 其实已经没用了，因为已经 out of range 了，所有的 sans-serif 都没有，那 sans-serif 的 pattern 也就没用了。它用的是 fc-scan 到的 unordered list，也就是在你系统里找有这个 glyph 的字体来显示。</p>
-<p>第三种场景是不经常遇到的，是一种最终的 fallback。但是在面对 emoji 的时候，它是出现次数最多的场景。因为绝大部分网页不会写特定的 emoji 字体也不会写 emoji 字族。</p>
-<p>其实针对第三种场景，fontconfig 是提供了解决方案的，就是把字体 prefer 到 pattern 的前面。很多网上能够搜索到的方案也都是这么做的，比如 EmojiOne Color 和现在的 Twitter Color Emoji。</p>
-<p>推出我们的方案之前，先来说说网上的方案。大部分是把 emoji pattern 直接扔到 sans-serif，serif 和 monospace 前面。于是带来了一个问题，就是如果 emoji 字体中不只是 emoji，就会用 emoji 字体显示非 emoji 内容。这里说的不限于比如 emoji 字体里有个 A，你所有的 A 都被替换了，还包括使用 emoji 字体的字符宽度来显示 fallback 字体的字符。比如 Noto Color Emoji 作为 emoji 字体，字符宽度特别大，造成了空格的宽度也特别大，在 chromium 中，即使实际的笔画都是用 Libration Sans 显示的，空格宽度不是。你就看到了超长空格的效果。这个也许可以通过指定 emoji 字体的字宽上限来解决，但是目前没有发现谁去认真的解决这个问题。</p>
-<p>emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作为第一个字体出现。为了避免上述情况，现行的解决方案是先把 emoji 扔到前面，再把一个完全没有 emoji 的字体再扔到前面。但这么做的后果就是你的默认英文字体被替换了。而且在 CJK 中问题更加严重，我们本来就是通过把 CJK 字体扔到前面，再把英文字体再扔到前面（有的发行版省略了这步，导致实际上显示英文的不是发行版选定的英文字体，而是默认 CJK 字体中自带的英文部分）来实现中文显示的，这时候要多扔一个 emoji 字体，还要多扔一个 emojiless 的英文字体。扔的顺序很重要，导致好多按数字排列的 fontconfig conf 都要重构。</p>
-<p>我解决这个问题的思路不是去使用 prefer 这个严重依赖顺序而且脆弱的方案。我的思路是让出现在我选的 Emoji 字体之前的所有字体都是 emojiless 的。这样就不会破坏发行版默认的字体。</p>
-<p>我使用的是一个小众的方法，就是在 scan 的时候从已有字体中屏蔽特定字符集（charsets）。这个方法只有一个 RedHat 的 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=31969">bug#31969</a> 提到过，但是也没提过怎么看成功没成功，我把它摸索成熟了，下面给大家讲一讲：</p>
-<!-- raw HTML omitted -->
-<p>以上就是方法，charset 支持 int 和 range。这里的 int 不是 interger 类型，实际上是个 Hex 类型 233，range 的两个字符是起止（包含起止）。</p>
-<p>然后在 FC_DEBUG=4 fc-match “Noto Color Emoji” 就能看到这样的 debug 输出：</p>
-<pre><code>Add SubSt match
-[test]
-     pattern any family Equal “Noto Color Emoji”
-[edit]
-     Edit family Assign Minus charset;
-</code></pre>
-<p>但是除此之外什么都没有&hellip;于是我一直以为它没有生效。实际上需要这么测试：</p>
-<p>先做一个 local fonts.conf 把 Noto Color Emoji prepend_first：</p>
-<pre><code>&lt;match&gt;
-  &lt;edit name=“family” mode=“prepend_first”&gt;
-    &lt;string&gt;Noto Color Emoji&lt;/string&gt;
-  &lt;/edit&gt;
-&lt;/match&gt;
-</code></pre>
-<p>然后通过：</p>
-<pre><code>FC_DEBUG=4 pango-view -q -t '🧀' 2&gt;&amp;1 | grep -o 'family: &quot;[^&quot;]\+' | cut -c 10- | tail -n 1
-</code></pre>
-<p>来看，正常这个 cheese 表情是 Noto Color Emoji 显示的，但是屏蔽了之后就不是了，说明屏蔽成功。</p>
-<p>(说点题外话，很多人不知道那个表情怎么打上去，可以通过 fcitx 的 unicode 输入模式实现，就是同时按 ctrl + alt + shift + space 四键，然后输入 0x 的 unicode codepoint，最后按 Alt + 数字上屏）</p>
-<p>而 RedHat 的维护者也给了我一个更好的方案：</p>
-<pre><code>fc-list “Noto Color Emoji”:charset=0x20
-</code></pre>
-<p>如果字体未安装或屏蔽成功，就没有结果，不然会返回字体文件和字体名称。</p>
-<p>有了方法剩下就是操作的问题了，但是操作其实比方法更复杂。</p>
-<p>我们要先统一下概念。fontconfig 里用的叫做 charset（字符集），而我前面说过一个 unicode codepoint。unicode point 是一个码点，比如 A 字母 1 数字都是一个独立的码点，但是不是每个码点在现实中都能找到对应的字符。字体制作是针对 unicode point 来的。unicode codepoint 的表示法在 fontforge 里叫 U+20，在 fontconfig 的非 debug 输出里叫 20，而在写配置的时候又要用 0x20，这三个都是等价的，但是在不同的程序里必须用不同的表示法。charset 就是码点的集合。</p>
-<pre><code>fc-scan —format “%{charset}” NotoColorEmoji.ttf
-</code></pre>
-<p>就能够看到某个字体有哪些码点。</p>
-<p>但是 Emoji 其实有个特殊的地方，可以看 emojipedia 的这篇文章来了解。就是有的时候显示出来的是一个 emoji，但实际上背后是三个甚至四个码点组成的 sequence。我们在测试 emoji 字体的 coverage 的时候，不能随便的取舍，因为把 modifier codepoint 给屏蔽了会造成好多 emoji 都无法显示。</p>
-<p>我关于操作是这么构思的，首先我把想要使用的 Emoji 字体的 charset 找出来，转成 unicode codepoints（另一种思路是找 unicode 11 full emoji list 的 data file，这个文件能找到但是我看不懂，而且有重复出现的码点解析起来费劲，我就直接去网上爬演示的 html，再把 emoji 转成 unicode points，这个思路可以看我的 analyze-noto-color-emoji.rb），然后简单处理一下（主要是 Noto Color Emoji 还有空格数字和一些常见 symbol，比如有些在线播放器会用的▶️符号，这个用彩色显示播放器样式会出问题），再拿目标字体的 charset 去取交集，这样得到的是两个字体里都存在的 unicode point，说明这个字体提供了 emoji，最终我写出来了test_emoji_coverage.rb。</p>
-<p>剩下就是大规模应用了，我写了一个针对所有 /usr/share/fonts/truetype 文件夹下的字体文件，扫描出 emoji 部分并自动生成 fontconfig blacklist 文件的代码generate_81_emoji_blacklist_glyphs.rb。目前 fonts-config 包里是我用我的 openSUSE 生成的。但未来会想办法用 perl/go/c 之类的重写下，然后做成安装包后自动针对用户的系统生成对应的配置文件。</p>
-<p>至此，出现在 Noto Color Emoji 前的字体，或者说系统中除了 Noto Color Emoji 别的字体都不会有 emoji 了。下面是测试：</p>
-<p>测试 emoji 字体要有一个测试页面。我主要是用 chromium 浏览器来访问 EmojiOne Color 的测试页面，因为 Firefox 已经捆绑了自己的 Twemoji Mozilla 字体，它的 emoji 显示是没有问题的。</p>
-<p>一访问还是不行？</p>
-<p>原来是我在生成的时候没有针对 Noto Emoji 这个黑白 emoji 字体，这是正确的，因为我要给它也做 blacklist，它的 charset 就被清空了233，那样的效果等于不载入，那就直接不载入好啦：</p>
-<!-- raw HTML omitted -->
-<p>注意不能用 prefer work，因为之前说过第三种匹配类型实际上用作匹配的字体不是 pattern 里面的字体，你在把它加入 pattern 前根本改变不了它的顺序。未来会把这部分代码也整合到生成器里面去，这样比如你指定一个 Colored Emoji 字体，会自动屏蔽所有其它 emoji 字体和非 emoji 字体中的 emoji 部分。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/color_emoji_in_opensuse/">Read more...</a>
+			<a href="https://marguerite.su/posts/color_emoji_in_opensuse/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></h1>
+	<h1><a href="https://marguerite.su/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></h1>
 	<time>04.11.2020 00:00</time>
 	
 	<div>
+	        最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+##第一个坑：从 monospace 中清除 sans-serif
+比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt;  意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.
 		
-		<p>最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。</p>
-<p>后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：</p>
-<p>##第一个坑：从 monospace 中清除 sans-serif</p>
-<p>比如 <a href="https://github.com/source-foundry/Hack/issues/408">Hack 字体的官方配置</a>，还有最著名的 <a href="https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/">eev’s rant about fontconfig</a>，都推荐了这么一种做法：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;monospace&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“delete”/&gt;
-&lt;/match&gt;
-</code></pre>
-<p>意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif
-删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）</p>
-<p>甚至还有衍生：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;Hack&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“delete”/&gt;
-&lt;/match&gt;
-</code></pre>
-<p>把 Hack 字体从 sans-serif 字族中删除（因为 Hack 是 monospace 字体）</p>
-<p>听起来是不是很美？这样我就可以 monospace 字族只用 monospace 字体，sans-serif 字族只用 sans-serif 字体了。</p>
-<p>我面临的现实问题是 Noto Color Emoji 在 sans-serif 中优先级很低，而这个字体的英文部分会把字母之间的间距变得超大，所以不能 prepend_first 到 sans-serif（网上的教程全部都是错的，或者说你以为 EmojiOne Color 可以 Noto Color Emoji 就可以，那是你想当然了）。于是想到的就是保证出现在 Noto Color Emoji 之前的字体全部都没有 emoji，先把 monospace、serif 之类的从 sans-serif 中去除，可以极大的减少工作量。</p>
-<p>但实际完全不是这么一回事。要理解原因，我们需要补习一下 fontconfig 的基础知识（当然有些人是新学233）：</p>
-<p>fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做 scan，就是扫描系统中的字体来构建一个 list（fc-list 可以还原这个过程），这个 list 是无序的。第二步叫 pattern match，就是针对你要匹配的字体名称比如 “sans-serif”去调整上面的 list，各种 prepend。第三步叫 font match，就是针对调整过的 list 去应用诸如 hinting antialias 之类的。</p>
-<p>虽然 fontconfig 的配置文件是有数字顺序的，但上面那三个过程是死的，意思是即使你把 <!-- raw HTML omitted --> 写到 10-<em>.conf 里去，它也不会在 90-</em>.conf 的 <!-- raw HTML omitted --> 之前执行。所以开发者在 pattern match 阶段只需要关注对应的 pattern 的先后顺序就可以了。</p>
-<p>通过 FC_DEBUG=4 fc-match -s monospace 查看（搜索 “Edit family Delete none”），这段是添加规则</p>
-<pre><code>Add SubSt match 
-[test]
-         pattern any family Equal “sans-serif”
-         pattern any family Equal “monospace”
-[edit]
-         Edit family Delete none;
-</code></pre>
-<p>注意这里的 none，不表示没匹配到。它表示的是 <!-- raw HTML omitted --> 这个 edit block 里面没有东西，因为 delete 和 delete_all 规则就是这样的。</p>
-<p>真正的匹配阶段是类似这样的：</p>
-<pre><code>FcConfigSubstitute test pattern any family Equal “mono”
-No match
-FcConfigSubstitute test pattern any family Equal “sans serif”
-No match
-FcConfigSubstitute test pattern any family Equal “sans”
-Substitute Edit family Assign “sans-serif”
-
-Append list before “sans”(s) [marker]
-Append list after “sans”(s) “sans-serif”(s) 
-FcConfigSubstitute editPattern has 3 elts (size 16)
-    family: “sans-serif”(s)
-    lang: “en”(w)
-    prgname: “fc-match”(s)
-</code></pre>
-<p>这个是比较完整的规则，还原成 xml 形式就是这样的：</p>
-<pre><code>&lt;match target=“pattern”&gt;
-    &lt;test qual=“any” name=“family” compare=“eq”&gt;
-        &lt;string&gt;mono&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test qual=“any” name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test qual=“any” name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“assign”&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-    &lt;/edit&gt;
-&lt;/match&gt;
-</code></pre>
-<p>通过几个 No match 和 editPattern 我们可以看出，这段其实匹配到了一个对 sans 的请求，但把它完全替换成了 sans-serif。</p>
-<p>上面的懂了，就可以拔高一些了。Edit Delete 的匹配阶段的 Debug 代码是类似这样的：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;DejaVu Sans&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“delete”/&gt;
-&lt;/match&gt;
-
-FcConfigSubstitute test pattern any family Equal “monospace”
-No match
-FcConfigSubstitute test pattern any family Equal “DejaVu Sans”
-FcConfigSubstitute test pattern any family Equal “sans-serif”
-Substitute Edit family Delete none
-
-FcConfigSubstitute editPattern has 3 elts (size 16)
-    family: “Noto Sans”(w) “sans-serif”(w)
-    lang: “en”(w)
-    prgname: “fc-match”(s)
-</code></pre>
-<p>第一，它会自作主张的给你加一段针对 monospace 的测试（原因没有详查）；第二，它没有告诉你删除成功了没。你需要去看它前面一个规则的 editPattern 来自己比较才知道删除成功了没。我这里前面规则的 editPattern 里有 “DejaVu Sans”，但这里的 editPattern 没有了。所以是成功了。</p>
-<p>拔高成功了，直接上炼狱模式，去真实的 FC_DEBUG=4 fc-match -s monospace 里面找，会发现只有添加规则的，别的什么都没有找到。这就是 fontconfig interesting 的地方了，如果规则没有应用，它不会告诉你。</p>
-<p>但是我会告诉你呀！再来看这条规则：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;monospace&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“delete”/&gt;
-&lt;/match&gt;
-</code></pre>
-<p>它需要测试 pattern 的 family 字段中有 sans-serif，<strong>并且</strong>有 monospace。但实际上把整个匹配过程从头到尾读过了之后，会发现这样的条件永远也不会满足。之所以有这么一个无用的测试，是对 49-sansserif.conf 的误解造成的：</p>
-<pre><code>&lt;match target=&quot;pattern&quot;&gt;
-    &lt;test qual=&quot;all&quot; name=&quot;family&quot; compare=&quot;not_eq&quot;&gt;
-        &lt;string&gt;sans-serif&lt;/string&gt;
-  &lt;/test&gt;
-  &lt;test qual=&quot;all&quot; name=&quot;family&quot; compare=&quot;not_eq&quot;&gt;
-    &lt;string&gt;serif&lt;/string&gt;
-  &lt;/test&gt;
-  &lt;test qual=&quot;all&quot; name=&quot;family&quot; compare=&quot;not_eq&quot;&gt;
-    &lt;string&gt;monospace&lt;/string&gt;
-  &lt;/test&gt;
-  &lt;edit name=&quot;family&quot; mode=&quot;append_last&quot;&gt;
-    &lt;string&gt;sans-serif&lt;/string&gt;
-  &lt;/edit&gt;
-&lt;/match&gt;
-</code></pre>
-<p>这段规则的实际意思是说，如果去匹配一个字体 fc-match -s “我瞎编的字体名”，这时 fontconfig 不知道“我瞎编的字体名”究竟是什么字族，甚至不知道这个字体在系统中有没有，为了防止显示不出来，就把 sans-serif 旗标放在最后，这样后续针对 sans-serif 旗标的各种 prefer 往 list 里加字体，最后用的是 sans-serif 的第一个字体显示。</p>
-<p>但是如果是 fc-match -s monospace 呢？不好意思 monospace 已经有了，永远也不会添加 sans-serif 旗标到最后。也就永远也不存在两个字族在一个 list 里的场景。</p>
-<p>好，杠精来了，如果我手动把一个字体既 alias 成 sans-serif，又 alias 成 monospace 呢？那也没有影响。下面这个规则：</p>
-<pre><code>&lt;alias&gt;
-    &lt;family&gt;Georgia&lt;/family&gt;
-    &lt;default&gt;
-        &lt;family&gt;serif&lt;/family&gt;
-    &lt;/default&gt;
-&lt;/alias&gt;
-</code></pre>
-<p>实际上等于：</p>
-<pre><code>&lt;match target=“pattern”&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;serif&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“append_last”&gt;
-        &lt;string&gt;Georgia&lt;/string&gt;
-    &lt;/edit&gt;
-&lt;/match&gt;
-</code></pre>
-<p>就是语法糖而已。alias 后，fc-match -s sans-serif/monospace 肯定都有这个字体，但也只是这样了。</p>
-<p>我明白你们的逻辑，alias 是替身的意思，一个字体即是 sans-serif 的替身，又是 monospace 的替身，那么匹配这个字体，list 里面必然又有 sans-serif 又有 monospace。</p>
-<p>但这个逻辑是完全没有道理的。绝大多数人都有这样的误区：</p>
-<p>认为 sans-serif 字族像 family 一样，是一个子列表，匹配 sans-serif 等于匹配了整个字族的所有字体。append sans-serif 等于把所有的 sans-serif 字体放在后面。这实际上是把 sans-serif/serif/monospace 看成了字体的一个 bool 属性，把现实中对 sans-serif 字体的理解代入到 fontconfig 里面来了。</p>
-<p>我很早就说过，没有名为 sans-serif 的字体。在 fontconfig 中，sans-serif 只是一个锚点。这个锚点跟 DejaVu Sans 或 Noto Sans 这些真实字体的地位是相同，唯一的不同就是现实中没有名为 sans-serif 的字体，因此永远也匹配不到，所以才需要各种 append/prepend work，保证在匹配 sans-serif 锚点的时候 family 列表的 sans-serif 之前或之后有别的字体，即使 family 列表中的 sans-serif 永远不会匹配到，也总有字体会匹配到。你们认为的过程是类似这样的：</p>
-<pre><code>family: DemoFont
-hintstyle: 1
-lang: en
-arbitrary_attributeA: sans-serif
-arbitrary_attributeB: monospace
-</code></pre>
-<p>然后匹配 sans-serif 是去所有字体中找属性。但真实的过程中 family 列表的增长是类似这样的：</p>
-<pre><code>family: sans-serif
-family: Noto Sans, sans-serif
-family: Noto Sans, sans-serif, DejaVu Sans
-lang: en
-hintstyle: 1
-</code></pre>
-<p>最后程序拿着这个 family 列表要求 sans-serif，第一个 Noto Sans 没安装，第二个永远没有，于是就用第三个 DejaVu Sans。我们可以看出来，无论是 prepend/append 还是 alias，都是针对一个对象去调整它之前之后的字体。这才是 pattern match 的意思。而你们认为的其实是在第二阶段 font match 也就是 <!-- raw HTML omitted --> 阶段发生的事情，但这个阶段的 pattern 是已经固定的。</p>
-<p>如果把一个字体既 alias 到 monospace 又 alias 到 sans-serif，那么其实是两个对象，sans-serif 和 monospace。但如果对象本身就没在 family 列表中，针对它的 match 就不会应用。所以你去匹配 monospace 的过程是这样的：</p>
-<pre><code>family: monospace
-family: monospace, DejaVu Sans Mono
-</code></pre>
-<p>前面说过了，有 monospace 不会自动加 sans-serif。sans-serif 对象都没有，针对它的调整肯定也不会应用。而你 fc-match -s “DejaVu Sans Mono” 呢？</p>
-<p>会被当作 sans-serif 处理。family 列表的增长是这样：</p>
-<pre><code>family: DejaVu Sans Mono
-family: DejaVu Sans Mono, sans-serif
-family: DejaVu Sans Mono, Noto Sans, sans-serif
-</code></pre>
-<p>这里根本没有 monospace 出现。因为你的 alias 的作用对象是 monospace 而不是 DejaVu Sans Mono。</p>
-<p>所以除非你手动的把 sans-serif append 到 monospace 后面，否则不会出现两个虚拟字体在一个 family 列表的情况。</p>
-<p>这里再澄清一点：</p>
-<p>即使你能够把 sans-serif append 到 monospace 后面，你 append 的也只是 sans-serif 这个虚拟字体本身，而不是所有的 sans-serif 字体。因为这些已知的字体是通过别的 append/prepend 加到 sans-serif 前后的。但是 pattern match 是有先后顺序的，你的 sans-serif append 的晚了，别的 match 已经完事了，你也就只能 append 一个虚拟字体。因此 fontconfig 的出厂配置在 append sans-serif 时才会尽量在 pattern match 的最前面做。</p>
-<p>好，杠精又来了，Hack 字体的配置总不会错了吧？如果既有 Hack 又有 sans-serif 就把 Hack 删了。实际上也完全不是这回事。我们用 DejaVu Sans 做个测试：</p>
-<pre><code>$ fc-match -a sans-serif
-“DejaVu Sans” “Book”
-“DejaVu Math TeX Gyre”
-...
-</code></pre>
-<p>应用了上面的那个 conf 之后结果是这样的：</p>
-<pre><code> $ fc-match -a sans-serif
- “DejaVu Math TeX Gyre”
- “DejaVu Sans” “Book”
- ...
-</code></pre>
-<p>咦？DejaVu Sans 怎么还有？更 interesting 的是：</p>
-<pre><code>$ fc-match -a “DejaVu Sans”
-“DejaVu Sans” “Book”
-...
-</code></pre>
-<p>这时就需要去理解我说的三个阶段了。要知道，pattern 永不会落在虚处。fontconfig 的 pattern 里面存在了太多不一定存在的字体名称，比如 sans-serif 自己就是。如果直接返回 pattern，就存在整个 family 列表中的字体都没有安装在你的电脑上的场景。</p>
-<p>那么 fontconfig 是怎么做的呢？我没有详细看过源代码，但合理猜测是这样：</p>
-<p>在 scan 阶段把指定文件夹的全部字体都扫描成一个无序列表。在 pattern 和 font 阶段处理 pattern 和字体渲染属性。在最终匹配阶段，把 pattern 应用到无序列表。根据 pattern 里的项，如果无序列表中没有，没安装的字体就 drop 掉，如果有，就根据 pattern 调整位置，得到微调过的无序列表，而最终顺序是根据算法（family lang style 等有不同的权重）匹配所需字体属性和列表字体提供的属性，再调整微调过的无序列表输出。</p>
-<p>那么问题来了，如果是 pattern 中没有的字体呢？只要无序列表中有，一样参与运算，最终结果也有。</p>
-<p>这就解释了为什么 fc-match -a sans-serif 时还有 DejaVu Sans 了。虽然规则生效了，从 pattern 中删掉了，但是任何非 scan 阶段的规则都无法改变扫描阶段生成的无序列表。于是它又继续出现了。</p>
-<p>而直接 fc-match -a “DejaVu Sans” 它会出现在第一个的原因也一样，它自身参与了运算，那么自己肯定是最匹配自己的。</p>
-<p>所以无论怎么调整，只能调整排序。如果不想要某个字体，要么直接删掉，要么在扫描阶段通过：</p>
-<pre><code>&lt;match target=“scan”&gt;
-    &lt;selectfont&gt;
-        &lt;rejectfont&gt;
-            &lt;patlet name=“family”&gt;
-                &lt;string&gt;DejaVu Sans&lt;/string&gt;
-            &lt;/patlet&gt;
-        &lt;/rejectfont&gt;
-    &lt;/selectfont&gt;
-&lt;/match&gt;
-</code></pre>
-<p>来做。</p>
-<p>##第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体</p>
-<p>Firefox 自己捆绑了一个 emoji 字体，并且在源代码里面把它作为默认的 emoji 字体。而 Linux 上面的 emoji 字体大部分是 Noto Color Emoji。为了统一风格，我想要让 firefox 匹配字体时不匹配它：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;Twemoji Mozilla&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“prgname” compare=“eq”&gt;
-        &lt;string&gt;Firefox&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“delete”/&gt;
-&lt;/match&gt;
-</code></pre>
-<p>看似完美，但实际上不能用，道理跟上面讲的一样。因为现在网页字体在 css 里不会在最前面指定 emoji 字体：</p>
-<pre><code>font-family: “emoji”, “sans-serif”;
-</code></pre>
-<p>做的差的直接就是 sans-serif，做的好的用的也都是真正的 emoji 字体名，比如：</p>
-<pre><code>font-family: “Apple Color Emoji”, “sans-serif”;
-</code></pre>
-<p>主要是 fontconfig 的 emoji 标准（lang=“und-zsye” 和 “emoji” 这个 generic name）定晚了。</p>
-<p>针对 Apple Color Emoji，我们可以用 alias 来把 Noto Color Emoji append 到后面，这样原装字体没有就会用我们的李鬼字体。但是绝大多数时候我们的 emoji 其实是在跟 sans-serif 在争。</p>
-<p>根据我们在第一个坑里面讲的原理，即使把 Twemoji Mozilla 从 pattern 里面删了也没用，它还是会出现在 sans-serif 中。所以要么把它整个 reject 掉，要么把 Noto Color Emoji 扔到它的前面：</p>
-<pre><code>&lt;match&gt;
-    &lt;test name=“family” compare=“eq”&gt;
-        &lt;string&gt;Twemoji Mozilla&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;test name=“prgname” compare=“eq”&gt;
-        &lt;string&gt;firefox&lt;/string&gt;
-    &lt;/test&gt;
-    &lt;edit name=“family” mode=“prepend”&gt;
-        &lt;string&gt;Noto Color Emoji&lt;/string&gt;
-    &lt;/edit&gt;
-&lt;/match&gt;
-</code></pre>
-<p>这样的 block 可以有多个，最终保证无论它要哪一种 emoji 字体，不管安装没安装，第一个匹配到的字体都只会是 Noto Color Emoji。</p>
-<p>未完待续。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">Read more...</a>
+			<a href="https://marguerite.su/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></h1>
+	<h1><a href="https://marguerite.su/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></h1>
 	<time>31.12.2016 00:00</time>
 	
 	<div>
+	        之前的 Ghost 管理密码丢了 :-(
+昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。 不过这个坑就不一定哪天来填啦。
+考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的， 博客要么丢文章要么丢评论。还是用 github 来做博客好了。
+Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。 它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。 但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。
+所以我参考了 Smashing Magazine 上面的 Build A Blog With Jekyll And Github Pages，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 Grover Chou 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我预览。
+要是有想要用我这套主题建博客的，建立过程很简单：
+ 去 github 上面 fork 我的 marguerite.
 		
-		<p>之前的 Ghost 管理密码丢了 :-(</p>
-<p>昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。
-不过这个坑就不一定哪天来填啦。</p>
-<p>考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的，
-博客要么丢文章要么丢评论。还是用 github 来做博客好了。</p>
-<p>Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。
-它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。
-但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。</p>
-<p>所以我参考了 Smashing Magazine 上面的 <a href="https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/">Build A Blog With Jekyll And Github Pages</a>，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 <a href="https://groverchou.com/blog">Grover Chou</a> 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我<a href="https://marguerite.github.io/fulltest/">预览</a>。</p>
-<p>要是有想要用我这套主题建博客的，建立过程很简单：</p>
-<ol>
-<li>去 github 上面 fork 我的 marguerite.github.io，然后点 Settings，把仓库名改成 <code>yourname.github.io</code>。</li>
-<li><code>git clone</code> 你的 fork 到本地，编辑一下 _config.yml，把我的信息都改成你的。</li>
-<li>把 _posts 下面我的文章删掉，用 Markdown 写你自己的，格式是 YYYY-MM-DD-TITLE.md。支持中文标题。</li>
-</ol>
-<p>完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。</p>
-<p>下面是进阶内容。</p>
-<h4 id="自己改-jekyll-模板">自己改 Jekyll 模板</h4>
-<p>基本的 HTML/CSS 知识假设你已经了解了，静态网页不涉及 Javascript。</p>
-<p>假设你有 Firefox 和它的 FireBug 插件。就是在网页上右键能查看 HTML 元素和它们的 CSS 的。</p>
-<p>CSS 在 style.scss 和 &ldquo;_sass&rdquo; 文件夹。把网站写的漂亮是你自己的事情。W3School 上有全部 CSS 元素的资料可查。改过 wordpress 的都会的。</p>
-<p>模板主要在 &ldquo;_layouts&rdquo; 和 &ldquo;_includes&rdquo; 文件夹里面，就是 HTML 带了一些 LIQUID 语言的变量。看了就会。</p>
-<p>如果你想实现自己的想法的话，下面这个页面会有用：</p>
-<p><a href="https://jekyllrb.com/docs/variables/">https://jekyllrb.com/docs/variables/</a></p>
-<h4 id="本地开发-jekyll调试">本地开发 Jekyll（调试）</h4>
-<p>你 99.99% 是不会遇到这种情况的。即使你自己改模板，你也可以 <code>git commit</code> 然后 <code>git push</code> 直接访问网页看效果的。
-一般错误比如 CSS 出错导致的渲染不了，Github 会发邮件给你，告诉你错误在哪儿。</p>
-<p><em><strong>只有你的 Markdown 写错了</strong></em>，Github 才没法给出错误提示。这种情况下，一般自己看下文章就知道错误在哪儿了。
-只有我这种一次性导入比较多，不知道究竟是哪篇文章出错了才需要本地调试的。</p>
-<h6 id="安装-rvm">安装 rvm</h6>
-<p>因为 openSUSE 下面的 Ruby 是系统 Ruby，普通用户直接 <code>gem install</code> 会告诉你权限错误，无法写入文件夹
-/usr/lib64/ruby/gem。还有就是为了避免把系统的 Ruby 环境搞乱套，毕竟 YaST 也用 Ruby 的。</p>
-<pre><code>gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-\curl -sSL https://get.rvm.io | bash
-</code></pre>
-<p>运行这两条命令就把 rvm 装好了，下面是 <a href="https://rvm.io/integration">https://rvm.io/integration</a> 里说的那样，把 Konsole 的配置方案里的 <code>/usr/bin/bash</code> 变成 <code>/usr/bin/bash --login</code>。再重新打开 Konsole 就能用 rvm 的 Ruby 了。</p>
-<h6 id="安装-ruby-23">安装 Ruby 2.3</h6>
-<pre><code>rvm install 2.3
-</code></pre>
-<h6 id="安装-github-pages-gem">安装 github-pages gem</h6>
-<p>这里有一个 bug。github-pages 依赖 nokogiri，nokogiri 使用自带的静态的 libxml2.a 和 libxslt.a 编译的时候，在 64 位系统上，后两者的
-安装文件夹是 xxxx/usr/lib64，但是 nokogiri 只能认出 xxxx/usr/lib，所以会报错。所以我们要先装 nokogiri 并使用系统自带的 libxml2 和
-libxslt 来编译。</p>
-<pre><code>sudo zypper in libxml2-devel libxslt-devel
-gem install nokogiri
-</code></pre>
-<p>接着再</p>
-<pre><code>gem install github-pages
-</code></pre>
-<p>就没什么问题了。github-pages 会自动带出来 jekyll。</p>
-<h6 id="把你的仓库做一份拷贝">把你的仓库做一份拷贝</h6>
-<p>因为我们要在本地用 jekyll 去渲染你的仓库，肯定会多一些你不想传到 github 上去的中间文件的。</p>
-<pre><code>cp yourname.github.io local
-cd local
-</code></pre>
-<h6 id="编译文章并调试">编译文章并调试</h6>
-<p>接下来用 jekyll 去编译文章</p>
-<pre><code>jekyll build --trace
-</code></pre>
-<p>这时如果你的文章有什么问题的，会报错。但是错误不明显，这时候我们就需要改 gem 的代码来实现了。比如：</p>
-<pre><code>Conversion error: Jekyll::Converters::Markdown encountered an error while converting '_posts/2013-3-17-openshift-搭建和-IRC-频道互通的-Gtalk-群聊.md':                                                                                                  
-                #&lt;Class:0x000000018376c8&gt;::AmbiguousGuess
-/home/zhou/.rvm/gems/ruby-2.3.3/gems/rouge-1.11.1/lib/rouge/lexer.rb:153:in `guess': Ambiguous guess: can't decide between [&quot;html&quot;, &quot;shell&quot;]
-</code></pre>
-<p>光这么看，你只能知道是哪篇文章出的错，但你不知道是在哪里。但是下面已经告诉你是 lexer.rb 这个文件出错的，我们可以改动它来多输出一些信息。</p>
-<p>ruby 下面输出东西非常简单，<code>p 某个变量</code> 即可。这就是原理。</p>
-<pre><code>cd /home/zhou/.rvm/gems/ruby-2.3.3/gems/rouge-1.11.1/lib/rouge/
-vi lexer.rb
-</code></pre>
-<p>lexer.rb 对应的行是这样的：</p>
-<pre><code>def guess(info={})
-    lexers = guesses(info)
-    
-    return xxx if xxx
-    return yyy if yyy
-    
-    raise AmbiguousGuess.new(lexers)
-end
-</code></pre>
-<p>这是在定义一个 Ruby 函数，因为它出错了，所以我们不需要看正常情况的 <code>return</code>，只需要看不正常情况的 <code>raise</code>。</p>
-<p>看到 AmbiguousGuess 是一个函数，它接受的输入是 lexers，可以猜到它是接受 lexers 返回对应的错误，重点还是在 lexers。</p>
-<p>而 lexers 的定义在上面，<code>lexers = guesses(info)</code>。看到 guesses 是另一个函数，接受 info，处理过返回 lexers。那我们就猜说 info 可能就是文本。</p>
-<p>于是：</p>
-<pre><code>def guess(info={})
-    p info
-    lexers = guesses(info)
-</code></pre>
-<p>保存，再运行一遍 <code>jekyll build --trace</code>，这回的出错信息更具体了。直接把出错的内容都输出了。对应改就好。</p>
-<p>另外如果你是想在本地改 CSS 而不是去找编译错误的话，用 <code>jekyll serve</code> 然后访问 127.0.0.1:4000 即可。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">Read more...</a>
+			<a href="https://marguerite.su/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></h1>
+	<h1><a href="https://marguerite.su/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></h1>
 	<time>23.01.2016 00:00</time>
 	
 	<div>
+	        There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.
+Today the brand-new nodejs-packaging answers all the questions.
+For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:
 		
-		<p>There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.</p>
-<p>Today the brand-new <a href="https://github.com/marguerite/nodejs-packaging">nodejs-packaging</a> answers all the questions.</p>
-<p>For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:</p>
-<p>The old nodejs-packaging analyzes package.json on module basis. That is, every module is a package, just like things we do for Perl, Python and Ruby. But wait, how many nodejs modules exist? 2 millions. And how many modules that a nodejs application may depend on? For npm, it&rsquo;s 200+; for jshint, it&rsquo;s 200+; for gulp, it&rsquo;s 95. No need to mention the much more complicated ones like atom editor, jangouts, or yakyak.</p>
-<p>We used to have 400+ packages in devel:languages:nodejs, while providing only 2 outdated applications (azure and npm). Because it was a nightmare for maintenance. Take npm as example:</p>
-<p>It updates almost every week. There&rsquo;s no way for the maintainer (me, sad) to know what are the new dependencies (nodejs-packaging didn&rsquo;t provide such a feature: you only know the next step, but you can&rsquo;t see the whole map due to the tree hierarchy of dependencies); There&rsquo;s no way for the maintainer to know what are the updated dependencies; and there&rsquo;s no way for the maintainer to know what dependencies are removed in advance too.</p>
-<p>It means you have to just start packaging the new npm and examine all the growing 200+ dependencies on the fly. But you have just one week time in total.</p>
-<p>Even if someone would made an automatic packaging tool (actually no one implemented that although we had some discussions before), there&rsquo;re still two difficulties ahead:</p>
-<p>You can&rsquo;t just let the packages lay in devel:languages:nodejs, you should submit it to Factory. Well, 200+ submit requests per week with almost the same nodejs- names are just too hard for reviewing.</p>
-<p>nodejs has a mechanism that allows modules to place the dependencies they need to local node_modules directories. The initial aim was to give developers the freedom and possibility not to follow upstream so tight and focus on their own development. But it leads to the fact that most of the modules actually depend on older versions of other modules.</p>
-<p>And, the &ldquo;older versions&rdquo; may different. that is, module A may requires 1.0.0 version of module C, while module B relies on 2.0.0 version of module C, and the latest version of module C is actually 4.0.0.</p>
-<p>So you have to maintain 1.x/2.x/4.x versions of module C. in RPM, a package can only provide one version. then funny things happened: nan-0_8,nan-1_0&hellip;while considering such case is too common because nodejs upstream officially supports so, the poor multiver feature of the old nodejs-packaging is not enough.</p>
-<p>There must be a change.</p>
-<p>In my reimplementation of nodejs-packaging, I used bundled packaging on application basis:</p>
-<p>If you want to package jslint for example, you just need to package jslint. No need to worry about all its dependencies (200+). They will be bundled into the main package under node_modules directory.</p>
-<p>Someone may worry about the duplicate of bundled dependencies across applications. Actually the waste of disk spaces is so small: the standalone gulp takes 95kb while the bundled one takes 495kb. You&rsquo;ll have to write 200~300kb of specfiles for the dependencies if packaged separately. And 400kb is not a liability for modern hard disks I think.</p>
-<p>Bundles can be used as RPM dependency too. that is, gulp can rely on gulp-util package. Both of them are bundles.</p>
-<p>Dependencies (Provides/Requires) are automatically handled. eg, inner dependencies for gulp-util will not be applied on gulp.</p>
-<p>In the future, I may analyze the <!-- raw HTML omitted -->.json generated and cherry-pick the most common modules into another &ldquo;big&rdquo; package to further reduce the waste of spaces.</p>
-<h4 id="how-to-package-for-nodejs-application-now">How to package for nodejs application now?</h4>
-<p>Firstly, break the application into logically reasonable pieces (bundles). eg, I want to package dependencies for our search page for better deployment:</p>
-<pre><code>gulp
-gulp-concat
-gulp-less
-gulp-rename
-gulp-uglify
-</code></pre>
-<p>In the old times, we have to package hundreds of modules. Now we just need to package those five (actually it&rsquo;s 6, because all those stuff need gulp-util).</p>
-<p>Second, osc mkpac gulp-util &amp;&amp; cd gulp-util. Then run npkg gulp-util (with nodejs-packaging installed on your machine), it will generate</p>
-<pre><code>gulp-util.json
-gulp-util.license
-gulp-util.source
-</code></pre>
-<p>(gulp-util.json is the file used by packaging macros to bundle stuff correctly; gulp-util.license contains the collected licenses of all things in the bundle; gulp-util.source is the formatted text for Source tags in RPM specfile)</p>
-<p>and download all the tarballs of dependencies plus the main gulp-util tarball inside current directory.</p>
-<p>Third, <code>cp -r /usr/share/npkg/template ./gulp-util.spec</code>. Fill the blanks, osc add the sources and submit.</p>
-<p>Everything is okay now. You can consider yourself just packaged 200+ packages in one shoot.
-How to use bundles as RPM dependencies?</p>
-<p>Just write <code>Requires: npm(gulp-util) = 3.0.7</code> in specfile and run <code>npkg gulp gulp:3.0.7</code>.</p>
-<p>In the foreseeable future, devel:languages:nodejs will be active again. More applications will be added soon. And the nodejs packaging policy on our wiki will be discussed and updated too.</p>
-<p>If you run into any abnormal situation eg, extra dependencies are detected (a self-fulfilled bundle should not rely on outside dependencies unless told so), usually it&rsquo;s a bug that should be looked into by me. Feel free to report on github.</p>
-<p>PS: The new nodejs-packaging is fully compatible with the old one, you can still package in the old way. Most of the times you won&rsquo;t be aware of the changes. But personally I think the further you walk in the wrong direction, the more
-painful it will be.</p>
-
-		
-			<a href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">Read more...</a>
+			<a href="https://marguerite.su/posts/introducing_the_brand_new_nodejs_packaging/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></h1>
+	<h1><a href="https://marguerite.su/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></h1>
 	<time>23.01.2016 00:00</time>
 	
 	<div>
+	        盘点一下本周自己在 openSUSE 上面做的工作：
+解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
+对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。
 		
-		<p>盘点一下本周自己在 openSUSE 上面做的工作：</p>
-<h4 id="解决了-wine-的-desktop-file-长期以来位于未知类别的-bug">解决了 wine 的 desktop file 长期以来位于未知类别的 bug</h4>
-<p>openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 <a href="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html">desktop entry specification</a> 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。</p>
-<h4 id="对-devellanguagesnodejs-源进行了-big-cleanup">对 devel:languages:nodejs 源进行了 big cleanup</h4>
-<p>主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。</p>
-<h4 id="对-golang-packaging-做了三次-bugfix-release">对 golang-packaging 做了三次 bugfix release</h4>
-<p>它总是会 filter 掉含有 test,example 字样的编译结果 (类似 test.a，没用)，但是针对 importpath 里有这种字样的（比如 github.com/stretchr/testify）要进行跳过，不然它就什么 Provides/Requires 也抓不出来了。之前仅针对 importpath 本身作了判断，实际上 buildroot 里也会有，因为包名是 golang-github-stretchr-testify 这种，加上了对 buildroot 的判断。</p>
-<p>还修复了 golang.attr 里面写错 prefix 的问题。</p>
-<h4 id="修了-tw-编译失败的-libtunepimp">修了 TW 编译失败的 libtunepimp</h4>
-<p>这个值得一提的是失败的原因：</p>
-<p>有些 autotools 工程喜欢用 expr 来比较版本号，这实际上是非常错误的。因为在 expr 下面 1.10 是小于 1.4 的。正确的比较方法是使用 bc：</p>
-<pre><code>echo &quot;$TAGLIB_VERSION &gt;= 1.4&quot; | /usr/bin/bc -l
-</code></pre>
-<p>还值得一提的就是在 .m4 文件里，你是用不了 [ 和 ] 的，因为那是保留的，正确的写法是 @&lt;:@ 和 @:&gt;@。</p>
-<h4 id="对-leap-推送了-nodejs-更新">对 Leap 推送了 nodejs 更新</h4>
-<p>之前推的更新又把 nodejs-npm 重命名回 npm 了。因为独立打包的 npm 在 Tumbleweed 和 devel:languages:nodejs 里已经移除了（之前在 released product 里一直也都没存在过），命名空间又可用了。但是产生了一个小问题，会导致老的 nodejs-npm 卸载不掉，必须手动卸载然后安装 npm。</p>
-<h4 id="更新了-texlive-2015">更新了 TexLive 2015</h4>
-<p>其实编译已经完全通过了，但我放弃了。</p>
-<p>因为我编译完发现会产生一些莫名奇妙的 release numbers，而在 version 标签里面的 svn version numbers 我又不知道怎么来的。</p>
-<p>在 opensuse-packaging 列表上面问才发现，openSUE 下面的 texlive 工程是自动编译的，由 Publishing:Texlive Meta 这个软件包里的脚本控制，我们甚至打包了整个 ctan&hellip;那我的硬盘不够跑的，Werner 已经有了，我就没必要干破坏自动化的事情了。</p>
-<h4 id="更新了一些软件包">更新了一些软件包</h4>
-<p>Cutegram，WeCase，doubanfm-qt5。</p>
-<p>把文泉驿微米黑更新到最新的 nightly build 版本（wenq.org 论坛里的那个 NB 其实房教授一直不定期的跑）。</p>
-<p>把一些失效的中文项目比如 lwqq，openfetion 进行了禁用编译、保留软件包工程的操作。</p>
-<p>在 home:MargueriteSu 里打包了 shadowsocks-go</p>
-<p>在 home:opensuse_zh:infinality 打包了最新的打过 infinality 补丁的 cairo, freetype2, fontconfig。</p>
-<p>帮助 syncthing 的打包者修复了编译（go 应用）</p>
-<p>把 toxcore, qtox 提交到了 server:messaging 源，等通过后让 qtox 进入 Tumbleweed</p>
-<h4 id="新打包">新打包</h4>
-<p>basket5，basket 笔记的 KF5 移植，功能都保留着，非常好用。</p>
-<p>sadlen 的 marknoto/markpado。前者是一个笔记应用，后者是一个非常好的 KDE 5 下面的 Markdown 编辑器，基于 katepart。我本人都在用。</p>
-<h4 id="todo">TODO</h4>
-<p>本周末主要的任务就是把 Fedora 的 nodejs-packaging 的原理搞明白，用 Ruby port 到 openSUSE，并支持我们的 bundled packaging 模式。</p>
-<p>接下来在本地搭建一个 discourse 服务器看下内存占用，毕竟 @phoenixlzx 现在是根本不要前在给我们跑论坛和域名，总不好又恬着大脸要加内存吧（想再搞一次捐款，可确实没什么可以送的）</p>
-<p>写文章的话准备写一下我的博客程序 ghost 是怎么搭建的，或者谈一下我对 devel:languages:nodejs 源自动化打包的蓝图设计。</p>
-<p>至于论坛活动啊，调试 ocserv/telepathy-kde/privoxy，这些长期的或者尚未取得进展的活动就不值得预告了。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">Read more...</a>
+			<a href="https://marguerite.su/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></h1>
+	<h1><a href="https://marguerite.su/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">脑洞大开的周末</a></h1>
 	<time>18.01.2016 00:00</time>
 	
 	<div>
+	        这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿
 		
-		<p>这个周末其实只打算维护下我的 <a href="https://github.com/marguerite/upsteam-notifier">upstream-notifier</a> 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。</p>
-<p>写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。</p>
-<p>好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。</p>
-<p>然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。</p>
-<p>结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 <a href="http://github.com/marguerite/obs-scam-autoupdater">obs-scm-autoupdater</a> 就这么诞生了😈</p>
-<p>写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。</p>
-<p>关于这个问题有三个办法：</p>
-<p>第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿</p>
-<p>第一个是在现有的包管理系统里选个最简单的学。但是 openSUSE 的 rpm 是最难的那个，总不能换系统吧=。= puppy linux 的包管理在我看来最省心，但是不好移植啊。check_install 我又看不上。</p>
-<p>第二个就是自己做一个“比本地编译简单或者至少差不多，学习成本不高，省心的”包管理系统。类似 puppy linux 那种。好吧我其实又选了最难的选项，强迫症就是如此啊！</p>
-<p>于是就有了这个 <a href="https://github.com/marguerite/epm">epm</a>。我号称它是最简单的包管理系统，给我这种贪懒奸猾的人用的😂。</p>
-<p>设计起来想的挺简单的。</p>
-<p>configure 命令自动判断是 autotool，cmake，qmake 还是别的工程（看源代码目录就知道），然后不管它调用什么我这里一律是 easy_configure。你说参数？直接 passthrough，省心，原来能用什么现在就能用什么，最多 runtime tweak 一下 libdir 什么的让它指向我定义的编译专用目录 easy_build。</p>
-<p>make 就不管了，make_install 改成 easy 命令，也是接受参数确保装到 easy_build 又不让新人感觉到。</p>
-<p>最后 easy_pack。直接压成一个 tar.xz 改名叫 .epm 好啦:-)</p>
-<p>很快就写完了。这时才发现自己还没写怎么装这个 epm 的工具。原来想的是直接复制过去就好啦，弄个最傻的 sqlite3 数据库保存下名字、版本和文件列表这些 metadata 就好啦。</p>
-<p>但想到还有依赖关系和安装时候的那些 pre/post/preun/postun 脚本。</p>
-<p>依赖关系想弄成文件级别的，就是解包之后扫描下，是 c/c++ 的就用 ldd 去找关键性文件，类似这样。反正新手用的基本就是 c/c++/python 这种工程，覆盖面不够可以后期增补嘛，这难道不就是快速迭代嘛！</p>
-<p>又想到依赖的文件都找到了，干脆调用 libzypp 和其它发行版上现有的包管理系统去 query 一下这个发型版的包名称嘛！就比如 chrpath-1.16.x86_64.epm 依赖的可能是 gcc.rpm 也可能是 gcc.deb。只记录包名，不强制依赖，新手打包可以写进去，安装时会提示要不要装（当然那时依赖的版本肯定有更新了，但先不去管它）也可以让 epm 主程序在安装时自行确定，至于准确率嘛，偶尔装错两个反正有现有的包管理系统管着也无伤大雅。实在找不到再看有没有提供它的 epm，再没有就报错。反正其实用到 epm 也就是新人想保存一下编译安装的成品，不太会别的东西还依赖这个成品的。</p>
-<p>至于 pre/post 脚本，最重要的是它们的位置。什么时候调用这个都明白，但是它们本身在哪儿呢？解压过 rpm 但没看到过呀！研究了下发现 rpm file format 是自带 metadata 的，就是生成 rpm 的时候就弄进那个文件里了，你 unrpm 出来的其实只是 data。好吧，太难了，一比一复刻 rpm 制式太麻烦，干脆就 debian 风格好了。打包时多弄进去一个 epm 文件夹，脚本都在里面，安装时让主程序在复制文件到用户系统时候忽略就好了！</p>
-<p>然后整理下发现自己幻想了好多，其实一开始就是想更新几个软件包的…活就是这么来的。我这也算是自我驱动了…</p>
-<p>PS：我的博客又由 hexo 切换到 ghost 了，因为 ghost 可以在手机上码字。什么年代了谁还会坐在电脑前中规中矩的写博客！</p>
-
-		
-			<a href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">Read more...</a>
+			<a href="https://marguerite.su/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></h1>
+	<h1><a href="https://marguerite.su/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></h1>
 	<time>12.01.2016 00:00</time>
 	
 	<div>
+	        今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。
+现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。
 		
-		<p>今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。</p>
-<p>金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。</p>
-<p>我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。</p>
-<p>这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。</p>
-<p>现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。</p>
-<p>而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。</p>
-<p>过段日子再做一个自动填充剩余 tag 的 go2rpm（可能会有图形界面哦），再写一个 autoupdater 实现 devel:languages:go 的自动化任务，就像 perl/rubygems 源那样，我就可以撒手干别的去了，由维护几百个包变成只维护一个工具。</p>
-<p>然后就是去对 devel:languages:nodejs 做同样的事情。那个工具的设计我会在以后的文章讲。</p>
-<p>现在在做的是 github.com/marguerite/upstream-notifier，就是检查我目前的 300 多个包里哪个有更新的工具。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">Read more...</a>
+			<a href="https://marguerite.su/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">RPM specfile 中  值的研究</a></h1>
+	<h1><a href="https://marguerite.su/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">RPM specfile 中  值的研究</a></h1>
 	<time>02.08.2015 00:00</time>
 	
 	<div>
+	        研究这个问题是因为论坛上的一个讨论：zypper reinstall package
+略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：
+第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：
+if [ $1 == 0 ] ; then  $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
+http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm
+第二个是 RPM reinstall 的作业流程是怎样的，是遵循升级的流程也就是：
+软件包升级的过程是先安装新包后卸载旧包，只有来自旧包的差异文件会被删除。也就是 pre -&gt; install -&gt; post; preun -&gt; uninstall -&gt; postun
+还是另有一个流程。$1 值的变化可以推测出这个问题的答案。
+第三个是使用 zypper 和 rpm 分别进行重装，$1 值的变动是不是一致的。
+这个问题我们需要做一个实证，代码在这里：
+https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo
+相应的测试用 RPM 也可以在那边取得。下面直接上结果：
+sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm drwxr-xr-x 1 root root 0 8 月 2 22:25 demo  通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。
 		
-		<p>研究这个问题是因为论坛上的一个讨论：<a href="https://forum.suse.org.cn/viewtopic.php?f=15&amp;t=4004/">zypper reinstall package</a></p>
-<p>略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：</p>
-<p>第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：</p>
-<pre><code>if [ $1 == 0 ] ; then
-</code></pre>
-<p>$1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。</p>
-<p><a href="http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm">http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm</a></p>
-<p>第二个是 RPM reinstall 的作业流程是怎样的，是遵循升级的流程也就是：</p>
-<p>软件包升级的过程是先安装新包后卸载旧包，只有来自旧包的差异文件会被删除。也就是 pre -&gt; install -&gt; post; preun -&gt; uninstall -&gt; postun</p>
-<p>还是另有一个流程。$1 值的变化可以推测出这个问题的答案。</p>
-<p>第三个是使用 zypper 和 rpm 分别进行重装，$1 值的变动是不是一致的。</p>
-<p>这个问题我们需要做一个实证，代码在这里：</p>
-<p><a href="https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo">https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo</a></p>
-<p>相应的测试用 RPM 也可以在那边取得。下面直接上结果：</p>
-<pre><code>sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm
-
-drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
-</code></pre>
-<p>通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。</p>
-<pre><code>sudo rpm --install --replacepkgs rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm
-</code></pre>
-<p>时间戳记还是没变。</p>
-<pre><code>sudo rpm --reinstall rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm
-</code></pre>
-<p>这个时间戳记也没变，但是输出了 $1 的值为 1，也就是说触发了 %postun 过程。之前 rpm –install –replacepkgs 是没有输出的。至于 zypper 我怀疑可能是被压制了输出 :-(</p>
-<p>所以结论如下：</p>
-<p>估计那位楼主说的重装可能是卸载了再安装，那样 $1 肯定会为 0, 会触发删除 /var/tmp/demo 的操作。</p>
-<p>正常的 zypper 重装和 rpm 重装（两种方法）都是不会使 $1 为 0 的，也就是说 /var/tmp/demo 不会被删除掉。也就是说 if [ $1 == 0 ] ; then 的真正作用是为了确保软件包从系统删除时它的一些临时文件会被删除、做出的修改会被回滚等。</p>
-<p>使用 rpm –install –replacepkgs 方法重装，不会触发 %post %postun %pre %preun 等过程。</p>
-<p>使用 rpm –reinstall 重装，会触发那些过程，但是 $1 值不会为 2, 也不会为 0, 也就是说遵循的依然是升级的流程：先安装新包再卸载旧包</p>
-<p>至于 zypper，且不管它是否被压制输出吧，它有 &ndash;oldpackage 选项，所以看两者的 &ndash;help 我觉得 libzypp 后端使用的应该是 rpm &ndash;install &ndash;replacepkgs 方法。这个真正测试起来也很简单，在 %post 阶段往 /tmp 里写个文件就好了。安装完毕先手动删除掉，如果重装后发现了这个文件，那么它的 reinstall 就是 rpm &ndash;reinstall 方法（因为调用了 %post），否则就是 rpm &ndash;install &ndash;replacepkgs 方法。</p>
-<p>PS:以后博客就用 hexo 来写了。以前 wordpress 的文章换服务器丢了一部分，找到了一部分，有时间会慢慢转换过来。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">Read more...</a>
+			<a href="https://marguerite.su/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">关于 Deepin 用户开发者大会的浅见</a></h1>
+	<h1><a href="https://marguerite.su/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">关于 Deepin 用户开发者大会的浅见</a></h1>
 	<time>11.07.2014 00:00</time>
 	
 	<div>
+	        这篇文章是唱反调的，可能会不舒服的可以离席了。
+最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
+先说两点：
+(1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
+第一，我没有直观感受过 Deepin 作为一个发行版有多少用户（不是 Deepin Music 这些应用软件），这不像 Ubuntu 那么明显，所以从用户基数的角度来看，我没有概念，也就没有说酸的基础。
+第二，我这里说的是他们的战略大方向，他们拥抱了哪些技术，营销的定位，这些东西，而不是去像黑 Ubuntu 那样，“哈 U 的用户用 U 都是为了让别人知道它在用 Linux 而不是为了解决自己的需求”。
+深度团队是 Linux 中文圈里比较靠谱的团队。另一个比较靠谱的我认为是安同。而优麒麟处在第二梯队，遗产流的那种。后面如果还记得优麒麟的话，可能会拉它出来做反例。唉，我也勉强算 Linux 中文圈的大前辈了，这种褒贬倾向真不该轻易流露，会给别人造成负担的。
+首先深度团队的人比较 nice。我记得有一个陈祥帮吧，曾经在 openSUSE 中文论坛给我发私信说两个社区合作的事情，当时正好生活上有一些变动，后来就不了了之了（欢迎重启）。但总体印象较好。现在的“国产操作系统”的人有一点不好，为了吸引用户而越来越没下限了，有些时候觉得跟百度 Linux 吧的人差不多。深度算是有一些水准的，相对于同样没有经历过大发行版社区培养的人来说。
+其次深度的人相对比较能够出活儿。他们有 30 多个人，武汉有深之度公司，连中文圈比较稀缺的画师娘都招了，像「深谈」这样的应用程序还是很惊艳的。当然激情上面应该比安同（骚年强则中国强）要差一些，毕竟是领钱干活的个人有个回报率和职业发展的考量，但比起优麒麟眉毛胡子一把抓，开发者不少，成果稀少（估计是瞄准高端定制市场和政府采购去了），还是要好一些。
+第三他们有想法，并且一定程度上比较能够遵守规则，虽然对上游的贡献不是很多，但是对自己的成果的态度还是很开放的。
+所以真心希望他们能够出彩。
+铺垫完了，下面开黑：
+Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没什么好黑的。甚至还有点小艳羡，比如那一大堆赞助伙伴和合作媒体，有公司实体，我们这些爱好者群体和国外机构在华分支在本地化上确实比不了。
+主要黑两点：
+默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
+我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
+首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
+先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。
 		
-		<p>这篇文章是唱反调的，可能会不舒服的可以离席了。</p>
-<p>最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。</p>
-<p>先说两点：</p>
-<p>(1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。</p>
-<p>第一，我没有直观感受过 Deepin 作为一个发行版有多少用户（不是 Deepin Music 这些应用软件），这不像 Ubuntu 那么明显，所以从用户基数的角度来看，我没有概念，也就没有说酸的基础。</p>
-<p>第二，我这里说的是他们的战略大方向，他们拥抱了哪些技术，营销的定位，这些东西，而不是去像黑 Ubuntu 那样，“哈 U 的用户用 U 都是为了让别人知道它在用 Linux 而不是为了解决自己的需求”。</p>
-<p>深度团队是 Linux 中文圈里比较靠谱的团队。另一个比较靠谱的我认为是安同。而优麒麟处在第二梯队，遗产流的那种。后面如果还记得优麒麟的话，可能会拉它出来做反例。唉，我也勉强算 Linux 中文圈的大前辈了，这种褒贬倾向真不该轻易流露，会给别人造成负担的。</p>
-<p>首先深度团队的人比较 nice。我记得有一个陈祥帮吧，曾经在 openSUSE 中文论坛给我发私信说两个社区合作的事情，当时正好生活上有一些变动，后来就不了了之了（欢迎重启）。但总体印象较好。现在的“国产操作系统”的人有一点不好，为了吸引用户而越来越没下限了，有些时候觉得跟百度 Linux 吧的人差不多。深度算是有一些水准的，相对于同样没有经历过大发行版社区培养的人来说。</p>
-<p>其次深度的人相对比较能够出活儿。他们有 30 多个人，武汉有深之度公司，连中文圈比较稀缺的画师娘都招了，像「深谈」这样的应用程序还是很惊艳的。当然激情上面应该比安同（骚年强则中国强）要差一些，毕竟是领钱干活的个人有个回报率和职业发展的考量，但比起优麒麟眉毛胡子一把抓，开发者不少，成果稀少（估计是瞄准高端定制市场和政府采购去了），还是要好一些。</p>
-<p>第三他们有想法，并且一定程度上比较能够遵守规则，虽然对上游的贡献不是很多，但是对自己的成果的态度还是很开放的。</p>
-<p>所以真心希望他们能够出彩。</p>
-<p>铺垫完了，下面开黑：</p>
-<p>Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没什么好黑的。甚至还有点小艳羡，比如那一大堆赞助伙伴和合作媒体，有公司实体，我们这些爱好者群体和国外机构在华分支在本地化上确实比不了。</p>
-<p>主要黑两点：</p>
-<p>默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。</p>
-<p>我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）</p>
-<p>首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。</p>
-<p>先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。</p>
-<p>我觉得他们不会成功，主要是因为目标和操作性都出现了问题。操作性比较简单，先来谈操作性：</p>
-<p>第一，我不认为能看到 Windows 源代码的 SUSE 做不到的事情，这个世界上还有人能够做到，雨林木风可能可以，笑。</p>
-<p>第二，我不觉得深度目前的团队能够承担搞这个的代价。30 人的团队在 Linux 中文圈算很大只了，但这里面有多少是后勤、司机、老板，有多少是美工、市场、销售，又有多少是 python 专精的主程呢（我假设大部分 python 为第一开发语言的人甚至对 Linux 底层都不是很了解，毕竟快餐语言的后果就是这样），这种短平快的团队搞一搞应用软件层还算可以，真搞底层研发必须要招人，而兼容层就更是不用想了（需要底蕴，可以说你能搞出兼容层，你就能搞个 Windows 再搞个 Linux）。如果他们把龙井收了还有点可能。这也是为什么国外那么多更大只的开源序员比如 KDE 的 Araon 自己搞公司宁可搞 Linux 应用软件，而且内核开发者鲜有出来搞公司的，的原因。</p>
-<p>而且，如果搞兼容层，尤其是 .NET，肯定需要一些对 Windows 比对 Linux 还要拎得清的人。这种投入对于一个 Linux 发行版制造商来说其实是一种资源浪费。</p>
-<p>这是 Mono 这个项目决定的。首先，SUSE 并没有推它太久，它的成熟度不是很高，需要大力度研发才能达到深度所憧憬的效果。其次，Mono 是在 Linux 上复刻 .NET，Wine 项目历时经年才复刻出一个时行时不行的过时版本，逆向工程的苦逼就在于此，看看 pidgin-lwqq 就知道了。这不是我军复刻 T54 为 59 式坦克，T54 已经定型了，你逆向百分之几你的进度就是百分之几，而 .NET 不一样，这是微软比较核心的东西，只要微软还做操作系统，它就一直会上新特性，除非微软不做了，但微软不做操作系统了你还复刻 .NET 有意思吗？MSN 都没有了你还开发 AMSN 有意思吗？</p>
-<p>这里面存在一个竞速问题。你的复刻必须比微软开发得快，才有机会齐头并进，即使你只需要一些非常基本的功能，看看 GNOME 那十分销魂的 API 变动吧，针对 glib 2.40 写的东西在 2.39 上都跑不动，你能看到的「代码质量较高」的开源项目尚且如此，微软全是猴子主程我觉得都有几分可信度。所以，问题来了，哪个中小企业能在微软的主场里开发速度超过微软？我觉得除非像几十年前我们为了造潜射导弹，举国之力搞小型化大会战一样，全民移植 .NET，来它几千个研究所，来它个国家财政支持。</p>
-<p>但没有这样的条件。SUSE 没有这样的人力，Deepin 也没有，唯一有的就是微软自己。与其说等 Mono 成气候，不如推动微软主动开源来得靠谱。而且也没有这样的氛围。搞小型化的氛围是冷战，你不搞，核弹就落你头上，全民都有动力。国内用 Linux 的都不见得有几千个研究所好吗。</p>
-<p>下面再来说目标：</p>
-<p>我的一贯观点是，搞 Linux 的，不能把活儿都替用户干了。用户要什么给什么的话，跟用户说说就好了，他们要 Windows，直接把研发组辞退，老板把股金买正版 Windows 散财不是更好？</p>
-<p>明正德后，太后定的辅政大臣叫杨廷和，这位在新皇帝还在苦逼地赶路的时候就把谋反的锦衣卫大头头江斌给宰了，问题是，皇上现在该干嘛？告诉你这位皇帝是谁，是嘉靖。这位死宅 70 年不出宫，唯一的乐趣就是磕了药挑拨大臣互相斗。嘉靖爷要是没有杨廷和绝对能中兴，到时候女真人八国联军都没他们什么事了，中华帝国一下就实现了。所以说不能把活儿都干了。用户会长大的，每一个 Linux 用户都有成为终极 BOSS 的潜质，指不定你就把未来的美国总统给碾死了。</p>
-<p>的确，现在生活节奏快，大部分用户使用操作系统就是为了科技改变生活的。但科技更应该改变人的思维。我觉得很多人都领会错了计算机的用途。计算机是为了让人变得更聪明而不是更懒的。有了计算机，你至少不用量角器画核弹图纸了，不用算盘计算股票指数了，但省下的时间是给你更深入思考的，而不是农奴翻身做主人后骄奢淫逸的，与天斗其乐无穷嘛。所以我觉得 Linux 似乎被赋予了一些它不应该承担的责任。</p>
-<p>比如最早 Linux 就是计算工具，就是基础设施，现在以 Ubuntu 为首的说我们要把它推到桌面去，干掉微软，让普通用户都来用。其实现在仍然如此，那么多搞桌面的，其实只是 Linux 里面的一个分支，最重要的比如搞 Highavailability 这种服务器应用的，搞安全的，依然是另一个世界（Linux 里其实有好几个世界，桌面只能算外野，连主城都不算）。另外根据需求的满足来说，放到更宏观的层面，微软对普通用户满足得最好就让微软来满足，Linux 服务器做得最好就让 Linux 做服务器，这是不是也符合 Unix 模块化做到最好的哲学？（有些人可能说收费不收费，开源不开源的，但收费和开源本身就是一种需求，Linux 桌面能够满足的只是这一部分非常细分的需求）我觉得把 Linux 推广到桌面反而是大国沙文主义的表现啊。KDE/GNOME 包括所有的桌面环境的产生，都不是为了去推动 Linux 桌面走向所有用户的，唯一一个这么想的是 Unity，然后你看看评价。无心插柳柳成荫，真的，Linux 桌面漂亮、Linux 桌面可定制性强，Linux 桌面相对没有什么封装比较贴近操作系统本源方便学习，这都是 Linux 桌面的优点，所以它存在了。</p>
-<p>恕我妄言，就算把 Linux 桌面定义成“学编程的操作系统”，它依然会火，模特都知道学 python 下美剧了，纵观形势，我觉得就算不推 Linux 桌面，随着计算机的普及，人们都知道学点编程能方便生活的时候，它自己就火了。强扭的瓜不甜，就跟 Ubuntu 的天字第一号 Bug 一样，你真觉得是 Ubuntu 的不断努力把它「修复」的？快别扯了，人家 Google 无心插的柳产生了蝴蝶效应。人生就是这么光怪陆离。没有 GFW，谁知道 VPS 是个啥？什么都放在云上，局域网建成那天你就知道本地硬盘和 RAID 有多好了。</p>
-<p>针对一个必然事件所做的努力，不是不可以，但必须清醒地认识到，识时势者为人杰：重点是守不守得起，而不是攻不攻得下。简单地想这么个问题：你觉得，现在选择入 Linux 这大坑的，有几个用户是因为受到 Ubuntu 或者 Deepin 的蛊惑，觉得它们相对 Windows 更易用的？真要那么样，家长早给孩子买新的学习机了。我们都是唱高山流水的，你非要追求老妪能解，雅的看不上你，俗的也没觉得你有啥用。现在要做的刷存在感，omgubuntu 的做法是对的，屁大点事我都大张旗鼓的说，我也知道说了多数都没用，但我就是要说。Ubuntu 之所以不再竖起大旗反微软了，就是看穿了这么个道理。我也来雅的，挣了钱直接学陈光标。开个网店，装 Deepin，一年返 100 元现金，然后平台广告，你就是下一个微软，因为按照金融学的计算方法，引入利率，100 元现金相当于 3077 块钱的一年定存，你的一份操作系统副本的估值（一年使用权，我没算永续，那样价值更大）就是这些（因为相当于你让百姓每年都有额外的 3077 块钱花），加上平台广告，总市值远远高于微软（营销得好，你的一年比微软的永续都要高）。（这招可别让别人学去了 233）</p>
-<p>所以我不觉得深度做出的接手 Mono，强力推进 Windows 兼容是一件在现在条件下可以操作的事情。当然如果是我理解错误，这种工作由合作伙伴，比如 Crossover 来做主力，深度做桌面来充当现金牛，那深度真的能够称得上伟大，但是这种合作伙伴关系也势必不能持久，还是前面说的，瘦马拉大车，带不动。</p>
-<p>(2) 云账户。</p>
-<p>这是费力不讨好的事情。</p>
-<p>Linux 下唯一值得做的就是 OpenID。而除了 OpenID，深度唯一应该做的就是深谈 IM 网络。把包推到所有发行版，让所有 Linux 中文用户都在某种程度上依赖你（比如把 Google 账户的 talk 功能与深谈等效，这里还涉及一个 IM 客户端要非常碉堡，至少要超过 Pidgin 的问题）。</p>
-<p>因为无论是 Google/Facebook/Twitter，它都是公司。把开源系统的命脉给公司把持是不是“太阿倒持”我不知道，但我知道在国内深度如果这么做了，是绝对逃不过百度账户、微博账户、腾讯账户这三家的，刚开始可能没有，可能是又拍账户、CSDN 账户，但最终怎么都逃不过这三家。因为云账户做与不做的决定权在你，而做谁不做谁的决定权在人家的用户基数。除非走的是「卖给 Google」类似的战略，不然可能沦为附庸的事情不要做。</p>
-<p>我觉得深度之所以有这样的想法，可能跟与 Seafile/又拍云它们的合作走到了一个瓶颈期，想要更深入推动有关系。但个人觉得这是容易遭雷的事情。「配置在云」是非常好的想法，但是，且不说真的能够配置在云（没有 fstab 你能启动？做时光胶囊这种备份工具是无法盈利的，这不应该是一个远景目标），云厂家做和操作系统做的差别很大，很多人都可能在看 Google，但 Google 本身是一家「网络」公司，它是正推，而 Ubuntu One 那种是逆推。Google 做的话会在设备上盘活它所有的服务，而 Ubuntu 做就是糟蹋钱。所以深度可以和 Seafile/又拍合作去实现深度整合，但这件事的推手绝对不应该是深度。因为暂时来说，服务器应用和桌面应用的推广对象不一样。</p>
-<p>而且，毫不留情地说，80% 的用户使用云就是为了下 A 片，而 20% 的云用户里使用量在 1G 以下的又有 80%，而剩下的 20%x20% 挑捡得厉害，而所有这 100% 里，是没有人会把 root 密码（比如工资卡密码）放在云上的。所谓的大数据，所谓的数据在云，在我看来就是程序员的空中楼阁，典型的以程序员思维揣测用户行为，由结果反推原因，对普通用户来说云就是省去本地硬盘无用/临时数据所占空间的一种方式。而且就国内用户目前的操守来看，90% 以上不会愿意付费。诚然，云对于 IT 产业是非常重要的一种企业应用，而且除了企业应用暂时它没有其它成熟的免费盈利模式（比如游戏，免费玩家是人肉 NPC;聊天软件，免费用户是广告受众，但网盘不一样，你做客户端就影响广告收入，因为功能太单一做厚客户端会流失用户，薄客户端又上不了广告），但深度是一个企业版吗？准备出企业版吗？如果把优麒麟的政府资源、财力，深度的想法，安同的热情放在一家，或者可以勉强一试，真的，红帽不是闹着玩的，你费了老大力气才能搏出一个红顶商人，人家洋大人天生就高人一等。笑。</p>
-<p>挺晚的了，就先写这么多吧。哎，没黑成优麒麟，其实他们两家的营销战略也蛮值得一谈的，比如以政府和企业为核心的操作系统跟以最终用户为核心的操作系统谁更有前景这种话题，就跟是搞定联合国五常就能进联合国、还是让黑兄弟给抬轿子抬进联合国哪个更容易一样好玩。</p>
-
-		
-			<a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">Read more...</a>
+			<a href="https://marguerite.su/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</a></h1>
+	<h1><a href="https://marguerite.su/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</a></h1>
 	<time>12.10.2013 00:00</time>
 	
 	<div>
+	        做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk  下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解压：
 		
-		<p>做这个的初衷很简单：IRC 对小白太远了。</p>
-<p>它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。</p>
-<p>但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）</p>
-<p>于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。</p>
-<p>看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。</p>
-<h4 id="安装依赖opensuse-下">安装依赖（openSUSE 下）</h4>
-<pre><code>sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk
-</code></pre>
-<h4 id="下载">下载</h4>
-<p>然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！</p>
-<p>但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。</p>
-<p>言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：</p>
-<pre><code>wget http://qwebirc.org/download-stable-zip
-</code></pre>
-<p>它没后缀但它是个 zip，解压：</p>
-<pre><code>unzip download-stable-zip
-</code></pre>
-<p>进入文件夹：</p>
-<pre><code>cd qwebirc-qwebirc-516de557ddc7
-</code></pre>
-<h4 id="配置">配置</h4>
-<p>把 config.py.example 复制为 config.py：</p>
-<pre><code>cp -r config.py.example config.py
-</code></pre>
-<p>打开</p>
-<pre><code>vi config.py
-</code></pre>
-<p>要改的我都写好：</p>
-<p>连接到的服务器:</p>
-<pre><code>IRCSERVER, IRCPORT = &quot;chat.freenode.net&quot;, 6667
-</code></pre>
-<p>因为我们是网页客户端不是网页服务器端，我们要连一个服务器的…</p>
-<p>REALNAME:</p>
-<pre><code>REALNAME = &quot;http://irc.suse.org.cn/&quot;
-</code></pre>
-<p>你要提供服务的那个网址</p>
-<p>BASE_URL:</p>
-<pre><code>BASE_URL = &quot;http://irc.suse.org.cn/&quot;
-</code></pre>
-<p>同上</p>
-<pre><code>NETWORK_NAME = “openSUSE 中文”
-</code></pre>
-<p>你的客户端显示给客户看的「你叫什么名」字段。这里需要注意，如果你要用中文，要在这个页面的最上面加上这两行：</p>
-<pre><code>#!/usr/bin/python
-# -*- coding: utf-8 -*-
-</code></pre>
-<p>因为它用 python2 写的，默认是英文编码…</p>
-<p>Nginx 相关配置:</p>
-<pre><code>FORWARDED_FOR_HEADER=&quot;x-forwarded-for&quot;
-FORWARDED_FOR_IPS=[&quot;127.0.0.1&quot;]
-ARGS = &quot;-i 127.0.0.1 -p 9090&quot;
-</code></pre>
-<p>简单说就是在你 VPS 上的 127.0.0.1:9090 开一个网页 IRC，然后 Nginx 后面干的事就是把对你的某个网址比如 irc.suse.org.cn 的访问全中转给 127.0.0.1:9090 上。我不太懂，但听起来像是挺安全的，因为我觉得 127.0.0.1 只有登录到那台 VPS 才能用的嘛。</p>
-<p>当然你也可以试试把前两个的 # 号继续留着，然后直接：</p>
-<pre><code>ARGS = &quot;-i 你的公网 IP -p 80&quot;
-</code></pre>
-<p>没试验哦，估计这样就能直接开在你的 80 端口了，也不用 nginx 了。但这样做最大的问题就是你的那个公网 IP 也只能做网页 IRC 了。因为不管你怎么做域名解析，通过浏览器过来的都默认跑 80 端口就来到这里了，如果别的还用（我不懂网络那些哦），可能就会出现我前面 nginx 重定向配置错误时的情况，时而打开网页 IRC，时而打开你别的网站…</p>
-<p>而用 nginx 做反向代理的话，那个 IP 还可以干别的。（我说的是 IP 不是域名哦，你不可能 irc.suse.org.cn 又当 wordpress 博客又当网页 IRC 的）</p>
-<p>剩下的配置就留默认就好</p>
-<h4 id="编译和启动">编译和启动</h4>
-<p>这里其实我有点不能理解，它编译应该是把 *.py 编译为 *.pyc/pyo 才对，但事实上，你在 javascript 里面的硬翻译，也是由编译来管的…我刚开始先架设了一个英文的，然后本地翻译完，上传，我想 js 应该刷新网页就好了吧，结果不行…debug 了好久，后来在官网 Installation 指南看到</p>
-<pre><code>Run compile.py to &quot;compile the HTML/js/css&quot;
-</code></pre>
-<p>整个人都呆掉了…</p>
-<p>开始编译：</p>
-<pre><code>./compile.py
-</code></pre>
-<p>把它跑起来：</p>
-<pre><code>./run.py
-</code></pre>
-<p>它写的就比较有节操，自己会 fork 自己到后台，不像我之前写的那些 openshift 跑 python 的教程里面的脚本都要使用 nohup 来跑…</p>
-<p>qwebirc 就配置好了。</p>
-<h4 id="nginx-反向代理">Nginx 反向代理</h4>
-<pre><code>cd /etc/nginx
-</code></pre>
-<p>你是直接编辑 /etc/nginx/nginx.conf 还是建一个 /etc/nginx/vhosts.d/irc.suse.org.cn.conf 我管不着，反正里面是像这样的：</p>
-<pre><code>server {
-listen 80;
-listen [::]:80;
-
-server_name webchat.domain.tld;
-
-access_log /var/log/qwebirc.access.log;
-error_log /var/log/qwebirc.error.log;
-
-proxy_set_header X-Real-IP $remote_addr;
-proxy_set_header Host $host;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-proxy_buffering off;
-
-location / {
-    proxy_pass http://127.0.0.1:9090;
-    }
-}
-</code></pre>
-<p>它和 Nginx Wiki 上说的那个配置的唯一不同之处在于：</p>
-<pre><code>listen 80;
-listen [::]:80;
-</code></pre>
-<p>Wiki 上用的是：</p>
-<pre><code>listen 127.0.0.1:80;
-listen [::1]:80;
-</code></pre>
-<p>导致我在不明白其原理的时候狂刷 irc.suse.org.cn。。。。</p>
-<p>后来才反应过来：Wiki 的教学的场景是说，你在本机（127.0.0.1）跑起来了一个 qwebirc，然后嫌用 127.0.0.1:9090 访问它比较的麻烦，于是做下反向代理让 127.0.0.1 可以直接访问到它。</p>
-<p>但我们的场景是说，我在本机（127.0.0.1）跑起来了一个 qwebirc，然后想用 <a href="http://irc.suse.org.cn">http://irc.suse.org.cn</a> 直接访问它！127.0.0.1:9090 和我没一毛钱关系，因为我没在服务器上登录装图形界面开网页浏览器…</p>
-<p>我们要让 Nginx 去监听对 irc.suse.org.cn 的 80 端口访问，然后把它扔给 VPS 上的 127.0.0.1:9090。。。所以直接监听 server_name 的 80 端口就好了嘛…</p>
-<p>这个错误很难反应过来，尤其对我这种水货 SA！Nginx 还会正常跑，但你在 VPS 外面是访问不到它的：</p>
-<p>qwebirc 提供的服务在 127.0.0.1 不是你的公网 IP，所以你用 xxx.xxx.xxx.xxx:9090 根本打不开…甚至 Nginx 也不知道你在干啥，因为别的配置是没有用 9090 端口的，连 Fallback 这种安慰奖都没有…</p>
-<p>nginx 监听着你的内！网！IP！你访问 irc.suse.org.cn，是有这个配置，但是它找了一圈发现没有跟 irc.suse.org.cn: 有关的事啊，这个配置在管 127.0.0.1 呢…</p>
-<p>还有注意：proxy_pass http://127.0.0.1:9090; 这个不要手贱把 127.0.0.1 改成 irc.suse.org.cn 了。。。因为那个域名的 A 记录是你的公网 IP，而 qwebirc 并没有对公网提供服务…血泪的教训！</p>
-<p>接着重启下 Nginx 服务器：</p>
-<pre><code>sudo systemctl restart nginx.service
-</code></pre>
-<p>就 OK 了！</p>
-<p>PS：终于有个顺手的 IRC 去调戏 #kde-cn 的 BadGirl 了…</p>
-
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">Read more...</a>
+			<a href="https://marguerite.su/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">Read more...</a>
 		
 	</div>
 </article>
@@ -891,7 +253,7 @@ listen [::1]:80;
 
 
 	<footer>
-	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+	<p>&copy; 2020 <a href="https://marguerite.su">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
 </footer>
 
 </body>
