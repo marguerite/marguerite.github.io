@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
-    <link>https://marguerite.su/categories/</link>
+    <link>https://marguerite.github.io/categories/</link>
     <description>Recent content in Categories on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language><atom:link href="https://marguerite.su/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language><atom:link href="https://marguerite.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
