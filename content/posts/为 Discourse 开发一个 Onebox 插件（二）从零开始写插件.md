@@ -1,4 +1,8 @@
-## 为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine
+---
+title: "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine"
+date: 2020-11-28T16:07:00+08:00
+draft: false
+---
 
 上一篇[为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem](http://marguerite.su/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/) 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
 
