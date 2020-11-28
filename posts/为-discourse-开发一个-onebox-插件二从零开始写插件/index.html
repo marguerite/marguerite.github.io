@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1></h1>
+			<time>01.01.0001 00:00</time>
+			<div>
+				<h2 id="为-discourse-开发一个-onebox-插件二从零开始写-custom-engine">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</h2>
+<p>上一篇<a href="http://marguerite.su/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a> 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。</p>
+<p>我们先准备一个脚手架 openbuildservice_onebox.rb</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">OpenBuildServiceOnebox</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">Engine</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">LayoutSupport</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">HTML</span>
+      always_https
+
+      matches_regexp(<span style="color:#009926">%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}</span>)
+
+      <span style="color:#000;font-weight:bold">private</span>
+
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>我们已经知道了这两个 <code>module Onebox</code>和 <code>module Engine</code> 嵌套 <code>class OpenBuildServiceOnebox</code> 是为什么，为了让 <code>Preview.new</code> 的 <code>ordered_engines</code>能够找到我们这个以 Onebox 结尾的类，并调用它通过 <code>matches_regexp</code> 设置的 <code>@@matcher</code>来与真正的 URI 对比来确定唯一一个 engine。<code>include Engine</code>的作用是为了得到 <code>ClassMethods</code>里面定义的与 URI 做相等比较的方法。另外 <code>OpenBuildServiceOnebox</code> 这个 class 没有 <code>initialize</code> 方法是因为 <code>module Engine</code>里面已经统一实现了，我们可以直接用 <code>@options</code>和 <code>@uri</code> 这样的实例变量。</p>
+<p>但是有一个问题是不是我忽略了？没有 <code>to_html</code> 这个最终把 URL 转成 html preview 的函数呀！</p>
+<p>不要慌，它实际上是通过 <code>include LayoutSupport</code> 实现的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">LayoutSupport</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">max_text</span>
+      <span style="color:#099">500</span>
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">layout</span>
+      <span style="color:#008080">@layout</span> <span style="color:#000;font-weight:bold">||=</span> <span style="color:#008080">Layout</span><span style="color:#000;font-weight:bold">.</span>new(<span style="color:#0086b3">self</span><span style="color:#000;font-weight:bold">.</span>class<span style="color:#000;font-weight:bold">.</span>onebox_name, data)
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">to_html</span>
+      layout<span style="color:#000;font-weight:bold">.</span>to_html
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这个简单的不能再简单的 module 的作用是什么呢？<a href="https://github.com/discourse/onebox/blob/master/lib/onebox/layout.rb">lib/onebox/layout.rb</a> 和 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/template_support.rb">lib/onebox/template_support.rb</a> 可以得到解释：就是去 templates 文件夹下找到 openbuildservice.mustache，用 data 这个 hash 补全，然后 render 成 html。这个 data 自然是返回 hash 的函数，至于返回 hash 的 key 是来自于你的 openbuildservice.mustache 模板。 但也有一些 reserved names 比如 link title favicon image，可以看 layout.rb 的 details 函数。</p>
+<p>而 <code>include HTML</code> 的作用是这样的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">HTML</span>
+      <span style="color:#000;font-weight:bold">private</span>
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">raw</span>
+        <span style="color:#008080">@raw</span> <span style="color:#000;font-weight:bold">||=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Helpers</span><span style="color:#000;font-weight:bold">.</span>fetch_html_doc(url, http_params)
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>我们可以得到一个名为 raw 的方法，返回使用 rubygem nokogiri 处理过的 URI，你可以从里面挑一些文本来填充你的 data 函数的 hash 的值。</p>
+<p>下面我们来写我们的 openbuildservice.mustache 模板。mustache 语法在<a href="https://mustache.github.io/mustache.5.html">这里</a>。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{#image}}&lt;<span style="color:#000080">img</span> <span style="color:#008080">src</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{image}}&#39;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;thumbnail&#39;</span>/&gt;{{/image}}
+&lt;<span style="color:#000080">h4</span>&gt;&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{link}}&#39;</span> <span style="color:#008080">target</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;_blank&#39;</span>&gt;{{title}}&lt;/<span style="color:#000080">a</span>&gt;&lt;/<span style="color:#000080">h4</span>&gt;
+&lt;<span style="color:#000080">p</span>&gt;{{description}}&lt;/<span style="color:#000080">p</span>&gt;
+{{#request}}
+&lt;<span style="color:#000080">p</span>&gt;Submit package &lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{source_prj_link}}&#39;</span>&gt;{{source_prj}}&lt;/<span style="color:#000080">a</span>&gt; / &lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{source_pkg_link}}&#39;</span>&gt;{{source_pkg}}&lt;/<span style="color:#000080">a</span>&gt; to package &lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{dest_prj_link}}&#39;</span>&gt;{{dest_prj}}&lt;/<span style="color:#000080">a</span>&gt; / &lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{dest_pkg_link}}&#39;</span>&gt;{{dest_pkg}}&lt;/<span style="color:#000080">a</span>&gt;&lt;/<span style="color:#000080">p</span>&gt;
+&lt;<span style="color:#000080">p</span>&gt;
+&lt;<span style="color:#000080">img</span> /&gt;
+Created by &lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{author_link}}&#39;</span> <span style="color:#008080">target</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;_blank&#39;</span>&gt;{{author_name}}&lt;/<span style="color:#000080">a</span>&gt;
+&lt;<span style="color:#000080">span</span>&gt;{{fuzzy_time}}&lt;/<span style="color:#000080">span</span>&gt;
+&lt;/<span style="color:#000080">p</span>&gt;
+&lt;<span style="color:#000080">p</span>&gt;
+&lt;<span style="color:#000080">img</span> /&gt;
+In state
+&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{link}}#request_history&#39;</span>&gt;{{request_state}}&lt;/<span style="color:#000080">a</span>&gt;
+&lt;/<span style="color:#000080">p</span>&gt;
+{{/request}}
+&lt;<span style="color:#000080">ul</span>&gt;
+{{#packages}}
+&lt;<span style="color:#000080">li</span>&gt;
+&lt;<span style="color:#000080">ul</span>&gt;
+&lt;<span style="color:#000080">li</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;obs-buildstatus&#34;</span>&gt;
+&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{repo_uri}}&#39;</span> <span style="color:#008080">target</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;_blank&#39;</span>&gt;{{repo}}&lt;/<span style="color:#000080">a</span>&gt;
+&lt;/<span style="color:#000080">li</span>&gt;
+&lt;<span style="color:#000080">li</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;obs-buildstatus&#34;</span>&gt;
+{{arch}}
+&lt;/<span style="color:#000080">li</span>&gt;
+&lt;<span style="color:#000080">li</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;obs-buildstatus&#34;</span>&gt;
+&lt;<span style="color:#000080">a</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{status_class}}&#34;</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;{{buildlog}}&#39;</span> <span style="color:#008080">target</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;_blank&#39;</span>&gt;{{buildstatus}}&lt;/<span style="color:#000080">a</span>&gt;
+&lt;/<span style="color:#000080">li</span>&gt;
+&lt;/<span style="color:#000080">ul</span>&gt;
+&lt;/<span style="color:#000080">li</span>&gt;
+{{/packages}}
+&lt;/<span style="color:#000080">ul</span>&gt;
+</code></pre></div><p>这个基本上就是 html。相信比较好理解，build.opensuse.org 上面能够带 show 的链接主要就四种：user, project, package 和 request。其中前两者没什么好说的，就是有 avatar 就显示，没有就不显示呗。request 就显示提交人的头像，同时显示来源和去向。至于贴 pacakge 的，最值得预览的就是它的编译状态。所以后两者用了条件判断。就是 data 给的 hash 里 package/request key 的值不为空就显示这些。同时根据这些我们也就能知道 data 函数需要什么了，填充一下脚手架：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">OpenBuildServiceOnebox</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">Engine</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">LayoutSupport</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">HTML</span>
+      always_https
+
+      matches_regexp(<span style="color:#009926">%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}</span>)
+
+      <span style="color:#000;font-weight:bold">private</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">data</span>
+        { 
+          <span style="color:#990073">image</span>: avatar,
+          <span style="color:#990073">link</span>: link,
+          <span style="color:#990073">title</span>: title,
+          <span style="color:#990073">description</span>: user? ? raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;#home-username&#39;</span>)<span style="color:#000;font-weight:bold">.</span>text : raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;#description-text&#39;</span>)<span style="color:#000;font-weight:bold">.</span>text,
+          <span style="color:#990073">request</span>: request,
+          <span style="color:#990073">packages</span>: package
+        }
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">avatar</span>
+        <span style="color:#000;font-weight:bold">if</span> request?
+          author_avatar
+        <span style="color:#000;font-weight:bold">elsif</span> user?
+          raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.home-avatar&#39;</span>)<span style="color:#000;font-weight:bold">.</span>attr(<span style="color:#d14">&#39;src&#39;</span>)
+        <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">title</span>
+        <span style="color:#000;font-weight:bold">if</span> user?
+          raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;#home-realname&#39;</span>)<span style="color:#000;font-weight:bold">.</span>text
+        <span style="color:#000;font-weight:bold">else</span>
+          link<span style="color:#000;font-weight:bold">.</span>gsub(<span style="color:#009926">%r{^.*show/}</span>, <span style="color:#d14">&#39;&#39;</span>)
+        <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">user?</span>
+        link <span style="color:#000;font-weight:bold">=~</span> <span style="color:#009926">%r{/user/}</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">request?</span>
+        link <span style="color:#000;font-weight:bold">=~</span> <span style="color:#009926">%r{/request/}</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">package?</span>
+        link <span style="color:#000;font-weight:bold">=~</span> <span style="color:#009926">%r{/package/}</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">host</span>
+        <span style="color:#d14">&#39;https://&#39;</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#008080">URI</span><span style="color:#000;font-weight:bold">.</span>parse(link)<span style="color:#000;font-weight:bold">.</span>host
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">author_link</span>
+        host <span style="color:#000;font-weight:bold">+</span> raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.clean_list li a&#39;</span>)<span style="color:#000;font-weight:bold">.</span>first<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;href&#39;</span><span style="color:#000;font-weight:bold">]</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">author_avatar</span>
+        author_html <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(<span style="color:#0086b3">open</span>(author_link))
+        author_html<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.home-avatar&#39;</span>)<span style="color:#000;font-weight:bold">.</span>attr(<span style="color:#d14">&#39;src&#39;</span>)
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">request</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">unless</span> request?
+
+        <span style="color:#000;font-weight:bold">[</span>{
+          <span style="color:#d14">&#34;author_link&#34;</span>: author_link,
+          <span style="color:#d14">&#34;author_name&#34;</span>: <span style="color:#008080">File</span><span style="color:#000;font-weight:bold">.</span>basename(author_link),
+          <span style="color:#d14">&#34;fuzzy_time&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.clean_list li span.fuzzy-time&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>text,
+          <span style="color:#d14">&#34;request_state&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.clean_list li a&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">].</span>text,
+          <span style="color:#d14">&#34;source_prj_link&#34;</span>: host <span style="color:#000;font-weight:bold">+</span> raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.project&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>attr(<span style="color:#d14">&#39;href&#39;</span>),
+          <span style="color:#d14">&#34;source_prj&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.project&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>text,
+          <span style="color:#d14">&#34;source_pkg_link&#34;</span>: host <span style="color:#000;font-weight:bold">+</span> raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.package&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>attr(<span style="color:#d14">&#39;href&#39;</span>),
+          <span style="color:#d14">&#34;source_pkg&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.package&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>text,
+          <span style="color:#d14">&#34;dest_prj_link&#34;</span>: host <span style="color:#000;font-weight:bold">+</span> raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.project&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">].</span>attr(<span style="color:#d14">&#39;href&#39;</span>),
+          <span style="color:#d14">&#34;dest_prj&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.project&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">].</span>text,
+          <span style="color:#d14">&#34;dest_pkg_link&#34;</span>: host <span style="color:#000;font-weight:bold">+</span> raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.package&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">].</span>attr(<span style="color:#d14">&#39;href&#39;</span>),
+          <span style="color:#d14">&#34;dest_pkg&#34;</span>: raw<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;a.package&#39;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">].</span>text
+        }<span style="color:#000;font-weight:bold">]</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">package</span>
+        reload_id <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">if</span> request?
+                      <span style="color:#d14">&#39;result_reload_0_0&#39;</span>
+                    <span style="color:#000;font-weight:bold">elsif</span> package?
+                      <span style="color:#d14">&#39;result_reload__0&#39;</span>
+                    <span style="color:#000;font-weight:bold">end</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">unless</span> reload_id
+
+        buildstatus(reload_id)
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这个 buildstatus 是最闹心的，它是 javascript，用 nokogiri 直接取是没有的。最后没办法我用 watir gem 去点了一下刷新按钮再取就有了，代码如下：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">buildstatus</span>(reload_id)
+        browser <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Watir</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Browser</span><span style="color:#000;font-weight:bold">.</span>new(<span style="color:#990073">:chrome</span>, <span style="color:#990073">chromeOptions</span>: { <span style="color:#990073">args</span>: <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;--headless&#39;</span>, <span style="color:#d14">&#39;--window-size=1200x600&#39;</span>, <span style="color:#d14">&#39;--no-sandbox&#39;</span>, <span style="color:#d14">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#000;font-weight:bold">]</span> })
+        browser<span style="color:#000;font-weight:bold">.</span>goto(link)
+        browser<span style="color:#000;font-weight:bold">.</span>image(<span style="color:#0086b3">id</span>: reload_id)<span style="color:#000;font-weight:bold">.</span>click
+
+        doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(browser<span style="color:#000;font-weight:bold">.</span>html)<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;#package-buildstatus&#39;</span>)
+
+        elements <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>xpath(<span style="color:#d14">&#39;//div[@id=&#34;package-buildstatus&#34;]/table/tbody/tr&#39;</span>)
+        packages <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+        elements<span style="color:#000;font-weight:bold">.</span>each <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>element<span style="color:#000;font-weight:bold">|</span>
+          repo <span style="color:#000;font-weight:bold">=</span> element<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.no_border_bottom a&#39;</span>)
+          arch <span style="color:#000;font-weight:bold">=</span> element<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.arch div&#39;</span>)
+          build <span style="color:#000;font-weight:bold">=</span> element<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#39;.buildstatus a&#39;</span>)
+          repo_uri <span style="color:#000;font-weight:bold">=</span> repo<span style="color:#000;font-weight:bold">.</span>empty? ? <span style="color:#d14">&#39;&#39;</span> : host <span style="color:#000;font-weight:bold">+</span> repo<span style="color:#000;font-weight:bold">.</span>attr(<span style="color:#d14">&#39;href&#39;</span>)<span style="color:#000;font-weight:bold">.</span>text<span style="color:#000;font-weight:bold">.</span>strip
+          repo_text <span style="color:#000;font-weight:bold">=</span> repo<span style="color:#000;font-weight:bold">.</span>empty? ? <span style="color:#d14">&#39;&#39;</span> : repo<span style="color:#000;font-weight:bold">.</span>text
+          status_class <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">if</span> build<span style="color:#000;font-weight:bold">.</span>text <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;unresolvable&#39;</span> <span style="color:#000;font-weight:bold">||</span> build<span style="color:#000;font-weight:bold">.</span>text <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;failed&#39;</span>
+                           <span style="color:#d14">&#39;obs-status-red&#39;</span>
+                         <span style="color:#000;font-weight:bold">elsif</span> build<span style="color:#000;font-weight:bold">.</span>text <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;succeeded&#39;</span>
+                           <span style="color:#d14">&#39;obs-status-green&#39;</span>
+                         <span style="color:#000;font-weight:bold">else</span>
+                           <span style="color:#d14">&#39;obs-status-grey&#39;</span>
+                         <span style="color:#000;font-weight:bold">end</span>
+          packages <span style="color:#000;font-weight:bold">&lt;&lt;</span> { <span style="color:#d14">&#34;repo_uri&#34;</span>: repo_uri, <span style="color:#d14">&#34;repo&#34;</span>: repo_text, <span style="color:#d14">&#34;arch&#34;</span>: arch<span style="color:#000;font-weight:bold">.</span>text<span style="color:#000;font-weight:bold">.</span>strip, <span style="color:#d14">&#34;buildlog&#34;</span>: host <span style="color:#000;font-weight:bold">+</span> build<span style="color:#000;font-weight:bold">.</span>attr(<span style="color:#d14">&#39;href&#39;</span>)<span style="color:#000;font-weight:bold">.</span>text<span style="color:#000;font-weight:bold">.</span>strip, <span style="color:#d14">&#34;status_class&#34;</span>: status_class, <span style="color:#d14">&#34;buildstatus&#34;</span>: build<span style="color:#000;font-weight:bold">.</span>text }
+        <span style="color:#000;font-weight:bold">end</span>
+
+        packages
+      <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这样基本就写好了。onebox 是支持测试的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/discourse/onebox
+<span style="color:#0086b3">cd</span> onebox
+把 openbuildservice_onebox.rb 丢到 lib/onebox/engine，openbuildservice.mustache 丢到 templates
+/usr/bin/bundler.ruby2.7 <span style="color:#0086b3">exec</span> /usr/bin/rake.ruby2.7 server
+</code></pre></div><p>然后你可以访问网页测试你写的引擎好使不好使。</p>
+
+			</div>
+			
+			<div>
+				<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
+				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
+				
+				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
+
+</body>
+</html>

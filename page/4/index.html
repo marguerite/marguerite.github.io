@@ -195,6 +195,21 @@ PS2： PS1里面刺到的那些自不量力自以为是的家伙，建议读下�
 </article>
 
 		
+			<article>
+	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"></a></h1>
+	<time>01.01.0001 00:00</time>
+	
+	<div>
+		为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine 上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
+我们先准备一个脚手架 openbuildservice_onebox.rb
+module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+		
+			<a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">Read more...</a>
+		
+	</div>
+</article>
+
+		
 		<div>
 
 	<a href="/page/3/">Previous Page</a>
