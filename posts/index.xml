@@ -6,7 +6,31 @@
     <description>Recent content in Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 28 Nov 2020 14:59:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 28 Nov 2020 16:07:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</title>
+      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</link>
+      <pubDate>Sat, 28 Nov 2020 16:07:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</guid>
+      <description>我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&amp;#39;--headless&amp;#39;, &amp;#39;--window-size=1200x600&amp;#39;, &amp;#39;--no-sandbox&amp;#39;, &amp;#39;--disable-dev-shm-usage&amp;#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&amp;lt;div accesskey=&amp;#39;r&amp;#39; class=&amp;#39;btn btn-outline-primary build-refresh float-right&amp;#39; onclick=&amp;#39;updateBuildResult(&amp;amp;#39;&amp;amp;#39;)&amp;#39; title=&amp;#39;Refresh Build Results&amp;#39;&amp;gt; Refresh &amp;lt;i class=&amp;#39;fas fa-sync-alt&amp;#39; id=&amp;#39;build-reload&amp;#39;&amp;gt;&amp;lt;/i&amp;gt; &amp;lt;/div&amp;gt; 点击它的时候执行的是“updateBuildResult(&#39;&#39;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：</description>
+    </item>
+    
+    <item>
+      <title>为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</title>
+      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</link>
+      <pubDate>Sat, 28 Nov 2020 16:07:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</guid>
+      <description>上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
+我们先准备一个脚手架 openbuildservice_onebox.rb
+module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！</description>
+    </item>
+    
     <item>
       <title>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</title>
       <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</link>
@@ -650,17 +674,6 @@ PS1：
  因为两相对比，外交方面天朝那个姜大姐要比推上这帮“言语上的侩子手，行动上的窝囊废”要成熟的多，至于CCAV为什么不报道真相，a 宣传喉舌什么时候有过真相？ b 我朝除了新闻时间全部转发朝鲜人民，你们是不是吐了？拜托，好歹我们也是泱泱上国，附属国互相打去，页眉页脚给个脚注就ok，要是真惹了宗主国不爽，嘿早就偷摸过鸭绿江了报道个啥子？不动即是真不在乎。 万一人家卡扎菲是抱着地狱不空我不成佛的心态来接触，曲线拯救你们这帮水深火热呢？若干年后wikileaks一出，你们这帮“言语上的侩子手，行动上的窝囊废”是不是又两边不是人了？  视频在此：
 PS2： PS1里面刺到的那些自不量力自以为是的家伙，建议读下面书籍镀镀金：
  《美国种族简史》，托马斯索威尔，当当网，amazon，tb商城有售 《乌合之众》，古斯塔夫勒庞  </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</guid>
-      <description>为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine 上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
-我们先准备一个脚手架 openbuildservice_onebox.rb
-module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。</description>
     </item>
     
   </channel>

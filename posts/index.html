@@ -27,6 +27,38 @@
 
 		
 			<article>
+	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></h1>
+	<time>28.11.2020 16:07</time>
+	
+	<div>
+		我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult('')”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：
+		
+			<a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></h1>
+	<time>28.11.2020 16:07</time>
+	
+	<div>
+		上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
+我们先准备一个脚手架 openbuildservice_onebox.rb
+module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！
+		
+			<a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
 	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></h1>
 	<time>28.11.2020 14:59</time>
 	
@@ -165,61 +197,6 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 </article>
 
 		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">RPM specfile 中  值的研究</a></h1>
-	<time>02.08.2015 00:00</time>
-	
-	<div>
-		研究这个问题是因为论坛上的一个讨论：zypper reinstall package
-略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：
-第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：
-if [ $1 == 0 ] ; then  $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
-http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm
-第二个是 RPM reinstall 的作业流程是怎样的，是遵循升级的流程也就是：
-软件包升级的过程是先安装新包后卸载旧包，只有来自旧包的差异文件会被删除。也就是 pre -&gt; install -&gt; post; preun -&gt; uninstall -&gt; postun
-还是另有一个流程。$1 值的变化可以推测出这个问题的答案。
-第三个是使用 zypper 和 rpm 分别进行重装，$1 值的变动是不是一致的。
-这个问题我们需要做一个实证，代码在这里：
-https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo
-相应的测试用 RPM 也可以在那边取得。下面直接上结果：
-sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm drwxr-xr-x 1 root root 0 8 月 2 22:25 demo  通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。
-		
-			<a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">关于 Deepin 用户开发者大会的浅见</a></h1>
-	<time>11.07.2014 00:00</time>
-	
-	<div>
-		这篇文章是唱反调的，可能会不舒服的可以离席了。
-最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
-先说两点：
-(1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
-第一，我没有直观感受过 Deepin 作为一个发行版有多少用户（不是 Deepin Music 这些应用软件），这不像 Ubuntu 那么明显，所以从用户基数的角度来看，我没有概念，也就没有说酸的基础。
-第二，我这里说的是他们的战略大方向，他们拥抱了哪些技术，营销的定位，这些东西，而不是去像黑 Ubuntu 那样，“哈 U 的用户用 U 都是为了让别人知道它在用 Linux 而不是为了解决自己的需求”。
-深度团队是 Linux 中文圈里比较靠谱的团队。另一个比较靠谱的我认为是安同。而优麒麟处在第二梯队，遗产流的那种。后面如果还记得优麒麟的话，可能会拉它出来做反例。唉，我也勉强算 Linux 中文圈的大前辈了，这种褒贬倾向真不该轻易流露，会给别人造成负担的。
-首先深度团队的人比较 nice。我记得有一个陈祥帮吧，曾经在 openSUSE 中文论坛给我发私信说两个社区合作的事情，当时正好生活上有一些变动，后来就不了了之了（欢迎重启）。但总体印象较好。现在的“国产操作系统”的人有一点不好，为了吸引用户而越来越没下限了，有些时候觉得跟百度 Linux 吧的人差不多。深度算是有一些水准的，相对于同样没有经历过大发行版社区培养的人来说。
-其次深度的人相对比较能够出活儿。他们有 30 多个人，武汉有深之度公司，连中文圈比较稀缺的画师娘都招了，像「深谈」这样的应用程序还是很惊艳的。当然激情上面应该比安同（骚年强则中国强）要差一些，毕竟是领钱干活的个人有个回报率和职业发展的考量，但比起优麒麟眉毛胡子一把抓，开发者不少，成果稀少（估计是瞄准高端定制市场和政府采购去了），还是要好一些。
-第三他们有想法，并且一定程度上比较能够遵守规则，虽然对上游的贡献不是很多，但是对自己的成果的态度还是很开放的。
-所以真心希望他们能够出彩。
-铺垫完了，下面开黑：
-Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没什么好黑的。甚至还有点小艳羡，比如那一大堆赞助伙伴和合作媒体，有公司实体，我们这些爱好者群体和国外机构在华分支在本地化上确实比不了。
-主要黑两点：
-默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
-我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
-首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
-先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。
-		
-			<a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">Read more...</a>
-		
-	</div>
-</article>
-
-		
 		<div>
 
 1 of 4
@@ -237,15 +214,15 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 		<div>
 			<ul>
 				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
+				
 				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
 				
 				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
 				
 				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
-				
-				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
-				
-				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
 				
 			</ul>
 		</div>

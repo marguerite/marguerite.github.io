@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</h1>
+			<time>28.11.2020 16:07</time>
+			<div>
+				<p>我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    browser <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Watir</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Browser</span><span style="color:#000;font-weight:bold">.</span>new(<span style="color:#990073">:chrome</span>, <span style="color:#990073">chromeOptions</span>: { <span style="color:#990073">args</span>: <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;--headless&#39;</span>, <span style="color:#d14">&#39;--window-size=1200x600&#39;</span>, <span style="color:#d14">&#39;--no-sandbox&#39;</span>, <span style="color:#d14">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#000;font-weight:bold">]</span> })
+    browser<span style="color:#000;font-weight:bold">.</span>goto(link)
+    browser<span style="color:#000;font-weight:bold">.</span>image(<span style="color:#0086b3">id</span>: reload_id)<span style="color:#000;font-weight:bold">.</span>click
+</code></pre></div><p>但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。</p>
+<p>我们测试用的界面是 <a href="https://build.opensuse.org/package/show/home:MargueriteSu/marketo">marketo</a> package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">div</span> <span style="color:#008080">accesskey</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;r&#39;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;btn btn-outline-primary build-refresh float-right&#39;</span> <span style="color:#008080">onclick</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39;</span> <span style="color:#008080">title</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;Refresh Build Results&#39;</span>&gt;
+      Refresh
+      &lt;<span style="color:#000080">i</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;fas fa-sync-alt&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;build-reload&#39;</span>&gt;&lt;/<span style="color:#000080">i</span>&gt;
+    &lt;/<span style="color:#000080">div</span>&gt;
+</code></pre></div><p>点击它的时候执行的是“updateBuildResult('')”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">script</span> <span style="color:#008080">src</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;</span>&gt;&lt;/<span style="color:#000080">script</span>&gt;
+</code></pre></div><p>使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#000;font-weight:bold">function</span> updateBuildResult(t) {
+    <span style="color:#000;font-weight:bold">var</span> i <span style="color:#000;font-weight:bold">=</span> []
+      , o <span style="color:#000;font-weight:bold">=</span> {};
+    $(<span style="color:#d14">&#34;.result div.collapse:not(.show)&#34;</span>).map(<span style="color:#000;font-weight:bold">function</span>(e, t) {
+        <span style="color:#000;font-weight:bold">var</span> n <span style="color:#000;font-weight:bold">=</span> $(t).data(<span style="color:#d14">&#34;main&#34;</span>) <span style="color:#000;font-weight:bold">?</span> $(t).data(<span style="color:#d14">&#34;main&#34;</span>) <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#34;project&#34;</span>;
+        o[n] <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> (o[n] <span style="color:#000;font-weight:bold">=</span> []),
+        $(t).data(<span style="color:#d14">&#34;repository&#34;</span>) <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span> <span style="color:#000;font-weight:bold">?</span> i.push(n) <span style="color:#000;font-weight:bold">:</span> o[n].push($(t).data(<span style="color:#d14">&#34;repository&#34;</span>))
+    });
+    <span style="color:#000;font-weight:bold">var</span> e <span style="color:#000;font-weight:bold">=</span> $(<span style="color:#d14">&#34;#buildresult&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-box&#34;</span>).data();
+    e.show_all <span style="color:#000;font-weight:bold">=</span> $(<span style="color:#d14">&#34;#show_all_&#34;</span> <span style="color:#000;font-weight:bold">+</span> t).is(<span style="color:#d14">&#34;:checked&#34;</span>),
+    e.collapsedPackages <span style="color:#000;font-weight:bold">=</span> i,
+    e.collapsedRepositories <span style="color:#000;font-weight:bold">=</span> o,
+    $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-reload&#34;</span>).addClass(<span style="color:#d14">&#34;fa-spin&#34;</span>),
+    $.ajax({
+        url<span style="color:#000;font-weight:bold">:</span> $(<span style="color:#d14">&#34;#buildresult&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-urls&#34;</span>).data(<span style="color:#d14">&#34;buildresultUrl&#34;</span>),
+        data<span style="color:#000;font-weight:bold">:</span> e,
+        success<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>(e) {
+            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; .result&#34;</span>).html(e)
+        },
+        error<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>() {
+            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; .result&#34;</span>).html(<span style="color:#d14">&#34;&lt;p&gt;No build results available&lt;/p&gt;&#34;</span>)
+        },
+        complete<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>() {
+            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-reload&#34;</span>).removeClass(<span style="color:#d14">&#34;fa-spin&#34;</span>),
+            initializePopovers(<span style="color:#d14">&#39;[data-toggle=&#34;popover&#34;]&#39;</span>)
+        }
+    })
+}
+</code></pre></div><p>可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。</p>
+<p>我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：</p>
+<p>url 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">div</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;bg-light&#39;</span> <span style="color:#008080">data-buildresult-url</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;/package/buildresult&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;buildresult-urls&#39;</span>&gt;
+    &lt;<span style="color:#000080">ul</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;nav nav-tabs pt-2 px-3 flex-nowrap&#39;</span> <span style="color:#008080">data-index</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;&#39;</span> <span style="color:#008080">data-package</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;marketo&#39;</span> <span style="color:#008080">data-project</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;home:MargueriteSu&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;buildresult-box&#39;</span> <span style="color:#008080">role</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;tablist&#39;</span>&gt;
+</code></pre></div><p>是 <code>/package/buildresult</code>。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 <code>&lt;div class=&quot;result&quot;&gt;&lt;/div&gt;</code> 下面的 <code>&lt;div class=&quot;collapsed&quot;</code> 里的 <code>data-main</code> 和 <code>data-repository</code> 项。但网页源代码里 <code>&lt;div class=&quot;result&quot;&gt;</code> 是空的。</p>
+<p>我想这跟 <code>updateBuildResult()</code> 这个函数需要面对的情景有关的，我们现在的情景是 div result 是空的，而它在按钮被按下过一次后是有值的。反正 Get 请求没有参数都可以，我们就先来写一下试一试也无妨：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#34;net/http&#34;</span>
+<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;uri&#34;</span>
+
+url <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;https://build.opensuse.org/package/buildresult?index=&amp;package=marketo&amp;project=home%3AMargueriteSu&#39;</span>
+uri <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(url)
+
+resp <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>get_response(uri)
+<span style="color:#0086b3">puts</span> resp<span style="color:#000;font-weight:bold">.</span>body
+</code></pre></div><p>结果返回了 404。一想也对嘛，毕竟 openSUSE 的 web developer 是 darix, 不可能不验证嘛。但是 package build status 是不需要登录 openSUSE 账户就能看见的，那么验证的方式应该就是 cookie 了，我们在 chriomium 网页调试器的 Netowrk 界面点开请求看一下是这样的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#000080">:authority</span>:<span style="color:#bbb"> </span>build.opensuse.org<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">:method</span>:<span style="color:#bbb"> </span>GET<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">:path</span>:<span style="color:#bbb"> </span>/package/buildresult?project=home%3AMargueriteSu&amp;package=marketo&amp;index=&amp;show_all=false<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">:scheme</span>:<span style="color:#bbb"> </span>https<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">accept</span>:<span style="color:#bbb"> </span><span style="color:#999;font-weight:bold;font-style:italic">*/*</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">accept-encoding</span>:<span style="color:#bbb"> </span>gzip, deflate, br<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">accept-language</span>:<span style="color:#bbb"> </span>zh-CN,zh;q=0.9,en;q=0.8,fr;q=0.7,ja;q=0.6,zh-TW;q=0.5<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">cookie</span>:<span style="color:#bbb"> </span>_obs_api_session=Wofeza%2B6Orv1yBRudIdkuaVk2%2FrGU3aawTLraZjoBHDZgiAghLJ6Rty8%2F6LkYJq35V1X9AewWVteQaKjbc8bkBz%2BCXVgvnw1LCHTLENEcJ%2BOrDZduKxogn92p8JtGkrsAg2eCFNIf9PlHqZUO3VRxsQCCchW0Yctf%2FVKS5Dt9w%2FFK4MuNgcepd%2F9efbaMGuD8tPXH6BswiOb6AhF9cMvWB09UiQM0jB5Pw0J6L0x6hTOYNigz7%2BFc1yJxlgMK%2B39RQCEBGUPuvB8npwzovKq9I0ufkQYooTln0GX4trsfpjq4xN4JgGo1WxUlcVurN4AOfg%2FFw%3D%3D--6GcZFXO4PpWG7EZU--HxRMQH1UYEi16AZFmLSEnw%3D%3D<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">if-none-match</span>:<span style="color:#bbb"> </span>W/&#34;f218b807b90379d9cf5bbc186b1f0310&#34;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">referer</span>:<span style="color:#bbb"> </span>https://build.opensuse.org/package/show/home:MargueriteSu/marketo<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-dest</span>:<span style="color:#bbb"> </span>empty<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-mode</span>:<span style="color:#bbb"> </span>cors<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-site</span>:<span style="color:#bbb"> </span>same-origin<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">user-agent</span>:<span style="color:#bbb"> </span>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">x-csrf-token</span>:<span style="color:#bbb"> </span>iSzEuQG8YQKZwuCk7Ka5dhIJjhKmSyCIckRXjmjqt+IKhO0R4x3L6r639vSiF0RA3KOMVedCT+zBUp0JIK/xNg==<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000080">x-requested-with</span>:<span style="color:#bbb"> </span>XMLHttpRequest<span style="color:#bbb">
+</span></code></pre></div><p>好么，不只是 cookie 里有 token，还有 x-csrf-token。验证一般就是验证 User Agent 是不是爬虫，cookie 内容，再就是如果是 ajax 请求，我们用普通的 GET 可能也不行，服务器可能会查 x-requested-with 甚至是 referer。</p>
+<p>cookie 我们可以通过先访问一下网页来得到，但是 csrf-token 怎么得到呢？网页源代码里面有：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">meta</span> <span style="color:#008080">name</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;csrf-token&#34;</span> <span style="color:#008080">content</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;XJTaLoLQsp6EyezGStiZgW2O5FectHPabI+hcnEdT/jfPPOGYHEYdqO8+pYEaWS3oyTmEN29HL7fmWv1OVgJLA==&#34;</span> /&gt;
+</code></pre></div><p>同样这些 index, package, project 也都在网页源代码里，show_all 就一直让它为 false 好了。于是我们写出了第二版：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#34;net/http&#34;</span>
+<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;uri&#34;</span>
+<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;nokogiri&#34;</span>
+
+url <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;https://build.opensuse.org/package/show/home:MargueriteSu/marketo&#39;</span>
+uri <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(url)
+
+resp <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>get_response(uri)
+
+cookie <span style="color:#000;font-weight:bold">=</span> resp<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Set-Cookie&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">获取</span> cookie
+
+doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(resp<span style="color:#000;font-weight:bold">.</span>body)
+
+token <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;meta[name=&#39;csrf-token&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;content&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">抓</span> csrf token
+path <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;div[id=&#39;buildresult-urls&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-buildresult-url&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">抓</span> path
+index <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-index&#39;</span><span style="color:#000;font-weight:bold">]</span>
+package <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-package&#39;</span><span style="color:#000;font-weight:bold">]</span>
+project <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-project&#39;</span><span style="color:#000;font-weight:bold">]</span>
+
+query <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;index&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>index,<span style="color:#d14">&#34;package&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>package,<span style="color:#d14">&#34;project&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>project,<span style="color:#d14">&#34;show_all&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">造一个</span> uri <span style="color:#a61717;background-color:#e3d2d2">的</span> query
+new_uri <span style="color:#000;font-weight:bold">=</span> uri
+new_uri<span style="color:#000;font-weight:bold">.</span>path <span style="color:#000;font-weight:bold">=</span> path
+new_uri<span style="color:#000;font-weight:bold">.</span>query <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span><span style="color:#000;font-weight:bold">.</span>encode_www_form(query)
+
+http <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>new(new_uri<span style="color:#000;font-weight:bold">.</span>host, new_uri<span style="color:#000;font-weight:bold">.</span>port)
+http<span style="color:#000;font-weight:bold">.</span>use_ssl <span style="color:#000;font-weight:bold">=</span> new_uri<span style="color:#000;font-weight:bold">.</span>scheme <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;https&#39;</span>
+request <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Get</span><span style="color:#000;font-weight:bold">.</span>new(new_uri)
+request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Cookie&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> cookie
+request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;X-Requested-With&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;XMLHttpRequest&#39;</span>
+request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;X-CSRF-Token&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> token
+request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Referer&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> uri<span style="color:#000;font-weight:bold">.</span>to_s
+request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;User-Agent&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36&#39;</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">从上面扒的</span> <span style="color:#008080">UA</span>
+
+response <span style="color:#000;font-weight:bold">=</span> http<span style="color:#000;font-weight:bold">.</span>request(request)
+<span style="color:#0086b3">puts</span> response<span style="color:#000;font-weight:bold">.</span>body
+</code></pre></div><p>运行一下，结果得到了正确的页面。我们这么直接 puts 肯定不行，需要一个数据结构的嘛：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#39;json&#39;</span>
+new_doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(response<span style="color:#000;font-weight:bold">.</span>body)
+
+buildstatus <span style="color:#000;font-weight:bold">=</span> new_doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;div[id=&#39;package-buildstatus&#39;]&#34;</span>)
+repositories <span style="color:#000;font-weight:bold">=</span> buildstatus<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;div[class*=&#39;show&#39;]&#34;</span>)
+
+buildresult <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">.</span>new
+repositories<span style="color:#000;font-weight:bold">.</span>each <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>repository<span style="color:#000;font-weight:bold">|</span>
+  target <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-repository&#39;</span><span style="color:#000;font-weight:bold">]</span>
+  arch <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;.repository-state&#34;</span>)<span style="color:#000;font-weight:bold">.</span>text()<span style="color:#000;font-weight:bold">.</span>strip!
+  state <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;.build-state&#34;</span>)<span style="color:#000;font-weight:bold">.</span>text()<span style="color:#000;font-weight:bold">.</span>strip!
+  h <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;arch&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>arch, <span style="color:#d14">&#34;state&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>state<span style="color:#000;font-weight:bold">]</span>
+  <span style="color:#000;font-weight:bold">if</span> buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">].</span>nil?
+    buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">Array</span><span style="color:#000;font-weight:bold">[</span>h<span style="color:#000;font-weight:bold">]</span>
+  <span style="color:#000;font-weight:bold">else</span>
+    buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">].</span>append(h)
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+
+<span style="color:#0086b3">puts</span> <span style="color:#008080">JSON</span><span style="color:#000;font-weight:bold">.</span>pretty_generate(buildresult)
+</code></pre></div><p>于是就得到了一个散列结构和很好看的输出：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#000080">&#34;openSUSE_Tumbleweed&#34;</span>: [
+    {
+      <span style="color:#000080">&#34;arch&#34;</span>: <span style="color:#d14">&#34;x86_64&#34;</span>,
+      <span style="color:#000080">&#34;state&#34;</span>: <span style="color:#d14">&#34;succeeded&#34;</span>
+    },
+    {
+      <span style="color:#000080">&#34;arch&#34;</span>: <span style="color:#d14">&#34;i586&#34;</span>,
+      <span style="color:#000080">&#34;state&#34;</span>: <span style="color:#d14">&#34;unresolvable&#34;</span>
+    }
+  ]
+}
+</code></pre></div><p>到了这里，我们只需要把这些测试代码变成一个 Class 写到 <code>engine/openbuildservice_onebox.rb</code> 里面去，就可以删掉 buildstatus 函数了。最终的结果见：<a href="https://github.com/openSUSE-zh/discourse-openbuildservice-onebox">discourse-openbuildservice-onebox</a></p>
+
+			</div>
+			
+			<div>
+				<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
+				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
+				
+				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
+
+</body>
+</html>
