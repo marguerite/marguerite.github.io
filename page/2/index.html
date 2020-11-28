@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-	<meta name="generator" content="Hugo 0.79.0-DEV" />
+	<meta name="generator" content="Hugo 0.78.1" />
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,11 +22,32 @@
 		
 		
 			<article>
+	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</a></h1>
+	<time>12.10.2013 00:00</time>
+	
+	<div>
+		做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk  下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解压：
+		
+			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
 	<h1><a href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/">openSUSE 特殊国情有关的 FAQ</a></h1>
 	<time>26.03.2013 00:00</time>
 	
 	<div>
-	        引子 —— 能解决的是技术，不能解决的是人心。
+		引子 —— 能解决的是技术，不能解决的是人心。
 为什么我们开发者要用 Gtalk 和 IRC？ 跟 Google 没一毛钱关系。我们需要一个全球性的网络，因为我们面对的不只是用户，还有其它国家地区的开发者。就 openSUSE 来说，我没有理由去要求台湾地区的开发者用 QQ，也没有理由去要求他们的用户在官方论坛转简体。我们需要开放而成熟的技术，以便于进行二次开发。二次开发就是「修复」一些原本没有「坏」的东西来满足自己的需要，非开放而不能为。Gtalk 后面的 XMPP 协议坏了吗？没有，但是我需要与 IRC #opensuse-cn 互通的机器人、需要群组机器人、需要网页的聊天记录，于是我「修复」了它。现在我们有了 ~~talk@suse.ws，有了 https://talk-marguerite.rhcloud.com。~~Update: Gtalk 群组地址变更为 talk@suse.org.cn。（IRC/Gtalk/QQ 群三网合一），聊天记录地址变更为 https://forum.suse.org.cn/log.html
 而 IRC 就像你们的 QQ 一样，我一样不爱用。我至今不会它的指令，也不会每天挂着。但是有需要我还是会去，就像开会要去会议室一样。你可以不参加会议，你可以选择不去会议室听自己非常想听的东西，但你不能要求别人围着你的桌子开会。
 为什么我们要用论坛？ 我们需要一个 default to open 的地方，能够存档我们回复过的东西，避免重复工作。
@@ -47,7 +68,7 @@
 	<time>23.03.2013 00:00</time>
 	
 	<div>
-	        这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
+		这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
 大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
 首先提到 openSUSE，大家想到的应该是：
  华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。  一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
@@ -69,7 +90,7 @@
 	<time>21.03.2013 00:00</time>
 	
 	<div>
-	        一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
+		一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
 （一） 中文社区
 Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区，Fedora 肯定是最爱交际的中文社区，openSUSE 肯定是最宅的中文社区。
 首先我们应该没有多少活跃的大学用户。我们的用户据我观察应该是企业用户居多。这种人的优点在于他们都非常强，缺点在于他们都非常懒。如果我能解决自己的问题，而且我只用 openSUSE 挣口粮，那我为什么要帮助你使用 openSUSE？你能想象一群 Intel 员工，SuSE 员工，中兴的软件开发科长做你的成员，然后中文社区的基础设施是一个人生前 22 年没见过立式服务器的女生搭建的么？就像我在 Gtalk 群里怒喷的一样：你们呀，什么都会，就是不帮我，对吧。
@@ -87,7 +108,7 @@ Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区�
 	<time>19.03.2013 00:00</time>
 	
 	<div>
-	        因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+		因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
 这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
 你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
 rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
@@ -104,7 +125,7 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
 	<time>17.03.2013 00:00</time>
 	
 	<div>
-	        Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
+		Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
 Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：
  不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。 在线时间不能保证。也就是说你没有 schduled_maintenance 的权利，只能它在线你就聊，它离线你就歇息。 大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。  所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。
 打听了一下，这种群聊是使用依云(@lilydjwg 写的两个软件在 VPS 上搭建的，分别是 xmpptalk 和 ircbindxmpp。
@@ -127,7 +148,7 @@ Openshift 折腾 xmpptalk
 	<time>15.03.2013 00:00</time>
 	
 	<div>
-	        Google Reader’s sunset is the dawn of ownCloud news.
+		Google Reader’s sunset is the dawn of ownCloud news.
 翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。
 相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000+。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
 是小企鹅输入法的作者翁学天让我意识到了：哦，好在还有替代。虽然我是它的简体中文翻译者，但是我以前真的不知道嘿嘿。
@@ -151,7 +172,7 @@ git clone https://github.com/owncloud/3rdparty  这是一些第三方的比较�
 	<time>08.03.2013 00:00</time>
 	
 	<div>
-	        亲爱的 openSUSE 贡献者们，
+		亲爱的 openSUSE 贡献者们，
 为了感谢您在过去的一年中为 openSUSE 项目所做的杰出贡献，值此新版发布在即，SUSE Desktop Team 的 FJKong 孔叔从 SUSE 市场部虎口夺食，抢到了一些礼品送给大家（实物图见下文）。礼品价值不是很高、数量也很少（因为我们没有社区经费，礼物也不是 SUSE 官方支出，纯属孔叔和市场部员工的个人情宜（？哈哈）得到的，所以我们会尽量把礼物交给已经证明最能呵护它们的贡献者），主要是为了表达一份微不足道的心意，openSUSE 没有忘记你们，正是你们或多或少的在他人眼里可能很怪很傻很宅的贡献，支持着 openSUSE 一直有勇气有动力面对不可知的未来，在这个 complicated 的世界里艰难前行。
 同时新官上任的 SUSE Desktop Lead 梁辰晔（Da Liang）梁叔（原 SUSE 北京服务器组的 Senior）携 Desktop Team 全体同仁 Lance， 王伶卓，向 openSUSE 中文圈的用户们致意。（郑宇 jzheng 郑叔从 SUSE 暂时跳槽到 Canonical 准备创业中，但仍然在 openSUSE 社区和论坛上积极出没）
 先上图（由于我个人并不参与此次礼品赠送，所以内部细节我可能描述的不是很清楚）：
@@ -172,7 +193,7 @@ Novell 杯具
 	<time>05.03.2013 00:00</time>
 	
 	<div>
-	        这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
+		这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
 Youku：
 Download:
 http://115.com/u/26338483
@@ -186,33 +207,12 @@ http://115.com/u/26338483
 	<time>24.02.2013 00:00</time>
 	
 	<div>
-	        自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
+		自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
 “战渣浪” 原理  Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。  来战！
 查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
 Input #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv': Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.
 		
 			<a href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">openSUSE 下玩围棋</a></h1>
-	<time>24.02.2013 00:00</time>
-	
-	<div>
-	        Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
-主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
-引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
-不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
-围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
-当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
-另外关于围棋程序比较好的网站是：Sensei&rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
- gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。  这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
- qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp &ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。  其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">Read more...</a>
 		
 	</div>
 </article>
@@ -237,6 +237,8 @@ Input #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.102
 		<div>
 			<ul>
 				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
 				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
 				
 				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
@@ -244,8 +246,6 @@ Input #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.102
 				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
 				
 				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
-				
-				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
 				
 			</ul>
 		</div>

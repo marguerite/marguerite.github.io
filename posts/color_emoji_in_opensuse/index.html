@@ -29,10 +29,10 @@
 <p>据我摸索的经验，字体的匹配分为三种场景</p>
 <p>第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。</p>
 <p>这部分的支持很简单，比如它要 Apple Color Emoji 或者 Segoe UI Emoji 我没有，可以写个 alias：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;alias&gt;</span>
-      <span style="color:#f92672">&lt;family&gt;</span>Apple Color Emoji<span style="color:#f92672">&lt;/family&gt;</span>
-      <span style="color:#f92672">&lt;accept&gt;&lt;family&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/family&gt;&lt;/accept&gt;</span>
-    <span style="color:#f92672">&lt;/alias&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;alias&gt;</span>
+  <span style="color:#000080">&lt;family&gt;</span>Apple Color Emoji<span style="color:#000080">&lt;/family&gt;</span>
+  <span style="color:#000080">&lt;accept&gt;&lt;family&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/family&gt;&lt;/accept&gt;</span>
+<span style="color:#000080">&lt;/alias&gt;</span>
 </code></pre></div><p>第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）</p>
 <p>这部分的支持也很简单，fontconfig 已经默认把 emoji 字体的 default family 全设置成 emoji 了，我们只需要通过 prefer 来实现发行版默认的 Colored Emoji 字体就行了，如果默认的是 Noto Color Emoji 那么什么都不用做。</p>
 <p>第三种是字符级别的（glyph），比如你所有的 sans-serif 字体里都没有这个 unicode codepoint 对应的 glyph。这个时候 pattern match 其实已经没用了，因为已经 out of range 了，所有的 sans-serif 都没有，那 sans-serif 的 pattern 也就没用了。它用的是 fc-scan 到的 unordered list，也就是在你系统里找有这个 glyph 的字体来显示。</p>
@@ -42,47 +42,47 @@
 <p>emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作为第一个字体出现。为了避免上述情况，现行的解决方案是先把 emoji 扔到前面，再把一个完全没有 emoji 的字体再扔到前面。但这么做的后果就是你的默认英文字体被替换了。而且在 CJK 中问题更加严重，我们本来就是通过把 CJK 字体扔到前面，再把英文字体再扔到前面（有的发行版省略了这步，导致实际上显示英文的不是发行版选定的英文字体，而是默认 CJK 字体中自带的英文部分）来实现中文显示的，这时候要多扔一个 emoji 字体，还要多扔一个 emojiless 的英文字体。扔的顺序很重要，导致好多按数字排列的 fontconfig conf 都要重构。</p>
 <p>我解决这个问题的思路不是去使用 prefer 这个严重依赖顺序而且脆弱的方案。我的思路是让出现在我选的 Emoji 字体之前的所有字体都是 emojiless 的。这样就不会破坏发行版默认的字体。</p>
 <p>我使用的是一个小众的方法，就是在 scan 的时候从已有字体中屏蔽特定字符集（charsets）。这个方法只有一个 RedHat 的 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=31969">bug#31969</a> 提到过，但是也没提过怎么看成功没成功，我把它摸索成熟了，下面给大家讲一讲：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">“scan”</span><span style="color:#f92672">&gt;</span>
-    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;string&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/string&gt;</span>
-    <span style="color:#f92672">&lt;/test&gt;</span>
-    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“charset”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“assign”</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;minus&gt;</span>
-            <span style="color:#f92672">&lt;name&gt;</span>charset<span style="color:#f92672">&lt;/name&gt;</span>
-            <span style="color:#f92672">&lt;charset&gt;</span>
-                <span style="color:#f92672">&lt;int&gt;</span>0x20<span style="color:#f92672">&lt;/int&gt;</span>
-                <span style="color:#f92672">&lt;range&gt;</span>
-                    <span style="color:#f92672">&lt;int&gt;</span>0x21<span style="color:#f92672">&lt;/int&gt;</span>
-                    <span style="color:#f92672">&lt;int&gt;</span>0x22<span style="color:#f92672">&lt;/int&gt;</span>
-                <span style="color:#f92672">&lt;/range&gt;</span>
-            <span style="color:#f92672">&lt;/charset&gt;</span>
-        <span style="color:#f92672">&lt;/minus&gt;</span>
-    <span style="color:#f92672">&lt;/edit&gt;</span>
-  <span style="color:#f92672">&lt;/match&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">&#34;scan&#34;</span><span style="color:#000080">&gt;</span>
+    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span><span style="color:#000080">&gt;</span>
+        <span style="color:#000080">&lt;string&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/string&gt;</span>
+    <span style="color:#000080">&lt;/test&gt;</span>
+    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;charset&#34;</span> <span style="color:#008080">mode=</span><span style="color:#d14">&#34;assign&#34;</span><span style="color:#000080">&gt;</span>
+        <span style="color:#000080">&lt;minus&gt;</span>
+            <span style="color:#000080">&lt;name&gt;</span>charset<span style="color:#000080">&lt;/name&gt;</span>
+            <span style="color:#000080">&lt;charset&gt;</span>
+                <span style="color:#000080">&lt;int&gt;</span>0x20<span style="color:#000080">&lt;/int&gt;</span>
+                <span style="color:#000080">&lt;range&gt;</span>
+                    <span style="color:#000080">&lt;int&gt;</span>0x21<span style="color:#000080">&lt;/int&gt;</span>
+                    <span style="color:#000080">&lt;int&gt;</span>0x22<span style="color:#000080">&lt;/int&gt;</span>
+                <span style="color:#000080">&lt;/range&gt;</span>
+            <span style="color:#000080">&lt;/charset&gt;</span>
+        <span style="color:#000080">&lt;/minus&gt;</span>
+    <span style="color:#000080">&lt;/edit&gt;</span>
+<span style="color:#000080">&lt;/match&gt;</span>
 </code></pre></div><p>以上就是方法，charset 支持 int 和 range。这里的 int 不是 interger 类型，实际上是个 Hex 类型 233，range 的两个字符是起止（包含起止）。</p>
 <p>然后在 FC_DEBUG=4 fc-match “Noto Color Emoji” 就能看到这样的 debug 输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    Add SubSt match
-    [test]
-         pattern any family Equal “Noto Color Emoji”
-    [edit]
-         Edit family Assign Minus charset;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Add SubSt match
+[test]
+     pattern any family Equal “Noto Color Emoji”
+[edit]
+     Edit family Assign Minus charset;
 </code></pre></div><p>但是除此之外什么都没有&hellip;于是我一直以为它没有生效。实际上需要这么测试：</p>
 <p>先做一个 local fonts.conf 把 Noto Color Emoji prepend_first：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;match&gt;</span>
-      <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“prepend_first”</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;string&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/string&gt;</span>
-      <span style="color:#f92672">&lt;/edit&gt;</span>
-    <span style="color:#f92672">&lt;/match&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
+  <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“prepend_first”</span><span style="color:#000080">&gt;</span>
+    <span style="color:#000080">&lt;string&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/string&gt;</span>
+  <span style="color:#000080">&lt;/edit&gt;</span>
+<span style="color:#000080">&lt;/match&gt;</span>
 </code></pre></div><p>然后通过：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    FC_DEBUG<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> pango-view -q -t <span style="color:#e6db74">&#39;🧀&#39;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | grep -o <span style="color:#e6db74">&#39;family: &#34;[^&#34;]\+&#39;</span> | cut -c 10- | tail -n <span style="color:#ae81ff">1</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008080">FC_DEBUG</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span> pango-view -q -t <span style="color:#d14">&#39;🧀&#39;</span> 2&gt;&amp;<span style="color:#099">1</span> | grep -o <span style="color:#d14">&#39;family: &#34;[^&#34;]\+&#39;</span> | cut -c 10- | tail -n <span style="color:#099">1</span>
 </code></pre></div><p>来看，正常这个 cheese 表情是 Noto Color Emoji 显示的，但是屏蔽了之后就不是了，说明屏蔽成功。</p>
 <p>(说点题外话，很多人不知道那个表情怎么打上去，可以通过 fcitx 的 unicode 输入模式实现，就是同时按 ctrl + alt + shift + space 四键，然后输入 0x 的 unicode codepoint，最后按 Alt + 数字上屏）</p>
 <p>而 RedHat 的维护者也给了我一个更好的方案：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    fc-list “Noto Color Emoji”:charset<span style="color:#f92672">=</span>0x20
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fc-list “Noto Color Emoji”:charset<span style="color:#000;font-weight:bold">=</span>0x20
 </code></pre></div><p>如果字体未安装或屏蔽成功，就没有结果，不然会返回字体文件和字体名称。</p>
 <p>有了方法剩下就是操作的问题了，但是操作其实比方法更复杂。</p>
 <p>我们要先统一下概念。fontconfig 里用的叫做 charset（字符集），而我前面说过一个 unicode codepoint。unicode point 是一个码点，比如 A 字母 1 数字都是一个独立的码点，但是不是每个码点在现实中都能找到对应的字符。字体制作是针对 unicode point 来的。unicode codepoint 的表示法在 fontforge 里叫 U+20，在 fontconfig 的非 debug 输出里叫 20，而在写配置的时候又要用 0x20，这三个都是等价的，但是在不同的程序里必须用不同的表示法。charset 就是码点的集合。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    fc-scan —format “%<span style="color:#f92672">{</span>charset<span style="color:#f92672">}</span>” NotoColorEmoji.ttf
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fc-scan —format “%<span style="color:#000;font-weight:bold">{</span>charset<span style="color:#000;font-weight:bold">}</span>” NotoColorEmoji.ttf
 </code></pre></div><p>就能够看到某个字体有哪些码点。</p>
 <p>但是 Emoji 其实有个特殊的地方，可以看 emojipedia 的这篇文章来了解。就是有的时候显示出来的是一个 emoji，但实际上背后是三个甚至四个码点组成的 sequence。我们在测试 emoji 字体的 coverage 的时候，不能随便的取舍，因为把 modifier codepoint 给屏蔽了会造成好多 emoji 都无法显示。</p>
 <p>我关于操作是这么构思的，首先我把想要使用的 Emoji 字体的 charset 找出来，转成 unicode codepoints（另一种思路是找 unicode 11 full emoji list 的 data file，这个文件能找到但是我看不懂，而且有重复出现的码点解析起来费劲，我就直接去网上爬演示的 html，再把 emoji 转成 unicode points，这个思路可以看我的 analyze-noto-color-emoji.rb），然后简单处理一下（主要是 Noto Color Emoji 还有空格数字和一些常见 symbol，比如有些在线播放器会用的▶️符号，这个用彩色显示播放器样式会出问题），再拿目标字体的 charset 去取交集，这样得到的是两个字体里都存在的 unicode point，说明这个字体提供了 emoji，最终我写出来了test_emoji_coverage.rb。</p>
@@ -91,23 +91,21 @@
 <p>测试 emoji 字体要有一个测试页面。我主要是用 chromium 浏览器来访问 EmojiOne Color 的测试页面，因为 Firefox 已经捆绑了自己的 Twemoji Mozilla 字体，它的 emoji 显示是没有问题的。</p>
 <p>一访问还是不行？</p>
 <p>原来是我在生成的时候没有针对 Noto Emoji 这个黑白 emoji 字体，这是正确的，因为我要给它也做 blacklist，它的 charset 就被清空了233，那样的效果等于不载入，那就直接不载入好啦：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">“scan”</span><span style="color:#f92672">&gt;</span>
-    <span style="color:#f92672">&lt;selectfont&gt;</span>
-        <span style="color:#f92672">&lt;rejectfont&gt;</span>
-            <span style="color:#f92672">&lt;patlet</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span><span style="color:#f92672">&gt;</span>
-                <span style="color:#f92672">&lt;string&gt;</span>Noto Emoji<span style="color:#f92672">&lt;/string&gt;</span>
-            <span style="color:#f92672">&lt;/patlet&gt;</span>
-        <span style="color:#f92672">&lt;/rejectfont&gt;</span>
-    <span style="color:#f92672">&lt;/selectfont&gt;</span>
-  <span style="color:#f92672">&lt;/match&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">&#34;scan&#34;</span><span style="color:#000080">&gt;</span>
+    <span style="color:#000080">&lt;selectfont&gt;</span>
+        <span style="color:#000080">&lt;rejectfont&gt;</span>
+            <span style="color:#000080">&lt;patlet</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span><span style="color:#000080">&gt;</span>
+                <span style="color:#000080">&lt;string&gt;</span>Noto Emoji<span style="color:#000080">&lt;/string&gt;</span>
+            <span style="color:#000080">&lt;/patlet&gt;</span>
+        <span style="color:#000080">&lt;/rejectfont&gt;</span>
+    <span style="color:#000080">&lt;/selectfont&gt;</span>
+<span style="color:#000080">&lt;/match&gt;</span>
 </code></pre></div><p>注意不能用 prefer work，因为之前说过第三种匹配类型实际上用作匹配的字体不是 pattern 里面的字体，你在把它加入 pattern 前根本改变不了它的顺序。未来会把这部分代码也整合到生成器里面去，这样比如你指定一个 Colored Emoji 字体，会自动屏蔽所有其它 emoji 字体和非 emoji 字体中的 emoji 部分。</p>
 
 			</div>
 			
 			<div>
-				
-
-<div id="disqus_thread"></div>
+				<div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -127,7 +125,6 @@
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
 			</div>
 		</article>
 	</main>
@@ -139,6 +136,8 @@
 		<div>
 			<ul>
 				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
 				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
 				
 				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
@@ -146,8 +145,6 @@
 				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
 				
 				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
-				
-				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
 				
 			</ul>
 		</div>

@@ -27,11 +27,28 @@
 
 		
 			<article>
+	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></h1>
+	<time>28.11.2020 14:59</time>
+	
+	<div>
+		为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 我们 openSUSE 中文论坛用的是 discourse，有一天给用户贴了一个 OBS 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：discourse-openbuildservice-onebox 插件。
+以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 onebox gem。
+Ruby 作为一门脚本语言，所有对象的方法都可以被重写。学名叫做 Meta Programming。这是理解 onebox gem 的基础。
+我们下面来看 discourse 是怎么使用 onebox gem 的，下面是 app/models/post_analyzer.rb 的 cook 函数，这个函数负责把你输入的文字转为 html 保存在 postgresql 数据库，是最基础的函数之一：
+def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_urls &lt;&lt; url if opts[:invalidate_oneboxes] Oneboxer.invalidate(url) InlineOneboxer.invalidate(url) end onebox = Oneboxer.
+		
+			<a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
 	<h1><a href="https://marguerite.github.io/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></h1>
 	<time>04.11.2020 00:00</time>
 	
 	<div>
-	        上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+		上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
 为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
 我们先来回忆一下之前的说法：
 除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
@@ -49,11 +66,11 @@
 	<time>04.11.2020 00:00</time>
 	
 	<div>
-	        最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+		最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
 后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
 ##第一个坑：从 monospace 中清除 sans-serif
 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
-&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt;  意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.
 		
 			<a href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">Read more...</a>
 		
@@ -66,7 +83,7 @@
 	<time>31.12.2016 00:00</time>
 	
 	<div>
-	        之前的 Ghost 管理密码丢了 :-(
+		之前的 Ghost 管理密码丢了 :-(
 昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。 不过这个坑就不一定哪天来填啦。
 考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的， 博客要么丢文章要么丢评论。还是用 github 来做博客好了。
 Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。 它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。 但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。
@@ -85,7 +102,7 @@ Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章�
 	<time>23.01.2016 00:00</time>
 	
 	<div>
-	        There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.
+		There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.
 Today the brand-new nodejs-packaging answers all the questions.
 For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:
 		
@@ -100,7 +117,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 	<time>23.01.2016 00:00</time>
 	
 	<div>
-	        盘点一下本周自己在 openSUSE 上面做的工作：
+		盘点一下本周自己在 openSUSE 上面做的工作：
 解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
 对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。
 		
@@ -115,7 +132,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 	<time>18.01.2016 00:00</time>
 	
 	<div>
-	        这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+		这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
 写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
 好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
 然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
@@ -135,7 +152,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 	<time>12.01.2016 00:00</time>
 	
 	<div>
-	        今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+		今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
 金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
 我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
 这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。
@@ -153,7 +170,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 	<time>02.08.2015 00:00</time>
 	
 	<div>
-	        研究这个问题是因为论坛上的一个讨论：zypper reinstall package
+		研究这个问题是因为论坛上的一个讨论：zypper reinstall package
 略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：
 第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：
 if [ $1 == 0 ] ; then  $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
@@ -178,7 +195,7 @@ sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm
 	<time>11.07.2014 00:00</time>
 	
 	<div>
-	        这篇文章是唱反调的，可能会不舒服的可以离席了。
+		这篇文章是唱反调的，可能会不舒服的可以离席了。
 最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
 先说两点：
 (1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
@@ -203,27 +220,6 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 </article>
 
 		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</a></h1>
-	<time>12.10.2013 00:00</time>
-	
-	<div>
-	        做这个的初衷很简单：IRC 对小白太远了。
-它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
-但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
-于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
-看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
-安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk  下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
-但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
-言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
-wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解压：
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">Read more...</a>
-		
-	</div>
-</article>
-
-		
 		<div>
 
 1 of 4
@@ -241,6 +237,8 @@ wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解�
 		<div>
 			<ul>
 				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
 				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
 				
 				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
@@ -248,8 +246,6 @@ wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解�
 				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
 				
 				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
-				
-				<li><a href="/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">本周开发札记</a></li>
 				
 			</ul>
 		</div>

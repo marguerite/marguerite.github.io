@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</h1>
+			<time>28.11.2020 14:59</time>
+			<div>
+				<h2 id="为-discourse-开发一个-onebox-插件一理解-onebox-gem">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</h2>
+<p>我们 <a href="https://forum.suse.org.cn">openSUSE 中文论坛</a>用的是 <a href="https://github.com/discourse/discourse">discourse</a>，有一天给用户贴了一个 <a href="http://build.opensuse.org/">OBS</a> 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：<a href="https://github.com/openSUSE-zh/discourse-openbuildservice-onebox">discourse-openbuildservice-onebox</a> 插件。</p>
+<p>以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 <a href="https://github.com/discourse/onebox">onebox</a> gem。</p>
+<p>Ruby 作为一门脚本语言，<strong>所有对象的方法都可以被重写</strong>。学名叫做 Meta Programming。这是理解 onebox gem 的基础。</p>
+<p>我们下面来看 discourse 是怎么使用 onebox gem 的，下面是 <a href="https://github.com/discourse/discourse/blob/master/app/models/post_analyzer.rb">app/models/post_analyzer.rb</a> 的 cook 函数，这个函数负责把你输入的文字转为 html 保存在 postgresql 数据库，是最基础的函数之一：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">cook</span>(raw, opts <span style="color:#000;font-weight:bold">=</span> {})
+    <span style="color:#000;font-weight:bold">[...]</span>
+
+    result <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Oneboxer</span><span style="color:#000;font-weight:bold">.</span>apply(cooked) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>url<span style="color:#000;font-weight:bold">|</span>
+      <span style="color:#008080">@onebox_urls</span> <span style="color:#000;font-weight:bold">&lt;&lt;</span> url
+      <span style="color:#000;font-weight:bold">if</span> opts<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:invalidate_oneboxes</span><span style="color:#000;font-weight:bold">]</span>
+        <span style="color:#008080">Oneboxer</span><span style="color:#000;font-weight:bold">.</span>invalidate(url)
+        <span style="color:#008080">InlineOneboxer</span><span style="color:#000;font-weight:bold">.</span>invalidate(url)
+      <span style="color:#000;font-weight:bold">end</span>
+      onebox <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Oneboxer</span><span style="color:#000;font-weight:bold">.</span>cached_onebox(url)
+      <span style="color:#008080">@found_oneboxes</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span> <span style="color:#000;font-weight:bold">if</span> onebox<span style="color:#000;font-weight:bold">.</span>present?
+      onebox
+    <span style="color:#000;font-weight:bold">end</span>
+
+    cooked <span style="color:#000;font-weight:bold">=</span> result<span style="color:#000;font-weight:bold">.</span>to_html <span style="color:#000;font-weight:bold">if</span> result<span style="color:#000;font-weight:bold">.</span>changed?
+    cooked
+  <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>可以看到 discourse 自己还有一个 Oneboxer 的 wrapper，这里使用了 Oneboxer.apply 和 Oneboxer.cache_onebox 函数。接下来我们接着看 <a href="https://github.com/discourse/discourse/blob/master/lib/oneboxer.rb">lib/oneboxer.rb</a>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">apply</span>(string_or_doc, <span style="color:#990073">extra_paths</span>: <span style="color:#000;font-weight:bold">nil</span>)
+    doc <span style="color:#000;font-weight:bold">=</span> string_or_doc
+    doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML5</span><span style="color:#000;font-weight:bold">::</span>fragment(doc) <span style="color:#000;font-weight:bold">if</span> doc<span style="color:#000;font-weight:bold">.</span>is_a?(<span style="color:#0086b3">String</span>)
+    changed <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span>
+
+    each_onebox_link(doc, <span style="color:#990073">extra_paths</span>: extra_paths) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>url, element<span style="color:#000;font-weight:bold">|</span>
+      onebox, _ <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">yield</span>(url, element)
+
+      <span style="color:#000;font-weight:bold">if</span> onebox
+        parsed_onebox <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML5</span><span style="color:#000;font-weight:bold">::</span>fragment(onebox)
+        <span style="color:#000;font-weight:bold">next</span> <span style="color:#000;font-weight:bold">unless</span> parsed_onebox<span style="color:#000;font-weight:bold">.</span>children<span style="color:#000;font-weight:bold">.</span>count <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>
+
+        <span style="color:#000;font-weight:bold">if</span> element<span style="color:#000;font-weight:bold">&amp;.</span>parent<span style="color:#000;font-weight:bold">&amp;.</span>node_name<span style="color:#000;font-weight:bold">&amp;.</span>downcase <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;p&#34;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span>
+           element<span style="color:#000;font-weight:bold">.</span>parent<span style="color:#000;font-weight:bold">.</span>children<span style="color:#000;font-weight:bold">.</span>count <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span>
+           <span style="color:#008080">HTML5_BLOCK_ELEMENTS</span><span style="color:#000;font-weight:bold">.</span>include?(parsed_onebox<span style="color:#000;font-weight:bold">.</span>children<span style="color:#000;font-weight:bold">[</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">].</span>node_name<span style="color:#000;font-weight:bold">.</span>downcase)
+          element <span style="color:#000;font-weight:bold">=</span> element<span style="color:#000;font-weight:bold">.</span>parent
+        <span style="color:#000;font-weight:bold">end</span>
+
+        changed <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span>
+        element<span style="color:#000;font-weight:bold">.</span>swap parsed_onebox<span style="color:#000;font-weight:bold">.</span>to_html
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#998;font-style:italic"># strip empty &lt;p&gt; elements</span>
+    doc<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;p&#34;</span>)<span style="color:#000;font-weight:bold">.</span>each <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span><span style="color:#0086b3">p</span><span style="color:#000;font-weight:bold">|</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#0086b3">p</span><span style="color:#000;font-weight:bold">.</span>children<span style="color:#000;font-weight:bold">.</span>empty? <span style="color:#000;font-weight:bold">&amp;&amp;</span> doc<span style="color:#000;font-weight:bold">.</span>children<span style="color:#000;font-weight:bold">.</span>count <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">1</span>
+        <span style="color:#0086b3">p</span><span style="color:#000;font-weight:bold">.</span>remove
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#008080">Result</span><span style="color:#000;font-weight:bold">.</span>new(doc, changed)
+  <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这段其实没啥用，简单解释下就是取到 cooked 这个 html 里需要 onebox 化的 URL node。然后 invalidate 之后取 cached_onebox。cached_onebox 与实际进行 onebox 化里面有太多的判断代码（onebox_raw)，我们只需要关注 Oneboxer 的这个函数就够了：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">external_onebox</span>(url)
+    <span style="color:#008080">Discourse</span><span style="color:#000;font-weight:bold">.</span>cache<span style="color:#000;font-weight:bold">.</span>fetch(onebox_cache_key(url), <span style="color:#990073">expires_in</span>: <span style="color:#099">1</span><span style="color:#000;font-weight:bold">.</span>day) <span style="color:#000;font-weight:bold">do</span>
+      fd <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">FinalDestination</span><span style="color:#000;font-weight:bold">.</span>new(url,
+                                <span style="color:#990073">ignore_redirects</span>: ignore_redirects,
+                                <span style="color:#990073">ignore_hostnames</span>: blocked_domains,
+                                <span style="color:#990073">force_get_hosts</span>: force_get_hosts,
+                                <span style="color:#990073">force_custom_user_agent_hosts</span>: force_custom_user_agent_hosts,
+                                <span style="color:#990073">preserve_fragment_url_hosts</span>: preserve_fragment_url_hosts)
+      uri <span style="color:#000;font-weight:bold">=</span> fd<span style="color:#000;font-weight:bold">.</span>resolve
+
+      <span style="color:#000;font-weight:bold">if</span> fd<span style="color:#000;font-weight:bold">.</span>status <span style="color:#000;font-weight:bold">!=</span> <span style="color:#990073">:resolved</span>
+        args <span style="color:#000;font-weight:bold">=</span> { <span style="color:#990073">link</span>: url }
+        <span style="color:#000;font-weight:bold">if</span> fd<span style="color:#000;font-weight:bold">.</span>status <span style="color:#000;font-weight:bold">==</span> <span style="color:#990073">:invalid_address</span>
+          args<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:error_message</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">I18n</span><span style="color:#000;font-weight:bold">.</span>t(<span style="color:#d14">&#34;errors.onebox.invalid_address&#34;</span>, <span style="color:#990073">hostname</span>: fd<span style="color:#000;font-weight:bold">.</span>hostname)
+        <span style="color:#000;font-weight:bold">elsif</span> fd<span style="color:#000;font-weight:bold">.</span>status_code
+          args<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:error_message</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">I18n</span><span style="color:#000;font-weight:bold">.</span>t(<span style="color:#d14">&#34;errors.onebox.error_response&#34;</span>, <span style="color:#990073">status_code</span>: fd<span style="color:#000;font-weight:bold">.</span>status_code)
+        <span style="color:#000;font-weight:bold">end</span>
+
+        error_box <span style="color:#000;font-weight:bold">=</span> blank_onebox
+        error_box<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:preview</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> preview_error_onebox(args)
+        <span style="color:#000;font-weight:bold">return</span> error_box
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">return</span> blank_onebox <span style="color:#000;font-weight:bold">if</span> uri<span style="color:#000;font-weight:bold">.</span>blank? <span style="color:#000;font-weight:bold">||</span> blocked_domains<span style="color:#000;font-weight:bold">.</span>map { <span style="color:#000;font-weight:bold">|</span>hostname<span style="color:#000;font-weight:bold">|</span> uri<span style="color:#000;font-weight:bold">.</span>hostname<span style="color:#000;font-weight:bold">.</span>match?(hostname) }<span style="color:#000;font-weight:bold">.</span>any?
+
+      options <span style="color:#000;font-weight:bold">=</span> {
+        <span style="color:#990073">max_width</span>: <span style="color:#099">695</span>,
+        <span style="color:#990073">sanitize_config</span>: <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">DiscourseOneboxSanitizeConfig</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Config</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">DISCOURSE_ONEBOX</span>,
+        <span style="color:#990073">allowed_iframe_origins</span>: allowed_iframe_origins,
+        <span style="color:#990073">hostname</span>: <span style="color:#008080">GlobalSetting</span><span style="color:#000;font-weight:bold">.</span>hostname,
+        <span style="color:#990073">facebook_app_access_token</span>: <span style="color:#008080">SiteSetting</span><span style="color:#000;font-weight:bold">.</span>facebook_app_access_token,
+      }
+
+      options<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:cookie</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> fd<span style="color:#000;font-weight:bold">.</span>cookie <span style="color:#000;font-weight:bold">if</span> fd<span style="color:#000;font-weight:bold">.</span>cookie
+
+      r <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>preview(uri<span style="color:#000;font-weight:bold">.</span>to_s, options)
+      result <span style="color:#000;font-weight:bold">=</span> { <span style="color:#990073">onebox</span>: r<span style="color:#000;font-weight:bold">.</span>to_s, <span style="color:#990073">preview</span>: r<span style="color:#000;font-weight:bold">&amp;.</span>placeholder_html<span style="color:#000;font-weight:bold">.</span>to_s }
+
+      <span style="color:#998;font-style:italic"># NOTE: Call r.errors after calling placeholder_html</span>
+      <span style="color:#000;font-weight:bold">if</span> r<span style="color:#000;font-weight:bold">.</span>errors<span style="color:#000;font-weight:bold">.</span>any?
+        missing_attributes <span style="color:#000;font-weight:bold">=</span> r<span style="color:#000;font-weight:bold">.</span>errors<span style="color:#000;font-weight:bold">.</span>keys<span style="color:#000;font-weight:bold">.</span>map(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#990073">:to_s</span>)<span style="color:#000;font-weight:bold">.</span>sort<span style="color:#000;font-weight:bold">.</span>join(<span style="color:#008080">I18n</span><span style="color:#000;font-weight:bold">.</span>t(<span style="color:#d14">&#34;word_connector.comma&#34;</span>))
+        error_message <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">I18n</span><span style="color:#000;font-weight:bold">.</span>t(<span style="color:#d14">&#34;errors.onebox.missing_data&#34;</span>, <span style="color:#990073">missing_attributes</span>: missing_attributes, <span style="color:#990073">count</span>: r<span style="color:#000;font-weight:bold">.</span>errors<span style="color:#000;font-weight:bold">.</span>keys<span style="color:#000;font-weight:bold">.</span>size)
+        args <span style="color:#000;font-weight:bold">=</span> r<span style="color:#000;font-weight:bold">.</span>data<span style="color:#000;font-weight:bold">.</span>merge(<span style="color:#990073">error_message</span>: error_message)
+
+        <span style="color:#000;font-weight:bold">if</span> result<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:preview</span><span style="color:#000;font-weight:bold">].</span>blank?
+          result<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:preview</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> preview_error_onebox(args)
+        <span style="color:#000;font-weight:bold">else</span>
+          doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML5</span><span style="color:#000;font-weight:bold">::</span>fragment(result<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:preview</span><span style="color:#000;font-weight:bold">]</span>)
+          aside <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#39;aside&#39;</span>)
+
+          <span style="color:#000;font-weight:bold">if</span> aside
+            <span style="color:#998;font-style:italic"># Add an error message to the preview that was returned</span>
+            error_fragment <span style="color:#000;font-weight:bold">=</span> preview_error_onebox_fragment(args)
+            aside<span style="color:#000;font-weight:bold">.</span>add_child(error_fragment)
+            result<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:preview</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>to_html
+          <span style="color:#000;font-weight:bold">end</span>
+        <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      result
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这里可以看到：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    r <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>preview(uri<span style="color:#000;font-weight:bold">.</span>to_s, options)
+    result <span style="color:#000;font-weight:bold">=</span> { <span style="color:#990073">onebox</span>: r<span style="color:#000;font-weight:bold">.</span>to_s, <span style="color:#990073">preview</span>: r<span style="color:#000;font-weight:bold">&amp;.</span>placeholder_html<span style="color:#000;font-weight:bold">.</span>to_s }
+</code></pre></div><p>这段是最主要的，也就是说 Onebox 这个 gem 是通过它的 preview 函数来与 discourse 进行交互的。discourse 代码看到这里就够了，下面我们来看 onebox 代码。</p>
+<p>一个 rubygem 最重要的是它的 lib 文件夹。我们先从 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox.rb">lib/onebox.rb</a> 看起：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">preview</span>(url, options <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options)
+    <span style="color:#998;font-style:italic"># onebox does not have native caching</span>
+    <span style="color:#000;font-weight:bold">unless</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Helpers</span><span style="color:#000;font-weight:bold">.</span>blank?(options<span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:cache</span><span style="color:#000;font-weight:bold">]</span>)
+      <span style="color:#0086b3">warn</span> <span style="color:#d14">&#34;Onebox no longer has inbuilt caching so `cache` option will be ignored.&#34;</span>
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#008080">Preview</span><span style="color:#000;font-weight:bold">.</span>new(url, options)
+  <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这就是上面的 <code>Onebox.preview</code> 的来源。最重要的是 Preview 这个 class。下面我们接着看 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/preview.rb">lib/onebox/preview.rb</a>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Preview</span>
+
+    <span style="color:#998;font-style:italic"># see https://bugs.ruby-lang.org/issues/14688</span>
+    client_exception <span style="color:#000;font-weight:bold">=</span> defined?(<span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTPClientException</span>) ? <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTPClientException</span> : <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTPServerException</span>
+    <span style="color:#008080">WEB_EXCEPTIONS</span> <span style="color:#000;font-weight:bold">||=</span> <span style="color:#000;font-weight:bold">[</span>client_exception, <span style="color:#008080">OpenURI</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTPError</span>, <span style="color:#008080">Timeout</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Error</span>, <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTPError</span>, <span style="color:#008080">Errno</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">ECONNREFUSED</span><span style="color:#000;font-weight:bold">]</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">initialize</span>(link, options <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options)
+      <span style="color:#008080">@url</span> <span style="color:#000;font-weight:bold">=</span> link
+      <span style="color:#008080">@options</span> <span style="color:#000;font-weight:bold">=</span> options<span style="color:#000;font-weight:bold">.</span>dup
+
+      allowed_origins <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">@options</span><span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:allowed_iframe_origins</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Engine</span><span style="color:#000;font-weight:bold">.</span>all_iframe_origins
+      <span style="color:#008080">@options</span><span style="color:#000;font-weight:bold">[</span><span style="color:#990073">:allowed_iframe_regexes</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Engine</span><span style="color:#000;font-weight:bold">.</span>origins_to_regexes(allowed_origins)
+
+      <span style="color:#008080">@engine_class</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Matcher</span><span style="color:#000;font-weight:bold">.</span>new(<span style="color:#008080">@url</span>, <span style="color:#008080">@options</span>)<span style="color:#000;font-weight:bold">.</span>oneboxed
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>可以看到，这段代码的意思是说根据 Matcher 来匹配 URL 从而取 oneboxed 的结果。接着看 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/matcher.rb">lib/onebox/matcher.rb</a>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Matcher</span>
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">initialize</span>(link, options <span style="color:#000;font-weight:bold">=</span> {})
+      <span style="color:#008080">@url</span> <span style="color:#000;font-weight:bold">=</span> link
+      <span style="color:#008080">@options</span> <span style="color:#000;font-weight:bold">=</span> options
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">ordered_engines</span>
+      <span style="color:#008080">@ordered_engines</span> <span style="color:#000;font-weight:bold">||=</span> <span style="color:#008080">Engine</span><span style="color:#000;font-weight:bold">.</span>engines<span style="color:#000;font-weight:bold">.</span>sort_by <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>e<span style="color:#000;font-weight:bold">|</span>
+        e<span style="color:#000;font-weight:bold">.</span>respond_to?(<span style="color:#990073">:priority</span>) ? e<span style="color:#000;font-weight:bold">.</span>priority : <span style="color:#099">100</span>
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">oneboxed</span>
+      uri <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(<span style="color:#008080">@url</span>)
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">unless</span> uri<span style="color:#000;font-weight:bold">.</span>port<span style="color:#000;font-weight:bold">.</span>nil? <span style="color:#000;font-weight:bold">||</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options<span style="color:#000;font-weight:bold">.</span>allowed_ports<span style="color:#000;font-weight:bold">.</span>include?(uri<span style="color:#000;font-weight:bold">.</span>port)
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">unless</span> uri<span style="color:#000;font-weight:bold">.</span>scheme<span style="color:#000;font-weight:bold">.</span>nil? <span style="color:#000;font-weight:bold">||</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options<span style="color:#000;font-weight:bold">.</span>allowed_schemes<span style="color:#000;font-weight:bold">.</span>include?(uri<span style="color:#000;font-weight:bold">.</span>scheme)
+      ordered_engines<span style="color:#000;font-weight:bold">.</span>find { <span style="color:#000;font-weight:bold">|</span>engine<span style="color:#000;font-weight:bold">|</span> engine <span style="color:#000;font-weight:bold">===</span> uri <span style="color:#000;font-weight:bold">&amp;&amp;</span> has_allowed_iframe_origins?(engine) }
+    <span style="color:#000;font-weight:bold">rescue</span> <span style="color:#008080">URI</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">InvalidURIError</span>
+      <span style="color:#000;font-weight:bold">nil</span>
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这段代码的意思是从 <code>ordered_engines</code> 里找到匹配 uri 的 engine。返回这个 engine。而 <code>ordered_engines</code> 来自 <code>Engine.engines</code>。我们来看最重要的 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/engine.rb">lib/onebox/engine.rb</a>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">included</span>(object)
+      object<span style="color:#000;font-weight:bold">.</span>extend(<span style="color:#008080">ClassMethods</span>)
+    <span style="color:#000;font-weight:bold">end</span>
+
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">engines</span>
+      <span style="color:#0086b3">constants</span><span style="color:#000;font-weight:bold">.</span>select <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>constant<span style="color:#000;font-weight:bold">|</span>
+        constant<span style="color:#000;font-weight:bold">.</span>to_s <span style="color:#000;font-weight:bold">=~</span> <span style="color:#009926">/Onebox$/</span>
+      <span style="color:#000;font-weight:bold">end</span><span style="color:#000;font-weight:bold">.</span>map(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#0086b3">method</span>(<span style="color:#990073">:const_get</span>))
+    <span style="color:#000;font-weight:bold">end</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+
+require_relative <span style="color:#d14">&#34;helpers&#34;</span>
+require_relative <span style="color:#d14">&#34;layout_support&#34;</span>
+require_relative <span style="color:#d14">&#34;file_type_finder&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/standard_embed&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/html&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/json&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/amazon_onebox&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/github_issue_onebox&#34;</span>
+require_relative <span style="color:#d14">&#34;engine/github_blob_onebox&#34;</span>
+<span style="color:#000;font-weight:bold">[...]</span>
+</code></pre></div><p>这里的 included 函数其实是一个被重写的内置函数。它是 ruby 的 module 函数，意思是这个 module 被 included 到别的 Object 里的时候会做什么。也就是说 <code>module Engine</code> 这个模块被别的 Class/Module 这样 include 的时候会发生什么：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">A</span>
+    <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">Engine</span>
+<span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这里所有 include 了 module Engine 的 Class 都会自动获得 ClassMethods 的类方法，ClassMethods 模块在后面一点的地方：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">ClassMethods</span>
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">===</span>(other)
+        <span style="color:#000;font-weight:bold">if</span> other<span style="color:#000;font-weight:bold">.</span>kind_of?(<span style="color:#008080">URI</span>)
+          <span style="color:#000;font-weight:bold">!!</span>(other<span style="color:#000;font-weight:bold">.</span>to_s <span style="color:#000;font-weight:bold">=~</span> class_variable_get(<span style="color:#990073">:@@matcher</span>))
+        <span style="color:#000;font-weight:bold">else</span>
+          <span style="color:#000;font-weight:bold">super</span>
+        <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">priority</span>
+        <span style="color:#099">100</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">matches_regexp</span>(r)
+        class_variable_set <span style="color:#990073">:@@matcher</span>, r
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">requires_iframe_origins</span>(<span style="color:#000;font-weight:bold">*</span>origins)
+        class_variable_set <span style="color:#990073">:@@iframe_origins</span>, origins
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">iframe_origins</span>
+        class_variable_defined?(<span style="color:#990073">:@@iframe_origins</span>) ? class_variable_get(<span style="color:#990073">:@@iframe_origins</span>) : <span style="color:#000;font-weight:bold">[]</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#998;font-style:italic"># calculates a name for onebox using the class name of engine</span>
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">onebox_name</span>
+        <span style="color:#0086b3">name</span><span style="color:#000;font-weight:bold">.</span>split(<span style="color:#d14">&#34;::&#34;</span>)<span style="color:#000;font-weight:bold">.</span>last<span style="color:#000;font-weight:bold">.</span>downcase<span style="color:#000;font-weight:bold">.</span>gsub(<span style="color:#009926">/onebox/</span>, <span style="color:#d14">&#34;&#34;</span>)
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">always_https</span>
+        <span style="color:#008080">@https</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span>
+      <span style="color:#000;font-weight:bold">end</span>
+
+      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">always_https?</span>
+        <span style="color:#008080">@https</span>
+      <span style="color:#000;font-weight:bold">end</span>
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>举个例子：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">YoukuOnebox</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">Engine</span>
+      <span style="color:#000;font-weight:bold">include</span> <span style="color:#008080">HTML</span>
+
+      matches_regexp(<span style="color:#009926">/^(https?:\/\/)?([\da-z\.-]+)(youku.com\/)(.)+\/?$/</span>)
+      requires_iframe_origins <span style="color:#d14">&#34;https://player.youku.com&#34;</span>
+</code></pre></div><p>这是 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/engine/youku_onebox.rb">lib/onebox/engine/youku_onebox.rb</a>。因为 <code>include Engine</code>，所以自动获得 matches_regexp 这个类方法，所以可以调用：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">matches_regexp(<span style="color:#009926">/^(https?:\/\/)?([\da-z\.-]+)(youku.com\/)(.)+\/?$/</span>)
+</code></pre></div><p>来将 YoukuOnebox 这个 Class 的类全局变量 <code>@@matcher</code> 设置为上面的 regexp。通过这个例子我们应该大概可以明白为什么能够刚定义一个新类就拥有那么多的类方法了。同样功效的还有 <code>include HTML</code>，<code>include JSON</code>等等。下一篇用的的时候再给大家看代码。</p>
+<p>下面来看第二个方法：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">engines</span>
+      <span style="color:#0086b3">constants</span><span style="color:#000;font-weight:bold">.</span>select <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>constant<span style="color:#000;font-weight:bold">|</span>
+        constant<span style="color:#000;font-weight:bold">.</span>to_s <span style="color:#000;font-weight:bold">=~</span> <span style="color:#009926">/Onebox$/</span>
+      <span style="color:#000;font-weight:bold">end</span><span style="color:#000;font-weight:bold">.</span>map(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#0086b3">method</span>(<span style="color:#990073">:const_get</span>))
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>很多新手这时候就无法理解了。<a href="https://apidock.com/ruby/Module/constants">constants</a> 是什么？它其实 ruby 的一个 Module 方法。返回这个 module 的所有常量，定义在 Module 内部的 Class 也是常量，给段测试代码：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">A</span>
+  <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">B</span>
+  <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+
+<span style="color:#000;font-weight:bold">module</span> <span style="color:#555">C</span>
+ <span style="color:#000;font-weight:bold">include</span> A
+ <span style="color:#000;font-weight:bold">def</span> <span style="color:#458;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#900;font-weight:bold">test</span>
+   <span style="color:#0086b3">p</span> <span style="color:#0086b3">constants</span>
+ <span style="color:#000;font-weight:bold">end</span>
+<span style="color:#000;font-weight:bold">end</span>
+
+C<span style="color:#000;font-weight:bold">.</span>test
+</code></pre></div><p>上面运行 C.test 的结果是 <code>[:B]</code>。类名 B 是 C 的常量。那么 <code>self.engines</code> 这个函数其实就好理解了。从 Engine module 的全部类中找到以 <code>Onebox</code> 结尾的，并且返回一个字符串数组。上面 Youku 的那个例子我们已经看到了，所有的自定义 Engine 都是这个结构：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Onebox</span>
+  <span style="color:#000;font-weight:bold">module</span> <span style="color:#555">Engine</span>
+    <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">YoukuOnebox</span>
+</code></pre></div><p>目的就是让 <code>self.engines</code> 函数能够知道它的存在。</p>
+<p>我们接着往下看：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">initialize</span>(link, timeout <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">nil</span>)
+      <span style="color:#008080">@errors</span> <span style="color:#000;font-weight:bold">=</span> {}
+      <span style="color:#008080">@options</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">DEFAULT</span>
+      class_name <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">self</span><span style="color:#000;font-weight:bold">.</span>class<span style="color:#000;font-weight:bold">.</span>name<span style="color:#000;font-weight:bold">.</span>split(<span style="color:#d14">&#34;::&#34;</span>)<span style="color:#000;font-weight:bold">.</span>last<span style="color:#000;font-weight:bold">.</span>to_s
+
+      <span style="color:#998;font-style:italic"># Set the engine options extracted from global options.</span>
+      <span style="color:#0086b3">self</span><span style="color:#000;font-weight:bold">.</span>options <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options<span style="color:#000;font-weight:bold">[</span>class_name<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> {}
+
+      <span style="color:#008080">@url</span> <span style="color:#000;font-weight:bold">=</span> link
+      <span style="color:#008080">@uri</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(link)
+      <span style="color:#000;font-weight:bold">if</span> always_https?
+        <span style="color:#008080">@uri</span><span style="color:#000;font-weight:bold">.</span>scheme <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;https&#39;</span>
+        <span style="color:#008080">@url</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">@uri</span><span style="color:#000;font-weight:bold">.</span>to_s
+      <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#008080">@timeout</span> <span style="color:#000;font-weight:bold">=</span> timeout <span style="color:#000;font-weight:bold">||</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>options<span style="color:#000;font-weight:bold">.</span>timeout
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>是不是很有意思，一个 Module 居然有 initialize 函数！他的作用是，include 它的 class 的 new instance 生成的时候，如果这个 class 本身没有写 initialize 函数，那么运行 module 带的。要是写了，在 class 的 initialize 函数里可以运行 super 来运行 module 带的。我们看 engine 文件夹里所有的自定义引擎都没有写自己的 initialize 函数，就是因为这里写了。</p>
+<p>这里定义了一些实例变量，这些变量是写自定义引擎的时候可以直接用的。</p>
+<p>接着往下看：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#998;font-style:italic"># raises error if not defined in onebox engine.</span>
+    <span style="color:#998;font-style:italic"># This is the output method for an engine.</span>
+    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">to_html</span>
+      <span style="color:#0086b3">fail</span> <span style="color:#008080">NoMethodError</span>, <span style="color:#d14">&#34;Engines need to implement this method&#34;</span>
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>这种函数看起来很奇怪对不对？直接抛错误。因为 Ruby 是可以重写方法的。上面 YoukuOnebox 的例子里：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">to_html</span>
+        <span style="color:#000;font-weight:bold">&lt;&lt;~</span><span style="color:#008080">HTML</span>
+          <span style="color:#000;font-weight:bold">&lt;</span>iframe src<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;https://player.youku.com/embed/</span><span style="color:#d14">#{</span>video_id<span style="color:#d14">}</span><span style="color:#d14">&#34;</span>
+                  width<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;640&#34;</span>
+                  height<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;430&#34;</span>
+                  frameborder<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;0&#39;</span>
+                  allowfullscreen<span style="color:#000;font-weight:bold">&gt;</span>
+          <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#009926">/iframe&gt;
+</span><span style="color:#009926">        HTML
+</span><span style="color:#009926">      end
+</span></code></pre></div><p>就重写了这个方法。这样 Engine module 调用方法的时候实际上是不空的。下面我们来捋一下 <code>Onebox.preview(url, options)</code> 的流程：</p>
+<p><code>Onebox.preview</code> 调用<code>Preview.new(url,options)</code>,后者调用 <code>Matcher.new(@url, @options).oneboxed</code>, Matcher 是获取全部自定义引擎后通过判断 <code>engine == uri</code>来找出对应引擎。</p>
+<p>上面的理解了我们就可以接着理解 <code>engine == uri</code> 了。我们前面已经说了，所有的自定义引擎都 <code>include Engine</code>了，得到了<code>ClassMethods</code>的类方法，有一个类方法就是这个：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">      <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">===</span>(other)
+        <span style="color:#000;font-weight:bold">if</span> other<span style="color:#000;font-weight:bold">.</span>kind_of?(<span style="color:#008080">URI</span>)
+          <span style="color:#000;font-weight:bold">!!</span>(other<span style="color:#000;font-weight:bold">.</span>to_s <span style="color:#000;font-weight:bold">=~</span> class_variable_get(<span style="color:#990073">:@@matcher</span>))
+        <span style="color:#000;font-weight:bold">else</span>
+          <span style="color:#000;font-weight:bold">super</span>
+        <span style="color:#000;font-weight:bold">end</span>
+      <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>如果是拿 URI 来判断的话，先把它转成字符串，然后与自定义引擎的类变量 <code>@@matcher</code> 做正则匹配，就能够确保引擎的唯一性。</p>
+<p>上面也说了，Onebox.preview 最终得到的结果是 Engine module 里面的一个自定义 Class。那么 discourse 是怎么使用这个 engine 的呢？</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    r <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Onebox</span><span style="color:#000;font-weight:bold">.</span>preview(uri<span style="color:#000;font-weight:bold">.</span>to_s, options)
+    result <span style="color:#000;font-weight:bold">=</span> { <span style="color:#990073">onebox</span>: r<span style="color:#000;font-weight:bold">.</span>to_s, <span style="color:#990073">preview</span>: r<span style="color:#000;font-weight:bold">&amp;.</span>placeholder_html<span style="color:#000;font-weight:bold">.</span>to_s }
+</code></pre></div><p>我们再把 discourse 的这段代码拿回来理解。它定义了一个 hash。其中 onebox 是这个自定义 class 的 to_s，引擎怎么转字符串呢？在 <a href="https://github.com/discourse/onebox/blob/master/lib/onebox/preview.rb">lib/onebox/preview.rb</a> 里面：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">to_s</span>
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;&#34;</span> <span style="color:#000;font-weight:bold">unless</span> engine
+      sanitize process_html engine_html
+    <span style="color:#000;font-weight:bold">rescue</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#008080">WEB_EXCEPTIONS</span>
+      <span style="color:#d14">&#34;&#34;</span>
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>对我们用处不大，略。那么 preview 是什么呢？是调用了引擎的 placeholder_html 方法，这个方法在 engine.rb 里面。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">placeholder_html</span>
+      to_html
+    <span style="color:#000;font-weight:bold">end</span>
+</code></pre></div><p>它调用了默认抛错误的那个 to_html 方法，而当有了确定的引擎后，to_html 方法是自定义引擎实现的。也就是说，想要写一个自定义引擎，最最重要的方法是 <code>matches_regexp</code>和<code>to_html</code>。</p>
+<p>对于 Onebox gem 的理解到这里就可以了。下一篇我们将要真正开始写我们的插件。</p>
+
+			</div>
+			
+			<div>
+				<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
+				
+				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
+				
+				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
+				
+				<li><a href="/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</a></li>
+				
+				<li><a href="/posts/introducing_the_brand_new_nodejs_packaging/">Introducing the brand new nodejs packaging</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</footer>
+
+</body>
+</html>

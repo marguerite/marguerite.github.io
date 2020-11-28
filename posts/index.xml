@@ -6,7 +6,20 @@
     <description>Recent content in Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 28 Nov 2020 14:59:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</title>
+      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</link>
+      <pubDate>Sat, 28 Nov 2020 14:59:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</guid>
+      <description>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 我们 openSUSE 中文论坛用的是 discourse，有一天给用户贴了一个 OBS 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：discourse-openbuildservice-onebox 插件。
+以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 onebox gem。
+Ruby 作为一门脚本语言，所有对象的方法都可以被重写。学名叫做 Meta Programming。这是理解 onebox gem 的基础。
+我们下面来看 discourse 是怎么使用 onebox gem 的，下面是 app/models/post_analyzer.rb 的 cook 函数，这个函数负责把你输入的文字转为 html 保存在 postgresql 数据库，是最基础的函数之一：
+def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_urls &amp;lt;&amp;lt; url if opts[:invalidate_oneboxes] Oneboxer.invalidate(url) InlineOneboxer.invalidate(url) end onebox = Oneboxer.</description>
+    </item>
+    
     <item>
       <title>Color Emoji in openSUSE</title>
       <link>https://marguerite.github.io/posts/color_emoji_in_opensuse/</link>
@@ -31,7 +44,7 @@
 后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
 ##第一个坑：从 monospace 中清除 sans-serif
 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
-&amp;lt;match&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;sans-serif&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;monospace&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;edit name=“family” mode=“delete”/&amp;gt; &amp;lt;/match&amp;gt;  意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.</description>
+&amp;lt;match&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;sans-serif&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;test name=“family” compare=“eq”&amp;gt; &amp;lt;string&amp;gt;monospace&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;edit name=“family” mode=“delete”/&amp;gt; &amp;lt;/match&amp;gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.</description>
     </item>
     
     <item>
