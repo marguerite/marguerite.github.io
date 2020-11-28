@@ -11,30 +11,34 @@ draft: false
 
 比如 [Hack 字体的官方配置](https://github.com/source-foundry/Hack/issues/408)，还有最著名的 [eev’s rant about fontconfig](https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/)，都推荐了这么一种做法：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>sans-serif</string>
-        </test>
-        <test name=“family” compare=“eq”>
-            <string>monospace</string>
-        </test>
-        <edit name=“family” mode=“delete”/>
-    </match>
-    
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>sans-serif</string>
+    </test>
+    <test name=“family” compare=“eq”>
+        <string>monospace</string>
+    </test>
+    <edit name=“family” mode=“delete”/>
+</match>
+```
+
 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 
 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）
 
 甚至还有衍生：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>Hack</string>
-        </test>
-        <test name=“family” compare=“eq”>
-            <string>sans-serif</string>
-        </test>
-        <edit name=“family” mode=“delete”/>
-    </match>
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>Hack</string>
+    </test>
+    <test name=“family” compare=“eq”>
+        <string>sans-serif</string>
+    </test>
+    <edit name=“family” mode=“delete”/>
+</match>
+```
 
 把 Hack 字体从 sans-serif 字族中删除（因为 Hack 是 monospace 字体）
 
@@ -50,130 +54,146 @@ fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做
 
 通过 FC_DEBUG=4 fc-match -s monospace 查看（搜索 “Edit family Delete none”），这段是添加规则
 
-    Add SubSt match 
-    [test]
-             pattern any family Equal “sans-serif”
-             pattern any family Equal “monospace”
-    [edit]
-             Edit family Delete none;
-             
+```xml
+Add SubSt match 
+[test]
+         pattern any family Equal “sans-serif”
+         pattern any family Equal “monospace”
+[edit]
+         Edit family Delete none;
+```
+
 注意这里的 none，不表示没匹配到。它表示的是 <edit name=“family” mode=“delete/> 这个 edit block 里面没有东西，因为 delete 和 delete_all 规则就是这样的。
 
 真正的匹配阶段是类似这样的：
 
-    FcConfigSubstitute test pattern any family Equal “mono”
-    No match
-    FcConfigSubstitute test pattern any family Equal “sans serif”
-    No match
-    FcConfigSubstitute test pattern any family Equal “sans”
-    Substitute Edit family Assign “sans-serif”
-    
-    Append list before “sans”(s) [marker]
-    Append list after “sans”(s) “sans-serif”(s) 
-    FcConfigSubstitute editPattern has 3 elts (size 16)
-        family: “sans-serif”(s)
-        lang: “en”(w)
-        prgname: “fc-match”(s)
-        
+```xml
+FcConfigSubstitute test pattern any family Equal “mono”
+No match
+FcConfigSubstitute test pattern any family Equal “sans serif”
+No match
+FcConfigSubstitute test pattern any family Equal “sans”
+Substitute Edit family Assign “sans-serif”
+
+Append list before “sans”(s) [marker]
+Append list after “sans”(s) “sans-serif”(s) 
+FcConfigSubstitute editPattern has 3 elts (size 16)
+    family: “sans-serif”(s)
+    lang: “en”(w)
+    prgname: “fc-match”(s)
+```
+
 这个是比较完整的规则，还原成 xml 形式就是这样的：
 
-    <match target=“pattern”>
-        <test qual=“any” name=“family” compare=“eq”>
-            <string>mono</string>
-        </test>
-        <test qual=“any” name=“family” compare=“eq”>
-            <string>sans serif</string>
-        </test>
-        <test qual=“any” name=“family” compare=“eq”>
-            <string>sans</string>
-        </test>
-        <edit name=“family” mode=“assign”>
-            <string>sans-serif</string>
-        </edit>
-    </match>
+```xml
+<match target=“pattern”>
+    <test qual=“any” name=“family” compare=“eq”>
+        <string>mono</string>
+    </test>
+    <test qual=“any” name=“family” compare=“eq”>
+        <string>sans serif</string>
+    </test>
+    <test qual=“any” name=“family” compare=“eq”>
+        <string>sans</string>
+    </test>
+    <edit name=“family” mode=“assign”>
+        <string>sans-serif</string>
+    </edit>
+</match>
+```
 
 通过几个 No match 和 editPattern 我们可以看出，这段其实匹配到了一个对 sans 的请求，但把它完全替换成了 sans-serif。
 
 上面的懂了，就可以拔高一些了。Edit Delete 的匹配阶段的 Debug 代码是类似这样的：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>DejaVu Sans</string>
-        </test>
-        <test name=“family” compare=“eq”>
-            <string>sans-serif</string>
-        </test>
-        <edit name=“family” mode=“delete”/>
-    </match>
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>DejaVu Sans</string>
+    </test>
+    <test name=“family” compare=“eq”>
+        <string>sans-serif</string>
+    </test>
+    <edit name=“family” mode=“delete”/>
+</match>
 
-    FcConfigSubstitute test pattern any family Equal “monospace”
-    No match
-    FcConfigSubstitute test pattern any family Equal “DejaVu Sans”
-    FcConfigSubstitute test pattern any family Equal “sans-serif”
-    Substitute Edit family Delete none
-    
-    FcConfigSubstitute editPattern has 3 elts (size 16)
-        family: “Noto Sans”(w) “sans-serif”(w)
-        lang: “en”(w)
-        prgname: “fc-match”(s)
-        
+FcConfigSubstitute test pattern any family Equal “monospace”
+No match
+FcConfigSubstitute test pattern any family Equal “DejaVu Sans”
+FcConfigSubstitute test pattern any family Equal “sans-serif”
+Substitute Edit family Delete none
+
+FcConfigSubstitute editPattern has 3 elts (size 16)
+    family: “Noto Sans”(w) “sans-serif”(w)
+    lang: “en”(w)
+    prgname: “fc-match”(s)
+```
+
 第一，它会自作主张的给你加一段针对 monospace 的测试（原因没有详查）；第二，它没有告诉你删除成功了没。你需要去看它前面一个规则的 editPattern 来自己比较才知道删除成功了没。我这里前面规则的 editPattern 里有 “DejaVu Sans”，但这里的 editPattern 没有了。所以是成功了。
 
 拔高成功了，直接上炼狱模式，去真实的 FC_DEBUG=4 fc-match -s monospace 里面找，会发现只有添加规则的，别的什么都没有找到。这就是 fontconfig interesting 的地方了，如果规则没有应用，它不会告诉你。
 
 但是我会告诉你呀！再来看这条规则：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>sans-serif</string>
-        </test>
-        <test name=“family” compare=“eq”>
-            <string>monospace</string>
-        </test>
-        <edit name=“family” mode=“delete”/>
-    </match>
-    
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>sans-serif</string>
+    </test>
+    <test name=“family” compare=“eq”>
+        <string>monospace</string>
+    </test>
+    <edit name=“family” mode=“delete”/>
+</match>
+```
+
 它需要测试 pattern 的 family 字段中有 sans-serif，**并且**有 monospace。但实际上把整个匹配过程从头到尾读过了之后，会发现这样的条件永远也不会满足。之所以有这么一个无用的测试，是对 49-sansserif.conf 的误解造成的：
 
-    <match target="pattern">
-        <test qual="all" name="family" compare="not_eq">
-            <string>sans-serif</string>
-	  </test>
-	  <test qual="all" name="family" compare="not_eq">
-		<string>serif</string>
-	  </test>
-	  <test qual="all" name="family" compare="not_eq">
-		<string>monospace</string>
-	  </test>
-	  <edit name="family" mode="append_last">
-		<string>sans-serif</string>
-	  </edit>
-    </match>
-    
+```xml
+<match target="pattern">
+    <test qual="all" name="family" compare="not_eq">
+        <string>sans-serif</string>
+  </test>
+  <test qual="all" name="family" compare="not_eq">
+	<string>serif</string>
+  </test>
+  <test qual="all" name="family" compare="not_eq">
+	<string>monospace</string>
+  </test>
+  <edit name="family" mode="append_last">
+	<string>sans-serif</string>
+  </edit>
+</match>
+```
+
 这段规则的实际意思是说，如果去匹配一个字体 fc-match -s “我瞎编的字体名”，这时 fontconfig 不知道“我瞎编的字体名”究竟是什么字族，甚至不知道这个字体在系统中有没有，为了防止显示不出来，就把 sans-serif 旗标放在最后，这样后续针对 sans-serif 旗标的各种 prefer 往 list 里加字体，最后用的是 sans-serif 的第一个字体显示。
 
 但是如果是 fc-match -s monospace 呢？不好意思 monospace 已经有了，永远也不会添加 sans-serif 旗标到最后。也就永远也不存在两个字族在一个 list 里的场景。
 
 好，杠精来了，如果我手动把一个字体既 alias 成 sans-serif，又 alias 成 monospace 呢？那也没有影响。下面这个规则：
 
-    <alias>
-        <family>Georgia</family>
-        <default>
-            <family>serif</family>
-        </default>
-    </alias>
-    
+```xml
+<alias>
+    <family>Georgia</family>
+    <default>
+        <family>serif</family>
+    </default>
+</alias>
+```
+
 实际上等于：
 
-    <match target=“pattern”>
-        <test name=“family” compare=“eq”>
-            <string>serif</string>
-        </test>
-        <edit name=“family” mode=“append_last”>
-            <string>Georgia</string>
-        </edit>
-    </match>
-    
+```xml
+<match target=“pattern”>
+    <test name=“family” compare=“eq”>
+        <string>serif</string>
+    </test>
+    <edit name=“family” mode=“append_last”>
+        <string>Georgia</string>
+    </edit>
+</match>
+```
+
 就是语法糖而已。alias 后，fc-match -s sans-serif/monospace 肯定都有这个字体，但也只是这样了。
 
 我明白你们的逻辑，alias 是替身的意思，一个字体即是 sans-serif 的替身，又是 monospace 的替身，那么匹配这个字体，list 里面必然又有 sans-serif 又有 monospace。
@@ -184,34 +204,42 @@ fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做
 
 我很早就说过，没有名为 sans-serif 的字体。在 fontconfig 中，sans-serif 只是一个锚点。这个锚点跟 DejaVu Sans 或 Noto Sans 这些真实字体的地位是相同，唯一的不同就是现实中没有名为 sans-serif 的字体，因此永远也匹配不到，所以才需要各种 append/prepend work，保证在匹配 sans-serif 锚点的时候 family 列表的 sans-serif 之前或之后有别的字体，即使 family 列表中的 sans-serif 永远不会匹配到，也总有字体会匹配到。你们认为的过程是类似这样的：
 
-    family: DemoFont
-    hintstyle: 1
-    lang: en
-    arbitrary_attributeA: sans-serif
-    arbitrary_attributeB: monospace
-    
+```xml
+family: DemoFont
+hintstyle: 1
+lang: en
+arbitrary_attributeA: sans-serif
+arbitrary_attributeB: monospace
+```
+
 然后匹配 sans-serif 是去所有字体中找属性。但真实的过程中 family 列表的增长是类似这样的：
 
-    family: sans-serif
-    family: Noto Sans, sans-serif
-    family: Noto Sans, sans-serif, DejaVu Sans
-    lang: en
-    hintstyle: 1
-    
-最后程序拿着这个 family 列表要求 sans-serif，第一个 Noto Sans 没安装，第二个永远没有，于是就用第三个 DejaVu Sans。我们可以看出来，无论是 prepend/append 还是 alias，都是针对一个对象去调整它之前之后的字体。这才是 pattern match 的意思。而你们认为的其实是在第二阶段 font match 也就是 <match target=“font”> 阶段发生的事情，但这个阶段的 pattern 是已经固定的。
+```xml
+family: sans-serif
+family: Noto Sans, sans-serif
+family: Noto Sans, sans-serif, DejaVu Sans
+lang: en
+hintstyle: 1
+```
+
+最后程序拿着这个 family 列表要求 sans-serif，第一个 Noto Sans 没安装，第二个永远没有，于是就用第三个 DejaVu Sans。我们可以看出来，无论是 prepend/append 还是 alias，都是针对一个对象去调整它之前之后的字体。这才是 pattern match 的意思。而你们认为的其实是在第二阶段 font match 也就是 <match target="font"> 阶段发生的事情，但这个阶段的 pattern 是已经固定的。
 
 如果把一个字体既 alias 到 monospace 又 alias 到 sans-serif，那么其实是两个对象，sans-serif 和 monospace。但如果对象本身就没在 family 列表中，针对它的 match 就不会应用。所以你去匹配 monospace 的过程是这样的：
 
-    family: monospace
-    family: monospace, DejaVu Sans Mono
-    
+```xml
+family: monospace
+family: monospace, DejaVu Sans Mono
+```
+
 前面说过了，有 monospace 不会自动加 sans-serif。sans-serif 对象都没有，针对它的调整肯定也不会应用。而你 fc-match -s “DejaVu Sans Mono” 呢？
 
 会被当作 sans-serif 处理。family 列表的增长是这样：
 
-    family: DejaVu Sans Mono
-    family: DejaVu Sans Mono, sans-serif
-    family: DejaVu Sans Mono, Noto Sans, sans-serif
+```xml
+family: DejaVu Sans Mono
+family: DejaVu Sans Mono, sans-serif
+family: DejaVu Sans Mono, Noto Sans, sans-serif
+```
 
 这里根本没有 monospace 出现。因为你的 alias 的作用对象是 monospace 而不是 DejaVu Sans Mono。
 
@@ -223,24 +251,30 @@ fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做
 
 好，杠精又来了，Hack 字体的配置总不会错了吧？如果既有 Hack 又有 sans-serif 就把 Hack 删了。实际上也完全不是这回事。我们用 DejaVu Sans 做个测试：
 
-    $ fc-match -a sans-serif
-    “DejaVu Sans” “Book”
-    “DejaVu Math TeX Gyre”
-    ...
-    
+```bash
+$ fc-match -a sans-serif
+“DejaVu Sans” “Book”
+“DejaVu Math TeX Gyre”
+...
+```
+
 应用了上面的那个 conf 之后结果是这样的：
 
-     $ fc-match -a sans-serif
-     “DejaVu Math TeX Gyre”
-     “DejaVu Sans” “Book”
-     ...
-     
+```bash
+ $ fc-match -a sans-serif
+ “DejaVu Math TeX Gyre”
+ “DejaVu Sans” “Book”
+ ...
+```
+
 咦？DejaVu Sans 怎么还有？更 interesting 的是：
 
-    $ fc-match -a “DejaVu Sans”
-    “DejaVu Sans” “Book”
-    ...
-    
+```bash
+$ fc-match -a “DejaVu Sans”
+“DejaVu Sans” “Book”
+...
+```
+
 这时就需要去理解我说的三个阶段了。要知道，pattern 永不会落在虚处。fontconfig 的 pattern 里面存在了太多不一定存在的字体名称，比如 sans-serif 自己就是。如果直接返回 pattern，就存在整个 family 列表中的字体都没有安装在你的电脑上的场景。
 
 那么 fontconfig 是怎么做的呢？我没有详细看过源代码，但合理猜测是这样：
@@ -255,58 +289,68 @@ fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做
 
 所以无论怎么调整，只能调整排序。如果不想要某个字体，要么直接删掉，要么在扫描阶段通过：
 
-    <match target=“scan”>
-        <selectfont>
-            <rejectfont>
-                <patlet name=“family”>
-                    <string>DejaVu Sans</string>
-                </patlet>
-            </rejectfont>
-        </selectfont>
-    </match>
-    
+```xml
+<match target=“scan”>
+    <selectfont>
+        <rejectfont>
+            <patlet name=“family”>
+                <string>DejaVu Sans</string>
+            </patlet>
+        </rejectfont>
+    </selectfont>
+</match>
+```
+
 来做。
 
 ##第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体
 
 Firefox 自己捆绑了一个 emoji 字体，并且在源代码里面把它作为默认的 emoji 字体。而 Linux 上面的 emoji 字体大部分是 Noto Color Emoji。为了统一风格，我想要让 firefox 匹配字体时不匹配它：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>Twemoji Mozilla</string>
-        </test>
-        <test name=“prgname” compare=“eq”>
-            <string>Firefox</string>
-        </test>
-        <edit name=“family” mode=“delete”/>
-    </match>
-    
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>Twemoji Mozilla</string>
+    </test>
+    <test name=“prgname” compare=“eq”>
+        <string>Firefox</string>
+    </test>
+    <edit name=“family” mode=“delete”/>
+</match>
+```
+
 看似完美，但实际上不能用，道理跟上面讲的一样。因为现在网页字体在 css 里不会在最前面指定 emoji 字体：
 
-    font-family: “emoji”, “sans-serif”;
-    
+```css
+font-family: “emoji”, “sans-serif”;
+```
+
 做的差的直接就是 sans-serif，做的好的用的也都是真正的 emoji 字体名，比如：
 
-    font-family: “Apple Color Emoji”, “sans-serif”;
-    
+```css
+font-family: “Apple Color Emoji”, “sans-serif”;
+```
+
 主要是 fontconfig 的 emoji 标准（lang=“und-zsye” 和 “emoji” 这个 generic name）定晚了。
 
 针对 Apple Color Emoji，我们可以用 alias 来把 Noto Color Emoji append 到后面，这样原装字体没有就会用我们的李鬼字体。但是绝大多数时候我们的 emoji 其实是在跟 sans-serif 在争。
 
 根据我们在第一个坑里面讲的原理，即使把 Twemoji Mozilla 从 pattern 里面删了也没用，它还是会出现在 sans-serif 中。所以要么把它整个 reject 掉，要么把 Noto Color Emoji 扔到它的前面：
 
-    <match>
-        <test name=“family” compare=“eq”>
-            <string>Twemoji Mozilla</string>
-        </test>
-        <test name=“prgname” compare=“eq”>
-            <string>firefox</string>
-        </test>
-        <edit name=“family” mode=“prepend”>
-            <string>Noto Color Emoji</string>
-        </edit>
-    </match>
-    
+```xml
+<match>
+    <test name=“family” compare=“eq”>
+        <string>Twemoji Mozilla</string>
+    </test>
+    <test name=“prgname” compare=“eq”>
+        <string>firefox</string>
+    </test>
+    <edit name=“family” mode=“prepend”>
+        <string>Noto Color Emoji</string>
+    </edit>
+</match>
+```
+
 这样的 block 可以有多个，最终保证无论它要哪一种 emoji 字体，不管安装没安装，第一个匹配到的字体都只会是 Noto Color Emoji。
 
 未完待续。

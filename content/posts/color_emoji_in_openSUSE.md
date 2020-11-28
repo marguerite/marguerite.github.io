@@ -17,10 +17,12 @@ draft: false
 
 这部分的支持很简单，比如它要 Apple Color Emoji 或者 Segoe UI Emoji 我没有，可以写个 alias：
 
-    <alias>
-      <family>Apple Color Emoji</family>
-      <accept><family>Noto Color Emoji</family></accept>
-    </alias>
+```xml
+<alias>
+  <family>Apple Color Emoji</family>
+  <accept><family>Noto Color Emoji</family></accept>
+</alias>
+```
 
 第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）
 
@@ -40,11 +42,12 @@ emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作�
 
 我使用的是一个小众的方法，就是在 scan 的时候从已有字体中屏蔽特定字符集（charsets）。这个方法只有一个 RedHat 的 [bug#31969](https://bugs.freedesktop.org/show_bug.cgi?id=31969) 提到过，但是也没提过怎么看成功没成功，我把它摸索成熟了，下面给大家讲一讲：
 
-<match target=“scan”>
-    <test name=“family”>
+```xml
+<match target="scan">
+    <test name="family">
         <string>Noto Color Emoji</string>
     </test>
-    <edit name=“charset” mode=“assign”>
+    <edit name="charset" mode="assign">
         <minus>
             <name>charset</name>
             <charset>
@@ -57,30 +60,37 @@ emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作�
         </minus>
     </edit>
 </match>
+```
 
 以上就是方法，charset 支持 int 和 range。这里的 int 不是 interger 类型，实际上是个 Hex 类型 233，range 的两个字符是起止（包含起止）。
 
 然后在 FC_DEBUG=4 fc-match “Noto Color Emoji” 就能看到这样的 debug 输出：
 
-    Add SubSt match
-    [test]
-         pattern any family Equal “Noto Color Emoji”
-    [edit]
-         Edit family Assign Minus charset;
+```text
+Add SubSt match
+[test]
+     pattern any family Equal “Noto Color Emoji”
+[edit]
+     Edit family Assign Minus charset;
+```
 
 但是除此之外什么都没有...于是我一直以为它没有生效。实际上需要这么测试：
 
 先做一个 local fonts.conf 把 Noto Color Emoji prepend_first：
 
-    <match>
-      <edit name=“family” mode=“prepend_first”>
-        <string>Noto Color Emoji</string>
-      </edit>
-    </match>
+```xml
+<match>
+  <edit name=“family” mode=“prepend_first”>
+    <string>Noto Color Emoji</string>
+  </edit>
+</match>
+```
 
 然后通过：
 
-    FC_DEBUG=4 pango-view -q -t '🧀' 2>&1 | grep -o 'family: "[^"]\+' | cut -c 10- | tail -n 1
+```bash
+FC_DEBUG=4 pango-view -q -t '🧀' 2>&1 | grep -o 'family: "[^"]\+' | cut -c 10- | tail -n 1
+```
 
 来看，正常这个 cheese 表情是 Noto Color Emoji 显示的，但是屏蔽了之后就不是了，说明屏蔽成功。
 
@@ -88,7 +98,9 @@ emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作�
 
 而 RedHat 的维护者也给了我一个更好的方案：
 
-    fc-list “Noto Color Emoji”:charset=0x20
+```bash
+fc-list “Noto Color Emoji”:charset=0x20
+```
 
 如果字体未安装或屏蔽成功，就没有结果，不然会返回字体文件和字体名称。
 
@@ -96,7 +108,9 @@ emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作�
 
 我们要先统一下概念。fontconfig 里用的叫做 charset（字符集），而我前面说过一个 unicode codepoint。unicode point 是一个码点，比如 A 字母 1 数字都是一个独立的码点，但是不是每个码点在现实中都能找到对应的字符。字体制作是针对 unicode point 来的。unicode codepoint 的表示法在 fontforge 里叫 U+20，在 fontconfig 的非 debug 输出里叫 20，而在写配置的时候又要用 0x20，这三个都是等价的，但是在不同的程序里必须用不同的表示法。charset 就是码点的集合。
 
-    fc-scan —format “%{charset}” NotoColorEmoji.ttf
+```bash
+fc-scan —format “%{charset}” NotoColorEmoji.ttf
+```
 
 就能够看到某个字体有哪些码点。
 
@@ -114,14 +128,16 @@ emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作�
 
 原来是我在生成的时候没有针对 Noto Emoji 这个黑白 emoji 字体，这是正确的，因为我要给它也做 blacklist，它的 charset 就被清空了233，那样的效果等于不载入，那就直接不载入好啦：
 
-<match target=“scan”>
+```xml
+<match target="scan">
     <selectfont>
         <rejectfont>
-            <patlet name=“family”>
+            <patlet name="family">
                 <string>Noto Emoji</string>
             </patlet>
         </rejectfont>
     </selectfont>
 </match>
+```
 
 注意不能用 prefer work，因为之前说过第三种匹配类型实际上用作匹配的字体不是 pattern 里面的字体，你在把它加入 pattern 前根本改变不了它的顺序。未来会把这部分代码也整合到生成器里面去，这样比如你指定一个 Colored Emoji 字体，会自动屏蔽所有其它 emoji 字体和非 emoji 字体中的 emoji 部分。

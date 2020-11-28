@@ -2,9 +2,6 @@ baseURL = "https://marguerite.github.io"
 languageCode = "zh-cn"
 title = "Marguerite Su: Golang/Ruby Programmer, openSUSE Member"
 theme = "blank"
-
-[privacy]
-  [privacy.disqus]
-    disable = false
-
 disqusShortname = "innamoramento"
+pygmentsCodefences = true
+pygmentsStyle = "github"
