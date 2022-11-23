@@ -27,6 +27,21 @@
 
 		
 			<article>
+	<h1><a href="https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></h1>
+	<time>23.11.2022 20:01</time>
+	
+	<div>
+		最早是 openSUSE 中文论坛上的一个帖子疑似文泉驿字体BUG把我带入字体的坑的，以前我只是停留在玩 fontconfig 的阶段。为了解决这个BUG，我简单的学习了一下 fontforge，发现带草字头和竹字头的字形简直是太多了，绝对不能手改，于是萌生了编程化地解决这个BUG的想法。接着无意中就把文泉驿的 ttc 转成了 ufo3 格式，并且在 README.md 中发愿要使用 googlefonts 的 fontmake 工具来编译文泉驿。
+其实当初没有想那么多的，转换成 ufo3 格式并使用 fontmake 来编译文泉驿有什么好处呢？首先文泉驿作为一个中古字体（只能说比什么 UMing 之类的要新一点），它一直以来不是那么开源的。我理解的开源要有源代码，作为普通用户我很难去把 ttc 当成是源代码的（当然对于会 fontforge 的人来说 ttc 就约等于源代码），我理解的源代码就是能作为文本打开的。wenq.org 曾经是有一个在线编辑器的，用户们可以众筹在线编辑字形，FangQ 会在后台把用户编辑的字形搜集起来去做新的 ttc。随着时间，这套机制已经是废弃了的，也就可以说我们无法再获取到它的源代码了。把文泉驿转存成 ufo3 格式，它的每一个字形都是文本化的 glif 格式，相当于复现了源代码。有了源代码一切都好办了，未来我们还可以再制作在线编辑器，让文泉驿原来的模式继续下去。其次使用 fontmake 来编译文泉驿，相当于让文泉驿与所有现代字体比如 Noto Sans CJK 又站在了同一起跑线上。最近几年字体制作发展的很快，前几年我在 github 上是很少能看见字体项目的，但自从 Adobe 和 Google 在 github 上开源了他们的一些字体工具后呢，现在各种拼接字体大行其道了，比如更纱黑体这种，甚至偶尔还会给我推送一些做原创字体的项目。这些曾经都是与文泉驿无缘的，正如我所说的，大多数人不认为 ttc 是源代码，所以没法利用文泉驿。但现在好了，我可以用 fontmake 编译文泉驿，就表示说 fontbakery 我也可以用，ttfautohint 我也可以用，换句话说，如果我的 ufo3 格式通过了 fontbakery 的 adobefonts 或 googlefonts 的系列检查，且不论字形美丑，至少在字体质量上当年手搓出来的文泉驿是可以进化到 Noto Sans CJK 的水平的。
+大多数工作是两年前做的，当时我写了一个 ufo3 的解析库，修复了草字头和竹字头的问题，并且使用 fontforge 再次生成了 ttf 字体。后来去打包 fontmake 的时候遇到了 skia-pathops 的编译问题，项目就停滞了，甚至草字头和竹字头的问题最终也没有反馈回发行版中。
+		
+			<a href="https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
 	<h1><a href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></h1>
 	<time>28.11.2020 16:07</time>
 	
@@ -179,24 +194,6 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 </article>
 
 		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></h1>
-	<time>12.01.2016 00:00</time>
-	
-	<div>
-		今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
-金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
-我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
-这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。
-现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
-而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。
-		
-			<a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">Read more...</a>
-		
-	</div>
-</article>
-
-		
 		<div>
 
 1 of 4
@@ -214,6 +211,8 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 		<div>
 			<ul>
 				
+				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
+				
 				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
 				
 				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
@@ -222,8 +221,6 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 				
 				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
 				
-				<li><a href="/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">fontconfig 几个常见的坑</a></li>
-				
 			</ul>
 		</div>
 	</div>
@@ -231,7 +228,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 
 
 	<footer>
-	<p>&copy; 2020 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
 </footer>
 
 </body>
