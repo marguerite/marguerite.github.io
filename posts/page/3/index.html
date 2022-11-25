@@ -133,6 +133,30 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>openshift 安装 owncloud 取代 Google Reader
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Google Reader’s sunset is the dawn of ownCloud news.
+翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。
+相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000&#43;。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
+是小企鹅输入法的作者翁学天让我意识到了：哦，好在还有替代。虽然我是它的简体中文翻译者，但是我以前真的不知道嘿嘿。
+首先这个替代目前装起来还是有一点困难的。所以需要一个这样的中文教学来教大家怎么才能装上有 News 的 ownCloud。
+我们开始吧。（以 openSUSE 为例）
+下载 首先我们需要 Git。因为现在只有 Git 版的 ownCloud Apps 才有这个功能。
+sudo zypper in git 安装好了 Git，我们需要下载这些源码
+git clone https://github.com/owncloud/core 这是核心组件。
+git clone https://github.com/owncloud/apps 这是带 News 的 apps。
+git clone https://github.com/owncloud/themes 这是新的 responsive 主题。
+git clone https://github.com/owncloud/3rdparty 这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。
+cd apps git clone https://github....</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-15 00:00:00 +0800 CST'>March 15, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openshift 安装 owncloud 取代 Google Reader" href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>SUSE 新年飨礼
     </h2>
   </header>
@@ -292,32 +316,6 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
   </div>
   <footer class="entry-footer"><span title='2012-05-16 00:00:00 +0800 CST'>May 16, 2012</span></footer>
   <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）塵埃" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>CJK 的尊嚴（三）聖戰
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
-前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。
-但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。
-標題的含義 我們其實一直都很沒有尊嚴。請不要民族主義衝頭反駁。下面是一些普通用戶不知道的開發細節，解釋了爲什麼。這是爭論的基礎。不要對它爭論，因爲你真的不懂。你可以要求更多的例子和細節，但請不要就此爭論。沒有結果。
-中文在開源界一直處於「二流」的位置。這是 GNOME 開發者說的。
-爲什麼想必不用說了。他們自以爲是核心的開發者。我們做的是敲邊鼓。所以他們不懂我們的語言不重要。我們會用他們的語言來發。這就給他們自大的誤解說，他們很大。其實很多工作是我們做的。包括核心。GNOME 上游的 Network Manager 誰維護的？中國人。
-大到什麼程度呢？大到他們可以自以爲能夠決定我們的事。一次兩次叫做沒有考慮到，總是這樣那就叫不在意。
-早些年，使用 Linux 的人是不是會發現無論我們做了什麼本地化定製，都會被上游下一個版本的一些改動覆蓋掉，導致我們被逼去重新做這些定製？
-舉例來說，Wine 模擬器的中文字體。我們有補丁，上游不收。再舉例，openSUSE 的 freetype2 補丁，上游不收。爲什麼呢？有什麼都不懂的西文用戶說，會影響我的 liberation sans。實際上這個補丁根本就沒有碰過它。於是怎樣呢？我們現在默認還沒有。那麼我就要問，爲什麼影響他們就那麼重要，影響我們就屁都不是？我們沒有貢獻嗎？不是。是整個項目的走向就沒考慮過我們。
-所以我們的中文維護者一直在做的就是：重造各種輪子。
-這是 Linux 的悲哀。Linux 世界的很多推倒重來都是源於一開始考慮的就不夠，而不是技術發展。因爲他們一開始做的就是滿足自己需要的東西。後來有各種人加入了他們的需要。它慢慢變的重要起來了。再後來，一些人發現前面一些人考慮的不完善，導致他的需要添加不進去了。於是要麼忍，要麼滾。於是推倒重來把所有人的需要再重新設計一遍。
-這還僅僅是設計，還不包括實現。知道前面 X11 做了一件什麼事嗎？加了有史以來最大的一個 patch，一萬多行代碼。幹了什麼事情呢？報道這個消息的 Phoronix 都無奈了，什麼特性都沒加，把那些渣實現改掉了。不知道同學們是怎麼看的，我當時的想法是，幸虧我不懂代碼，不然我這個潔癖知道系統上用了一萬多行的渣代碼，我會瘋掉的。
-所以爲什麼不在做事情的時候都負責任一點呢！？以前做的不好，至少現在起，我們做好它，之前的錯誤，想要加特性的人幹不了，總會有牛人能幹的。當然，牛人肯幹，GNOME 收不收還是兩說。GNOME 被紅帽和西施社區背後的公司影響很深，就好比這次如果只是幾個輸入法開發者去鬧的話，沒結果的。他們是因爲西施的 CJK 決定放棄 IBus 了。所以才停掉的。
-所以有人說我「挾西施以令 GNOME」也好，說我自以爲是 Hero 也好，不重要的，因爲這就是事實。被輸入法開發者承認並尊重的事實。就像小企鵝輸入法作者說的「I’d be happy」。因爲他們之前也鬧過，Lauchpad/Unity/GNOME/KDE/GTK/…，他們的郵件打印出來嚇死你。結果呢？兩手空空。實力不對等的爭吵，都是撒嬌。不管你是小企鵝，還是 IBus，又或是你能想像得到的任何中文開發面向中文用戶的東西。不要以爲你有十四億人口就可以是老大了，在人家眼裏，你叫少數族裔。「CJK 不可放棄」，那是憐憫，霸道的時候還沒到。強推，又怎樣？又能怎樣？你們這些自以爲是大爺吵來吵去的傢伙們，最後不也都捏着鼻子認了？
-重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2012-05-15 00:00:00 +0800 CST'>May 15, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）聖戰" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

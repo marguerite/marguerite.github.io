@@ -127,6 +127,22 @@
 
 <article class="first-entry"> 
   <header class="entry-header">
+    <h2>深入理解 Linux fontconfig 第一部分：有关工作流的假设
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这篇文章是之前两篇关于 fontconfig 文章的后续，前文见第一篇 fontconfig 几个常见的坑，第二篇 Color Emoji in openSUSE。
+偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
+先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
+但是呢，实际上这种方法在现实中不怎么灵。
+&lt;match target=&#34;scan&#34;&gt; &lt;test name=&#34;family&#34;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&#34;charset&#34; mode=&#34;assign&#34;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset 的操作了，但是在 Chromium 浏览器中测试是这样的：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-11-25 12:13:29 +0800 CST'>November 25, 2022</span></footer>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第一部分：有关工作流的假设" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>使用 google 的 fontmake 复活文泉驿项目
     </h2>
   </header>
@@ -261,25 +277,6 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
   </div>
   <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
   <a class="entry-link" aria-label="post link to 本周开发札记" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>脑洞大开的周末
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
-写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
-好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
-然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
-结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
-写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
-关于这个问题有三个办法：
-第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c&#43;&#43; 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿...</p>
-  </div>
-  <footer class="entry-footer"><span title='2016-01-18 00:00:00 +0800 CST'>January 18, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 脑洞大开的周末" href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

@@ -6,7 +6,20 @@
     <description>Recent content on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 23 Nov 2022 20:01:29 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 25 Nov 2022 12:13:29 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解 Linux fontconfig 第一部分：有关工作流的假设</title>
+      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</link>
+      <pubDate>Fri, 25 Nov 2022 12:13:29 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</guid>
+      <description>这篇文章是之前两篇关于 fontconfig 文章的后续，前文见第一篇 fontconfig 几个常见的坑，第二篇 Color Emoji in openSUSE。
+偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
+先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
+但是呢，实际上这种方法在现实中不怎么灵。
+&amp;lt;match target=&amp;quot;scan&amp;quot;&amp;gt; &amp;lt;test name=&amp;quot;family&amp;quot;&amp;gt; &amp;lt;string&amp;gt;Noto Sans CJK SC&amp;lt;/string&amp;gt; &amp;lt;/test&amp;gt; &amp;lt;edit name=&amp;quot;charset&amp;quot; mode=&amp;quot;assign&amp;quot;&amp;gt; &amp;lt;minus&amp;gt; &amp;lt;name&amp;gt;charset&amp;lt;/name&amp;gt; &amp;lt;charset&amp;gt; &amp;lt;int&amp;gt;0x2122&amp;lt;/int&amp;gt; &amp;lt;/charset&amp;gt; &amp;lt;/minus&amp;gt; &amp;lt;/edit&amp;gt; &amp;lt;/match&amp;gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset 的操作了，但是在 Chromium 浏览器中测试是这样的：</description>
+    </item>
+    
     <item>
       <title>使用 google 的 fontmake 复活文泉驿项目</title>
       <link>https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</link>

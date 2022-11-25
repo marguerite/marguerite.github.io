@@ -133,6 +133,25 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>脑洞大开的周末
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c&#43;&#43; 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿...</p>
+  </div>
+  <footer class="entry-footer"><span title='2016-01-18 00:00:00 +0800 CST'>January 18, 2016</span></footer>
+  <a class="entry-link" aria-label="post link to 脑洞大开的周末" href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>高手创造工具
     </h2>
   </header>
@@ -316,30 +335,6 @@ Openshift 折腾 xmpptalk
   </div>
   <footer class="entry-footer"><span title='2013-03-17 00:00:00 +0800 CST'>March 17, 2013</span></footer>
   <a class="entry-link" aria-label="post link to openshift 搭建和 IRC 频道互通的 Gtalk 群聊" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>openshift 安装 owncloud 取代 Google Reader
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Google Reader’s sunset is the dawn of ownCloud news.
-翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。
-相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000&#43;。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
-是小企鹅输入法的作者翁学天让我意识到了：哦，好在还有替代。虽然我是它的简体中文翻译者，但是我以前真的不知道嘿嘿。
-首先这个替代目前装起来还是有一点困难的。所以需要一个这样的中文教学来教大家怎么才能装上有 News 的 ownCloud。
-我们开始吧。（以 openSUSE 为例）
-下载 首先我们需要 Git。因为现在只有 Git 版的 ownCloud Apps 才有这个功能。
-sudo zypper in git 安装好了 Git，我们需要下载这些源码
-git clone https://github.com/owncloud/core 这是核心组件。
-git clone https://github.com/owncloud/apps 这是带 News 的 apps。
-git clone https://github.com/owncloud/themes 这是新的 responsive 主题。
-git clone https://github.com/owncloud/3rdparty 这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。
-cd apps git clone https://github....</p>
-  </div>
-  <footer class="entry-footer"><span title='2013-03-15 00:00:00 +0800 CST'>March 15, 2013</span></footer>
-  <a class="entry-link" aria-label="post link to openshift 安装 owncloud 取代 Google Reader" href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
