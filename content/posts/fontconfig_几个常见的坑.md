@@ -7,7 +7,7 @@ draft: false
 
 后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
 
-##第一个坑：从 monospace 中清除 sans-serif
+## 第一个坑：从 monospace 中清除 sans-serif
 
 比如 [Hack 字体的官方配置](https://github.com/source-foundry/Hack/issues/408)，还有最著名的 [eev’s rant about fontconfig](https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/)，都推荐了这么一种做法：
 
@@ -50,7 +50,7 @@ draft: false
 
 fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做 scan，就是扫描系统中的字体来构建一个 list（fc-list 可以还原这个过程），这个 list 是无序的。第二步叫 pattern match，就是针对你要匹配的字体名称比如 “sans-serif”去调整上面的 list，各种 prepend。第三步叫 font match，就是针对调整过的 list 去应用诸如 hinting antialias 之类的。
 
-虽然 fontconfig 的配置文件是有数字顺序的，但上面那三个过程是死的，意思是即使你把 <match target=“font”> 写到 10-*.conf 里去，它也不会在 90-*.conf 的 <match target=“pattern”> 之前执行。所以开发者在 pattern match 阶段只需要关注对应的 pattern 的先后顺序就可以了。
+虽然 fontconfig 的配置文件是有数字顺序的，但上面那三个过程是死的，意思是即使你把 `<match target="font">` 写到 `10-*.conf` 里去，它也不会在 `90-*.conf` 的 `<match target="pattern">` 之前执行。所以开发者在 pattern match 阶段只需要关注对应的 pattern 的先后顺序就可以了。
 
 通过 FC_DEBUG=4 fc-match -s monospace 查看（搜索 “Edit family Delete none”），这段是添加规则
 
@@ -303,7 +303,7 @@ $ fc-match -a “DejaVu Sans”
 
 来做。
 
-##第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体
+## 第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体
 
 Firefox 自己捆绑了一个 emoji 字体，并且在源代码里面把它作为默认的 emoji 字体。而 Linux 上面的 emoji 字体大部分是 Noto Color Emoji。为了统一风格，我想要让 firefox 匹配字体时不匹配它：
 
