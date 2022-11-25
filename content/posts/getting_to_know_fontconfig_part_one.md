@@ -1,5 +1,5 @@
 ---
-title: "深入理解 Linux fontconfig 第一部分：有关工作流的假设"
+title: "深入理解 Linux fontconfig 第一部分"
 date: 2022-11-25T12:13:29+08:00
 draft: false
 ---
@@ -33,7 +33,7 @@ draft: false
        </p>
       </body>
 
-![](../../../../图片/Screenshot_20221125_123349.png)
+![](../../images/Screenshot_20221125_123349.png)
 
 那个 TM 码点依然使用 Noto Sans CJK SC 显示。纳尼！TM 不是已经被屏蔽了嘛？
 
@@ -95,7 +95,7 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
 
 这个 FcFontSetList 函数下次使用 `os` 是在 `if (!FcListAppend (&table, s->fonts[f], os, lang))` (如果没有 os，FcFontSetList 在前面会创建一个空的 os)。这里的 `&table` 是 `FcListHashTable`, 最终是通过 `FcFontSetAdd` 把 table 里的 font 加到 ` ret = FcFontSetCreate();` 这个新建的 FontSet 中并返回这个新建的 ret，作为 FcFontList 返回的 FontSet。
 
-所以这里 `FcListAppend` 的作用是通过 `objectsets` 和 `lang` 去判断这个字体可不可以加入到最终的 FontSet。后面再深入的代码我们就不继续看了。下面是结论：
+所以这里 `FcListAppend` 的作用是通过 `objectset` 和 `lang` 去判断这个字体可不可以加入到最终的 FontSet。后面再深入的代码我们就不继续看了。下面是结论：
 
 **通过 `pattern` 和 `objectset` 一起得到的 FontSet 会得到应用了 charset minus 的结果。**
 
@@ -103,36 +103,32 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
 
 那么隐含式的调用呢？我们来看依云的代码（我做了截取）：
 
-<pre>
-int main(int argc, char **argv) {
-  FcFontSet* fs = NULL;
-  FcPattern* pat = NULL;
-  FcObjectSet* os = NULL;
+    int main(int argc, char **argv) {
+      FcFontSet* fs = NULL;
+      FcPattern* pat = NULL;
+      FcObjectSet* os = NULL;
  
-  FcChar8* strpat = (FcChar8*)":lang=zh";
-  pat = FcNameParse(strpat);
-  os = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char *)0);
-  fs = FcFontList(0, pat, os);
-}
-</pre>
+      FcChar8* strpat = (FcChar8*)":lang=zh";
+      pat = FcNameParse(strpat);
+      os = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char *)0);
+      fs = FcFontList(0, pat, os);
+    }
 
 他这里的 os 相当于是新建的空 ObjectSet，所以他最终的 FontSet 里面包含了 "Noto Sans CJK SC"。下面的 `FcPatternGetCharSet` 取的是真实字体的 Charset，也包含了 TM 字符。这在 `FcCharSetHasChar` 也得到了验证。
 
 换句话说，如果想要取得 fontconfig 的 font match 结果后的字体，这个程序要改为使用 `objectset`，即：
 
-<pre>
-int main(int argc, char **argv) {
-  FcFontSet* fs = NULL;
-  FcPattern* pat = NULL;
-  FcObjectSet* os = NULL;
+    int main(int argc, char **argv) {
+      FcFontSet* fs = NULL;
+      FcPattern* pat = NULL;
+      FcObjectSet* os = NULL;
  
-  FcChar8* strpat = (FcChar8*)":lang=zh";
-  pat = FcNameParse(strpat);
-  os = FcObjectCreate();
-  FcObjectSetAdd (os, ":charset=0x2122");
-  fs = FcFontList(0, pat, os);
-}
-</pre>
+      FcChar8* strpat = (FcChar8*)":lang=zh";
+      pat = FcNameParse(strpat);
+      os = FcObjectCreate();
+      FcObjectSetAdd (os, ":charset=0x2122");
+      fs = FcFontList(0, pat, os);
+    }
 
 以上对 fc-list.c 和依云的 demo 的分析验证了上面假设中最没有用一部分，即：**真实的在硬盘上的字体文件里这个字符肯定还是存在的**。同时也说明了另一个事情：`FcPatternGetCharset`获取字体 charsets 是严格依赖喂给它的 FontSet，也就是 `FcFontList` 的结果的。
 
@@ -148,6 +144,7 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
     FcDefaultSubstitute (pat);
     
     fs = FcFontSetCreate ();
+
 可以看到，它的 FontSet 是在最主要的函数执行过后才创建的，我们可以理解为是最终返回的那个新 FontSet。
 
 再往下是双猫说过的分别针对 sort/all 和什么都不给默认是 match 的处理，主要是调用 `FcFontSort` 和 `FcFontMatch`得到 font_pattern，然后通过 `FcFontSetAdd` 加入到 FontSet。唯一不同的是 `FcFontSort` 后调用了一次 `FcFontRenderPrepare`。
@@ -156,7 +153,7 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
 
 然后是针对得到的 FontSet 逐个的应用 `FcPatternFilter`：
 
-     font = FcPatternFilter (fs->fonts[j], os);
+    font = FcPatternFilter (fs->fonts[j], os);
      
 `FcPatternFilter` 函数里最重要的是：
 
@@ -181,14 +178,12 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
 
 这个是双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)缺少的 Chromium 代码部分。之前 V2EX 上有个 rant [Chrome 把 FreeTyoe/Fontconfig 全集成进自己沙盒以及扣肉满天下简直毒瘤到爆表!](https://www.v2ex.com/t/853093)，说得不完全对，至少在我要 debug 的问题上，我不需要知道 skia 究竟干了什么，我只需要知道 chromium 最终是怎么在 Linux 上查找 Fallback 字体的就可以了。于是，我找到了 [ui/gfx/font_fallback_linux.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/font_fallback_linux.cc)，里面有一个最重要的 `GetFallbackFont` 函数，它有关 fontconfig 部分的代码是这样的：
 
-<pre>
     FcConfig* config = GetGlobalFontConfig();
     FcConfigSubstitute(config, pattern.get(), FcMatchPattern);
     FcDefaultSubstitute(pattern.get());
     FallbackFontEntries fallback_font_entries;
     FcResult fc_result;
-    FcFontSet* fonts =
-        FcFontSort(config, pattern.get(), FcTrue, nullptr, &fc_result);
+    FcFontSet* fonts = FcFontSort(config, pattern.get(), FcTrue, nullptr, &fc_result);
     if (fonts) {
       // Add each potential fallback font returned by font-config to the
       // set of fallback fonts and keep track of their codepoints coverage.
@@ -216,12 +211,11 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
       }
       FcFontSetDestroy(fonts);
     }
-</pre>
 
 可以看到，它跟 fc-match 差不多，调用了 `FcFontSort` 后得到了 FontSet，然后再逐个的 `FcPatternGetCharSet`。
 
 按照我们前面的分析，如果 `FcConfigSubstitute` 得到的这个 FontSet 里是进行过 charset minus 的，那么 `FcPatternGetCharSet` 是 100% 尊重的，就不会出现之前的用 `Noto Sans CJK SC` 显示 TM 符号的情况。
 
-看来我们要继续分析 `FcConfigSubstitute` 函数了。
+看来我们要继续分析 `FcConfigSubstitute` 的实现了。
 
 未完待续。
