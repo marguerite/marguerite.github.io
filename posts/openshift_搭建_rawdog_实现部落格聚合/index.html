@@ -1,28 +1,192 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>OpenShift 搭建 rawdog 实现部落格聚合</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>OpenShift 搭建 rawdog 实现部落格聚合</h1>
-			<time>19.03.2013 00:00</time>
-			<div>
-				<p>因为 <a href="https://planet.opensuse.org/">Planet openSUSE</a> 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：<del>community.suse.org.cn</del> Update: 挂了</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>OpenShift 搭建 rawdog 实现部落格聚合 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="OpenShift 搭建 rawdog 实现部落格聚合" />
+<meta property="og:description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-03-19T00:00:00+08:00" />
+<meta property="article:modified_time" content="2013-03-19T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="OpenShift 搭建 rawdog 实现部落格聚合"/>
+<meta name="twitter:description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "OpenShift 搭建 rawdog 实现部落格聚合",
+      "item": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "OpenShift 搭建 rawdog 实现部落格聚合",
+  "name": "OpenShift 搭建 rawdog 实现部落格聚合",
+  "description": "因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了\n这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备\n你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设\nrawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。\n另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。",
+  "keywords": [
+    
+  ],
+  "articleBody": "因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了\n这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备\n你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设\nrawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。\n另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。\nssh 进你的 application，然后\ncd $OPENSHIFT_DATA_DIR git clone https://github.com/marguerite/susews-planet.git cd susews-planet 这个你只能使用 openSUSE 的 bento 风格，想改风格请在本地 Git 捡出，然后修改 planetsuse/planet_template.html 和 planetsuse/feedlist_template.html，website/css，website/js，website/images 下的内容。\n修改完成后依次使用 l10n-extract-from-template 和 l10n-merge.sh 提取翻译，去 locale 文件夹用 lokalize 翻译 .po 文件，翻译好后运行 l10n-compile-po.sh 生成 .mo 文件。\n然后通过各种方法把它上传到上面所说的目录。\n接着运行一次：\n./compile.sh 这会编译 python 的 .pyc 和 .pyo。\n然后修改 planetsuse/feeds 文件，加入要聚合的部落格：\nfeed 15m http://www.marguerite.su/feed/ define_name Marguerite Su define_nick marguerite define_face marguerite define_lang cn define_irc marguerite define_member 1 这是一个比较全的单个 feed 配置。其中 defineface 会用在 website/hackergotchi/ 下的同名 .png 头像。definemember 是判断你是不是 openSUSE 社员。本质上你可以 define 任何关键词，只要你在前面的两个 template 里有对它们规定风格。\n改好了 feeds 和上传了 hackergotchi 头像后。运行：\n./update.sh 这会预取 feeds，也会提示一些比如 feed 301 重定向了，新 feed 在哪里的消息。\n./write.sh 这会在 website/global 和 website/[lang] 这样的文件夹下写入 HTML。\n至此，rawdog 配置完成。\nwsgi 伺服器架设 首先，在本地 git clone [openshift 给你的那个 ssh:// 的仓库地址]。\n然后修改 setup.py\nfrom setuptools import setup setup(name='openSUSE Chinese Community', version='1.0', description='OpenShift Python-2.7 Community Cartridge based application', author='Marguerite Su', author_email='marguerite@opensuse.org', url='http://www.python.org/sigs/distutils-sig/', # Uncomment one or more lines below in the install_requires section # for the specific client drivers/modules your application needs. install_requires=['greenlet', 'gevent', 'bottle', # 'MySQL-python', # 'pymongo', # 'psycopg2', ], ) 重点要改的是 name，author，authoremail 和下面的 installrequires。\n接着修改 wsgi/application，这个是 Felix 的工作，我完全看不懂，不过你的 susews-planet/website 的位置和我的一样的话，可以直接复制粘贴：\n#!/usr/bin/env python import os from bottle import route, default_app, static_file, redirect, HTTPError root = os.environ['OPENSHIFT_HOMEDIR'] + 'app-root/runtime/data/susews-planet/website' @route('/') def homepage(): redirect('/global/') @route('//') def static_dir(path): return static_file(path + \"/index.html\", root=root) @route('/') def static(path): result = static_file(path, root=root) if isinstance(result, HTTPError): result = static_file(path + \"/index.html\", root=root) if not isinstance(result, HTTPError): redirect(path + \"/\") return result application = default_app() 然后我们还要做一件事，因为你的 planetsuse/feeds 和 website/hackergotchi 都在你用 git 修改不到的地方，这给后续更新带来了麻烦，所以要修改下。\n首先 ssh 登入把它们两个删掉。\n然后把你本地的 planetsuse/feeds 和 website/hackergotchi 复制到 git 根目录下。\n接着编辑 .openshift/action_hooks/build，内容如下：\nln -sf ${OPENSHIFT_REPO_DIR}/hackergotchi ${OPENSHIFT_DATA_DIR}/susews-planet/website/ ln -sf ${OPENSHIFT_REPO_DIR}/feeds ${OPENSHIFT_DATA_DIR}/susews-planet/planetsuse/ 就是把我们 git 上传的这两个文件软链接到它们应该在的地方去。\nCron jobs 前面已经说了，rawdog 只管制作 HTML，但是我们需要这些 HTML 始终最新，所以需要用 cron jobs 每小时跑一次它来更新 feeds。\n进入到 .openshift/cron/hourly 做一个 fetch.sh，内容如下：\n{ $LOG_DATE=`date -R` echo -n \"========== START $LOG_DATE ==========\" ${OPENSHIFT_DATA_DIR}/susews-planet/update.sh 2\u003e\u00261 ${OPENSHIFT_DATA_DIR}/susews-planet/write.sh 2\u003e\u00261 echo -n \"========== END $LOG_DATE ==========\" } \u003e \"${OPENSHIFT_DATA_DIR}/log.txt\" 2\u003e\u00261 然后回退到 git 根目录：\ngit add . git commit -m \"add cron and soft link\" git push 本教学到此就结束了，如果您想去绑定域名，请看我这篇文章：\nopenshift 搭建 wordpress 教程\n如果您想弄个备份，请看我这篇文章：\nopenshift 搭建和 IRC 频道互通的 Gtalk 群聊\nEnjoy life！\n2013-10-01 Update: Nginx 相关 Nginx 相对要简单一些，只需要本地捡出，然后相应修改，传到你的 htdocs/子文件夹。写对配置就可以，这是迁移到 community.suse.org.cn 后由我和 phonixlzx 共同修改的 nginx 配置，写到 /etc/nginx/nginx.conf 还是 /etc/nginx/vhosts.d/xxx.conf 要看你的需求了。\nserver { server_name community.suse.org.cn; listen 80; listen [::]:80; root /srv/www/htdocs/community.suse.org.cn/website/; index index.html; # Only match requests for / location = / { rewrite ^ /global permanent; } } ",
+  "wordCount" : "447",
+  "inLanguage": "en",
+  "datePublished": "2013-03-19T00:00:00+08:00",
+  "dateModified": "2013-03-19T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      OpenShift 搭建 rawdog 实现部落格聚合
+    </h1>
+    <div class="post-meta"><span title='2013-03-19 00:00:00 +0800 CST'>March 19, 2013</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>因为 <a href="https://planet.opensuse.org/">Planet openSUSE</a> 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：<del>community.suse.org.cn</del> Update: 挂了</p>
 <p>这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 <a href="http://blog.felixc.at/">Felix Yan</a> 帮写的，所以在前面感谢一下 co-worker。
 准备</p>
 <p>你要去开一个新 <code>Application</code>，类型是 <code>Python 2.7 Community Cartridge</code>，然后要新添加一个 <code>Cron 1.4 Cartridge</code>。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。
@@ -59,7 +223,7 @@ cd susews-planet
 </code></pre>
 <p>这会在 website/global 和 website/[lang] 这样的文件夹下写入 HTML。</p>
 <p>至此，rawdog 配置完成。</p>
-<h4 id="wsgi-伺服器架设">wsgi 伺服器架设</h4>
+<h4 id="wsgi-伺服器架设">wsgi 伺服器架设<a hidden class="anchor" aria-hidden="true" href="#wsgi-伺服器架设">#</a></h4>
 <p>首先，在本地 git clone [openshift 给你的那个 ssh:// 的仓库地址]。</p>
 <p>然后修改 setup.py</p>
 <pre><code>from setuptools import setup
@@ -114,7 +278,7 @@ application = default_app()
 ln -sf ${OPENSHIFT_REPO_DIR}/feeds ${OPENSHIFT_DATA_DIR}/susews-planet/planetsuse/
 </code></pre>
 <p>就是把我们 git 上传的这两个文件软链接到它们应该在的地方去。</p>
-<h4 id="cron-jobs">Cron jobs</h4>
+<h4 id="cron-jobs">Cron jobs<a hidden class="anchor" aria-hidden="true" href="#cron-jobs">#</a></h4>
 <p>前面已经说了，rawdog 只管制作 HTML，但是我们需要这些 HTML 始终最新，所以需要用 cron jobs 每小时跑一次它来更新 feeds。</p>
 <p>进入到 .openshift/cron/hourly 做一个 fetch.sh，内容如下：</p>
 <pre><code>{
@@ -135,7 +299,7 @@ git push
 <p>如果您想弄个备份，请看我这篇文章：</p>
 <p><a href="http://marguerite.su/openshift-setup-a-gtalk-group-chat-with-a-bind-in-irc-channel">openshift 搭建和 IRC 频道互通的 Gtalk 群聊</a></p>
 <p>Enjoy life！</p>
-<h4 id="2013-10-01-update-nginx-相关">2013-10-01 Update: Nginx 相关</h4>
+<h4 id="2013-10-01-update-nginx-相关">2013-10-01 Update: Nginx 相关<a hidden class="anchor" aria-hidden="true" href="#2013-10-01-update-nginx-相关">#</a></h4>
 <p>Nginx 相对要简单一些，只需要本地捡出，然后相应修改，传到你的 htdocs/子文件夹。写对配置就可以，这是迁移到 community.suse.org.cn 后由我和 phonixlzx 共同修改的 nginx 配置，写到 /etc/nginx/nginx.conf 还是 /etc/nginx/vhosts.d/xxx.conf 要看你的需求了。</p>
 <pre><code>server {
     server_name community.suse.org.cn;
@@ -152,59 +316,91 @@ git push
 }
 </code></pre>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

@@ -1,61 +1,166 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Posts</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	<link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Posts | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="Posts - Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/posts/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Posts" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://marguerite.github.io/posts/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Posts"/>
+<meta name="twitter:description" content=""/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }
+  ]
+}
+</script>
 </head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Posts
+  </h1>
 </header>
 
-	
-	<main>
-		
-		<div>
-			<h1>Posts</h1>
-			
-		</div>
-		
-
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">CJK 的尊嚴</a></h1>
-	<time>13.05.2012 00:00</time>
-	
-	<div>
-		好吧，這名字起的有點義和團的 feeling？
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>CJK 的尊嚴
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>好吧，這名字起的有點義和團的 feeling？
 民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
 首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
 其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。
 這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。
 起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
 答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。
-承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G+，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
+承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G&#43;，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
 主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。
 由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
 也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）
-轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。
-		
-			<a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">Read more...</a>
-		
-	</div>
+轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-05-13 00:00:00 +0800 CST'>May 13, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/">Instagram 中國式小資的末日狂歡</a></h1>
-	<time>10.04.2012 00:00</time>
-	
-	<div>
-		這事件最近炒的盛嚣直上的，甚至搞出來所謂的互聯網鄙視鏈。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Instagram 中國式小資的末日狂歡
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>這事件最近炒的盛嚣直上的，甚至搞出來所謂的互聯網鄙視鏈。
 其實和香港選特首民衆自導自演的鬧劇一樣滑稽。港人選出符合預期的特首的公敵絕不是CCP，而是自己。CCP才沒有闲情雅致就一彈丸之地拉扯，官與民斗有理弱三分，它的政治智慧沒有那麼低能。董，曾，梁，每个背著萬民傘上台的民选特首都如一丘之貉，那絕對要在自己身上找原因，而不是歸咎於北京。嫑說你們沒有選，因為讓你們選會更差。每個合格的政客都明白拉攏一小撮聰明人比忽悠一大票選民困難得多，因為聰明人只相信拿在手裡的利益而選民相信不著邊際的前景，我覺得港人和有八十年歷史對付過民國蘇聯和美帝的中宣部直接剛上那才叫人間悲劇。港人若不能明白政治就是妥協基礎上的周旋，見人騙人見鬼蒙鬼的敷衍，那永遠只能沉迷在亞洲民主先鋒的空中樓閣裏自瀆，還不如像我們一樣相信隨機。（剛開頭就離題，瑪麗蘇你是要鬧哪樣。。。
 好吧，讓我們先來回顧一下instagram的歷史。instagram最初是創立於聖佛朗西斯科的一個多功能HTML5手機圖片簽到項目Burbn。像我一樣對項目名字的發音和拼寫有着異乎尋常的執着的孩子們是不是被雷蒙了，聽名字這就是個被語文老師死的早的序員們玩壞了永遠完成不了的一個坑啊。後來僥倖拿到了兩筆不知名風投於是華麗轉身，變成了所謂的互聯網未來之星，甚至國內的IT媒體所謂的「不聯網」。紅了大概有一年吧，形勢急轉直下，先是發佈了android應用，然後以迅雷不及掩耳盜鈴之勢賣給了臉書。這下哭爹喊娘、義憤填涌的人都傻眼了。
 與其說instagram是互聯網的未來，HTML5,勝利在今天，不如說是表妹這樣的美工和概念炒作的勝利，畢竟寶麗來還是拍立得都是老物（我家裏還有一部寶麗來相機。。），是所有在柯達時代拍不好相片的大孩子們的怨念藉助新工具在新時代的集體借屍還魂。至於銳推的很厲害的那個Flickr 3500 萬、instagram 10億的帖子，姐知道你們什麼意思，不就是想說instagram很碉堡麼。但還記得Flickr的slogan上面那個「高質量的」和當初用flic.kr同步OS截圖到推特遭到的同一幫人的白眼麼，這都表明了Flickr不是你我一樣的普通人的菜;還有臉書正在上市預備期，想象得到有同樣充沛的現金流的G家或者A家搶到instagram對投資者預期的影響麼？（臉書如果還有收購計劃，應該是Spotify）這明顯是漲停板上搶籌碼，沒有什麼理性和估值可言的。
@@ -68,18 +173,19 @@
 昨天這篇本章就寫到這裏，後來 iPad 不給力的 wordpress 丟失了。說真的當時不知道如何結尾，因爲我不想把它寫成一篇說明文，來給中國式小資下個定義怎樣，也不想再深入的討論蘋果怎樣，因爲公關戰要找個比你強的踩，贏了有面子輸了不丟人，我一個大活人和幾臺設備過不去幹嘛; 再說蘋果公司又沒什麼錯，它的東西有人拿來墊桌腳，是腦殘非要指望它傳家。但今天我就知道如何結尾了。因爲瓜瓜再一次在關鍵時刻跳出來拯救了他的那一票「一夜的爹」。
 以下是閃花眼的結尾：
 Instagram的狂歡已經結束，但請放心，就像搜索「instagram 替代」突然冒出來的那些結果一樣，這種狂歡一定會再回來的。（下面是亮點）就像若干年後，在某個大院後院的小院，有位曬太陽的老人對你說，當年王爺府領事館咱也是進過的，一樣，而那個小院，一個世紀以前，有位同樣的老人也說，當年太后娘娘咱也是伺候過的。#不傳謠不信謠
-PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑撿的。」by shellexy。每個給人分等級的人都固定的處在他所劃分的等級的最低一檔。
-		
-	</div>
+PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑撿的。」by shellexy。每個給人分等級的人都固定的處在他所劃分的等級的最低一檔。</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-04-10 00:00:00 +0800 CST'>April 10, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to Instagram 中國式小資的末日狂歡" href="https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/">开源软件的使用者算不算是吸血者</a></h1>
-	<time>04.04.2012 00:00</time>
-	
-	<div>
-		这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>开源软件的使用者算不算是吸血者
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
 回答： 我觉得你应该修改问题。使用者，是个很中性好笼统的词。下定义就是这样，你定义的越笼统，越中性，越细节，越带感情色彩和主观因素。使用者分种类的，玩游戏不也有人民币玩家、金币农民、苦逼青少年、称霸服务器的搬砖工嘛。你可能会用“傻逼”也很笼统来反驳我，但下定义虽然可以衍生但不是词语组合，组合就一定会带上该词或字原来的某种属性; 吸血者，是个很负面好恐怖的词。一个中性是不是负面，答案永远是否定的。所以，不算。就跟你说，这个杯子是不是犯二，回答的人会想，what the xxxx？
 不过考虑到您的思维路径可能是，看到我对于发行版是否吸血的解答，认为普通用户只使用不作为是不是也是吸血？下面就讨论下这个。
 先来定义吸血。吸血是拿了别人的东西用完还回去却不尊重别人规定的使用范围（比如借别人洗脸的盆子洗脚）或者干脆就不还或少还（比如借钱不还或少还），或者不征求同意直接偷（比如吸血蝙蝠），总体来说，就是不讲究的透支或挪用了别人的资源来做自己的事或谋求自己和别人之间的某种超然地位（商业间谍知己知彼百战不殆）。这个意义上说，吸血的实例很多，但因为大部分行为有了它自己的定义，所以明确说XX吸血反而比较少见。比如，拿着爸妈养老的钱去炒股，就是在吸爸妈的血，因为爸妈可以自己吃药看病甚至是炒股啊; 借了作家没有人知道的小说看，然后写上自己名字发表了，就是在吸作家的血，因为他可以自己来啊，他借你只是让你看的啊; 房地产开发商赖着银行钱不还去押地搞开发，就是在吸银行的血，因为银行可以自己押啊; 比如贪官挪用公款享乐就是吸了公民的血，因为公民可以自己享乐啊。但四种行为都有了自己的定义，第一个叫啃老，第二个叫冒名，第三个叫骗贷，第四个叫贪腐。如果没有这些定义，那他们都是吸血。
@@ -92,93 +198,90 @@ PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑
 下面正儿八经的回答问题。
 开源软件的使用者算不算是吸血者？
 用户跟开发者的立场不一样，虽然看似满足我的吸血定义，因为开发者贡献肯定最大，用户贡献比不过，又不像商业软件那样付费，因此算是“少还”的类型，应该算，但问题是这是在开源啊，开发者就没在乎你还不还啊，你只是受到你自己的良心审判啊。良心多的，就 buy me a beer（老外要捐款经常用的句子，酒吧用语，请我一杯啤酒），良心少的，就博客写篇文，朋友问就说下等等。做早做晚，做多做少，这不是问题，不构成开源事业中吸血的要件，问题是，做与不做。就是个 bool 值的开关状态而已。如果不做任何事，只是使用，不反馈，碰到问题就不用了，不宣传推广（不是一个软件有缺陷就可以不推广，不然木马病毒产业链和社会主义初级阶段早就没了），那你必然在吸血，吸开源事业的血（因为你就是一路过打酱油的，完全就没有参与啊，使用是开源最大的支持，这句话的原型是一个开源项目发布它的软件，拉人气的。。。鼓励你用不到但也去用，那已经是参与了啊。一般我们讨论问题指的是用户自主选择，所以我很少讨论预装的事儿，人人有 ie 有几个真用的。。）。直到有一天，你做出了这样的事，比如朋友问你随口说了一句，那么之前吸的血就原地满血满状态了，因为你已经还回去了。对用户的要求和对开发者的不一样，作为一个开发者你不能说我把我的补丁的前两行注释反馈给上游，或者我有三个补丁反馈两个意思意思尽尽人事就完了，搞笑么。虽然大多数人都这样做，但不代表就是对的，全中国人都用盗版，不代表盗版本身就对的（穷是国家的问题，用盗版是你的问题）。
-吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。
-		
-	</div>
+吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-04-04 00:00:00 +0800 CST'>April 4, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to 开源软件的使用者算不算是吸血者" href="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">openSUSE 的人气为何远不如 Ubuntu 和 Fedora?</a></h1>
-	<time>31.03.2012 00:00</time>
-	
-	<div>
-		某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 的人气为何远不如 Ubuntu 和 Fedora?
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
 我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。
 DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。
 更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。
 缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。
 好了，我下面集中谈一下为什么人气不高。
 一。openSUSE 确实是好发行版。
-它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">Read more...</a>
-		
-	</div>
+它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-03-31 00:00:00 +0800 CST'>March 31, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 的人气为何远不如 Ubuntu 和 Fedora?" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/">openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游</a></h1>
-	<time>31.03.2012 00:00</time>
-	
-	<div>
-		本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
 春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。
 深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。
 我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。
 这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？
 从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。
-再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/">Read more...</a>
-		
-	</div>
+再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-03-31 00:00:00 +0800 CST'>March 31, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">WPS for Linux 预览</a></h1>
-	<time>30.03.2012 00:00</time>
-	
-	<div>
-		前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>WPS for Linux 预览
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
 当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
 因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
 很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
 WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
 放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
 它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
-它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.
-		
-			<a href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">Read more...</a>
-		
-	</div>
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff....</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-03-30 00:00:00 +0800 CST'>March 30, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to WPS for Linux 预览" href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_#_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/">Novell 的新年礼物 # 我膨胀了</a></h1>
-	<time>26.12.2011 00:00</time>
-	
-	<div>
-		諸位兄弟姊妹, 如果有一天你收到號稱開心大殺器的”We’re glad to inform you”, “因為你對 Mac OS X 作業系統的卓越貢獻, 我們很榮幸送上 Appstore $1000 金元券一張. by Apple.”, 一定開心的飛起來了吧?! 是的, 蘇現在就是這個感受, 美呆了~
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Novell 的新年礼物 # 我膨胀了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>諸位兄弟姊妹, 如果有一天你收到號稱開心大殺器的”We’re glad to inform you”, “因為你對 Mac OS X 作業系統的卓越貢獻, 我們很榮幸送上 Appstore $1000 金元券一張. by Apple.”, 一定開心的飛起來了吧?! 是的, 蘇現在就是這個感受, 美呆了~
 從來沒有想過哪一天, 一個我沒有花費1分錢在它上面的作業系統會送給我這樣貴重的禮物. 這是這個耶誕節我收到的最好的禮物. 五年來從來沒有一天像今天這樣因為我使用的作業系統而驕傲和自豪, 以後我出門可以說, hi, 我是對作業系統有貢獻的人哦~ 一幫 Windows 會說:”OMG! 蘇你真的是太不可思議了!” 是的, #我膨脹了.
 今年算是對 SUSE 貢獻比較大的一年, 因為我參與了 openSUSE Build Service 并很榮幸成為泛中華地區打包打的最好的人~ 當然啦, 這除了我英文比平均水平要高那麽一點, 可以翻譯英文 Wiki 到國語之外, 還要感謝 sh 家族的 @shellex 和 @shellexy 啦, 號稱腳本皇帝和 Stackoverflow 中文客服的花花對我的幫助真的好大好大呢! 他提供我的好多腳本都值得寫進 wiki 呢. 由于跨年比較忙, 這個等到農歷新年的時候我整理到 wiki 上吧.
-于是耶誕節前, 官方中文論壇的斑竹 F.J. Kong 郵件聯系我說要送點小禮物把我. 經過假意推脫之後, 蘇的好奇寶寶性格又發作了, 于是點名要 SUSE 的公仔一只.
-		
-			<a href="https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_#_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/">Read more...</a>
-		
-	</div>
+于是耶誕節前, 官方中文論壇的斑竹 F.J. Kong 郵件聯系我說要送點小禮物把我. 經過假意推脫之後, 蘇的好奇寶寶性格又發作了, 于是點名要 SUSE 的公仔一只....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-12-26 00:00:00 +0800 CST'>December 26, 2011</span></footer>
+  <a class="entry-link" aria-label="post link to Novell 的新年礼物 # 我膨胀了" href="https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_#_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/">恶性卖萌的胜利</a></h1>
-	<time>07.12.2011 00:00</time>
-	
-	<div>
-		今天下午还在gtalk上问火炬@virushuo关于@hecaitou和@chinesedancer的闹剧，晚上突然从别人的RT上看到他宣布退出推特的消息，我很惋惜。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>恶性卖萌的胜利
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今天下午还在gtalk上问火炬@virushuo关于@hecaitou和@chinesedancer的闹剧，晚上突然从别人的RT上看到他宣布退出推特的消息，我很惋惜。
 一、支持率是哄出来的，永远别管大众要答案
 每个人，在一个社群里都有自己的定位。虽然不一定是他想要的，但一定在他努力方向上的某个点。推特虽然多元，人欲也不过于此。比如北风想当大哥，虽然过程不是很美，至少现在无人不知（这件事之后我决定fo上北风，退出推北者list，北风可能还是一个小人，那又怎样，七情六欲谁都逃不过，他已经不再是左手酒右手刀的延庆太子了。火炬，life is short, you should try anything once）; 比如空姐; 比如艾未。每个人来这都有个不可为外人道的目的，这个层面上大家都是阴谋论。如果没有一个目的就来了，那她一定呆不长。民那桑，这些年昙花一现有多少，还要到following里面去数吗？
 认识火炬这两年，每当有个大事件发生，我错过了想知道，那么一定会去问他。可能得不到事情的全貌，但至少会有一个正确的意见。但即使所有的路都通向正确，它们也不是完全相同的。比如我不需要知道什么是ks转就知道@chinesedancer绝对有问题，因为她骂人的方式已经出离了泼妇的定义了。任何人都没有资格去绑架别人和你走同一条正确的路。
@@ -190,7 +293,7 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
 对于恶性卖萌，很明显火炬也没有办法。其实办法还是有的，只是有些事，寇可往我不可往。对付恶性卖萌，当众打脸是最有效的办法。每当@csslayer说出我靠，我就知道到了有事起奏无事退朝的时间了。不过你已经逼到一个四十几岁的人恶性卖萌，很明显你已经没有对手了，要知道那个年龄段的人，认错可以，卖萌几无可能。还非要搞一场表演赛，把自己赛感伤了，何苦。就像某些孩子为了骗支持率，连屁股和老婆屁股都拿出来秀了，对这类人民娱乐家，你又能说些什么？何苦拉低下限。21世纪选择唱京剧，就要时常一个人面对空荡荡的看台，不是么？
 至于推特有没有体系化，答案是任何一个输出观点的群体都是体系化的。体系化的世界里，必然有依附体系生存的一类人，俗称“捧臭脚的”，是指明代好小脚的士大夫。在时间改变他们或者消灭他们之前，没有谁能改变。但即使他们是捧臭脚的，也可以不捧你的脚。你可以说他们的良心被狗吃了，但这世界就是这样，良心在我身上，有时宁肯喂狗也不给你。
 体系化的世界的统御之术叫做平衡，不平衡就会有独夫。比如有一个北风就必须有一个左拉，有一个火炬就必须有一个花落去，有一个艾未必须有个？，不然就会有裸照门这种荒诞。当然你们觉得是优雅，可能山顶洞人会表示英雄所见略同，时装界的是绝对不这么想的。为国家省布料是对的，我们国家还很穷，但好歹你穿点，就穿点，给产业界留点活路。
-体系化+卖萌=超必杀。
+体系化&#43;卖萌=超必杀。
 想想”我们来晚了“的故事吧，真想来，都不用你请，王仲夏不是在京广桥就经历过么。再看看推特上那个伸手要钱的胖子。诸君中枪了吗？要是某人没签证德国去不了，姜大姐说句”伦家，伦家舍不得你受这万里奔波之苦嘛，艾桑！“ 肿么办？！写下这行文字的时候我大脑一片空白，这样一张笑脸，你怎么打？
 你们真应该庆幸我没有进入系统，不然这套必然会用于诸君身上。当初我说过对付一个求名声的人，说他经济犯罪是没有用的，只要装装可怜没有人信。必须在道德上找突破口。记得两天之后发生了什么吧。这就叫把握了体系的脉搏啊。同样，这次为什么没有说你非法集资，因为体系内有善于学习的能人啊。把一件事情办好需要纪律，把一件事搅浑需要的是创造性，公务猿执行力太强啊。还记得七十年代美国谴责我们向境外移民的答复吗？”要多少，3000万还是一个亿“ 那个瞬间国会无语了，我一共2亿人，你给我送来一亿，那美国到底还是什么啊？同样，提分币那是我欺负你，3000万1毛捐款，这手写借据和包邮的教育绝对大的很。户部给你弄假户籍全到新疆西藏，反正那地方常年支持你这种人的么。机打发票？那随便一个五毛党都能把这事办妥，凭什么你们就是手写的我的就是机打的？再来一拨人隔三差五催一催，我不催债，催借据，恐怕连上推特的心情都没有了吧？至于3000万1毛借据，文章可大了，五斗米教也不过捐五斗米。治理邪教向来是首恶必除的哦～至于不要，嘿，借你钱还挑三捡四，给脸不要脸，又是随便一个五毛党都能办妥的事。
 扯远了。
@@ -199,51 +302,52 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
 但有些事是有些人一定会去做的，哪怕没有支持也会做的，所以，无关对错，求仁而得仁，又何怨？
 出发点不是为了娱乐大众，大众自娱自乐了，你应该欣慰这种群体智慧，而不是苦恼它们。你说的道理他们不懂吗？是装作不懂，或者那个时刻就没想懂。要相信时间和群体智慧。恐怕那种调侃里，某人的尴尬不如伸脖子一刀吧，流言，杀人不用刀。
 BTW，你不是没有盟友，只是他们不在服务区。但即使在了，也不过是闹剧多几个龙套。因为没人能不当众打脸的情况下战胜恶性卖萌，就像没人能在不揪失德这个小辫子就搞垮求清名的人一样。
-最后，不许联想，不许转国内。
-		
-	</div>
+最后，不许联想，不许转国内。</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-12-07 00:00:00 +0800 CST'>December 7, 2011</span></footer>
+  <a class="entry-link" aria-label="post link to 恶性卖萌的胜利" href="https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/">HP Veer 初心：一个备胎的自我修养</a></h1>
-	<time>26.10.2011 00:00</time>
-	
-	<div>
-		我的小白是十一假期被@tualatrix放毒买的，在那家传奇的淘宝店我发现了大陆linux中文界一个个响当当的ID。刚复工就收到了。过了这么长时间，相信该有的也都有了，当然裂裂@thruth那种每天降价100收购的自然是没有。开箱图在picplz有，这里放张小白近照：
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>HP Veer 初心：一个备胎的自我修养
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我的小白是十一假期被@tualatrix放毒买的，在那家传奇的淘宝店我发现了大陆linux中文界一个个响当当的ID。刚复工就收到了。过了这么长时间，相信该有的也都有了，当然裂裂@thruth那种每天降价100收购的自然是没有。开箱图在picplz有，这里放张小白近照：
 简单说，veer适合以下种群使用：
- 对邮件和IM上瘾的。  从默认图标的放置就可以看出来，webOS其实是排斥短信的。虽然它有一个领先世界的实现——整合了短信和IM的Synergy Messaging（大多数时间我都是在gtalk），但其实它的目的是取代短信而不是增强它。也许未来世界就是老美的模样，sms只是在没网络接入的时候骚扰下你的线上联系人。
+对邮件和IM上瘾的。 从默认图标的放置就可以看出来，webOS其实是排斥短信的。虽然它有一个领先世界的实现——整合了短信和IM的Synergy Messaging（大多数时间我都是在gtalk），但其实它的目的是取代短信而不是增强它。也许未来世界就是老美的模样，sms只是在没网络接入的时候骚扰下你的线上联系人。
 它的邮件真的是非常爽，多账户（在system-accounts添加，可以选择性同步）、邮件地址自动补全、带附件、一键发送、自动push，配合webOS的提示系统，我找到了初中用西门子时在上海地铁上“嘎吱嘎吱”发短信的感嚼。
- 对社交网络轻度成瘾者。  话痨、微博图党（仅指sina和twitter，其他是没有native的（可以试试微博通，据说免翻墙发推））、四方党和Reader党（以上四种的任何程度）会十分忍不了。如果你以上都是，还是个没认清初级阶段国情的付费派，那还是转身离开吧，除非你是想治治这些病。
+对社交网络轻度成瘾者。 话痨、微博图党（仅指sina和twitter，其他是没有native的（可以试试微博通，据说免翻墙发推））、四方党和Reader党（以上四种的任何程度）会十分忍不了。如果你以上都是，还是个没认清初级阶段国情的付费派，那还是转身离开吧，除非你是想治治这些病。
 marguerite作为保护推里面klout最高的那类，对其十分诟病。虽然它又有一个领先世界的实现就是卡片式管理，真正的多任务，就像@tualatrix说的，它们是真的在后台会动的。
 但它真的是瞎子身上的眼睛，因为：
 首先webOS下无论免费的phnx还是付费的twitter客户端carbon，都不能刷新太长的时间线，更不能开自动更新，你要真的花美刀那是你naive了（好像还不能退钱？）。
-微冷的早晨躺在残留昨夜香气的暖被窝里追会儿推这种事是干不了的，会卡的你不停的滑来滑去，“小白你肿么了？”“小白你不能死”（PS：veer是没有自动重启的，键盘上的白方块（论坛里说方块我曾一度按住左边的音量）+Sym+R或按住电源键来回拨动三次上面的开关）。
+微冷的早晨躺在残留昨夜香气的暖被窝里追会儿推这种事是干不了的，会卡的你不停的滑来滑去，“小白你肿么了？”“小白你不能死”（PS：veer是没有自动重启的，键盘上的白方块（论坛里说方块我曾一度按住左边的音量）&#43;Sym&#43;R或按住电源键来回拨动三次上面的开关）。
 其次它不能发图。
 新浪微博是可以的，推特党第一它没有iPhone（注意大小写！）和android下那些堪比专业单反的相机，有的都是骗小孩的PhotoFunia（把你的头像弄到蒙娜丽莎上巴拉巴拉）、类photoshop的photo effects（所有的效果都要你自己调。随手拍，调，没等解救呢人家脱团了），说真的它的照片质量让我想起我高中130w像素的爪机; 第二即便你拍了也没法传，intragram、picplz都没有，内置的传图没法用，目前唯一的好方法是用老大哥twitpic给你配的那个邮箱发图地址，用它唯一好用的邮件发过去。[还有用Flickr AIR发到flickr，但F是图片展示网站不是图片社交网站啊] PS：新浪微博的刷新时间居然只有6秒钟！android最小30秒呀！5倍速！但还是不要主力用它，原因同twitter。
 第三它的地理位置程序要求开启background data collection才能用，不然基本是your location is currently unavailable，但那是任何“优化”教学在第一军团就要求关闭的服务，毕竟没人想不可拆卸电池早早的就报废（Tips：点金石会废掉你的电池哦）。
 第四，它没有一个能用的Google Reader程式。
 试用了呼声最高的Feeder，登陆了帐号它就不知道干嘛去了，无助的停在刷新界面却一条feed item也刷不出，而且webOS打洞较难，re不reset完全算人品。发现一个看起来很美的NomNomNom，结果人家是给webOS 3.0的平板用的，拜托700块的爪机你都伺候的姐不满意，怎么奢望的我买你家的平板的？
 总之，如果这些只是你生活的点缀而不是准备把余生都耗费在它们上面，veer能做到让你凑合着过;如果想抓个手机就是一天，那它会让你抓狂的，当然它的电量会在你抓狂之前告罄。
- 像霍金那样除了大拇指全身没一个地方好使的人。  手势操作是webOS领先世界的又一个实现，个人觉得只有android的swipe输入法和apple的magic mouse能与之相比。向左滑动是退出，向上滑动是进入卡片式管理，双指放大缩小，android 4.0才有的slash删除item它早有了，甚至连主页面的5个icon你都可以用单指滑动打开哦！加上手机本身的体积都在灵长类大拇指的接触范围内，霍金也能玩的转吧。在某些高考作弊是约定俗成的省份，经过一定专业训练盲发个选择题什么的简直就是神器呀。
+像霍金那样除了大拇指全身没一个地方好使的人。 手势操作是webOS领先世界的又一个实现，个人觉得只有android的swipe输入法和apple的magic mouse能与之相比。向左滑动是退出，向上滑动是进入卡片式管理，双指放大缩小，android 4.0才有的slash删除item它早有了，甚至连主页面的5个icon你都可以用单指滑动打开哦！加上手机本身的体积都在灵长类大拇指的接触范围内，霍金也能玩的转吧。在某些高考作弊是约定俗成的省份，经过一定专业训练盲发个选择题什么的简直就是神器呀。
 当然对于连linux下快速键都能记住的高玩来说，怎能三言两语就带过秒杀一切触摸设备的功能？于是有了这个教学。PS：在system-screen&amp;lock里把advanced gestures打开。
- 女生，爱美胜过爱自己的女生，有不回短信权利的女生（不是每个女生都有权利不回短信，比如我如果不回，下次就没人找了;奶茶如果不回，扑哧，人家本来就不应该回，你们懂的）。  对于啥都不懂的女生，外观就是一切（这也是我对hotot的看法）。veer鹅卵石的圆润外型，不说秒杀iPhone但至少各有千秋的内饰（但重点是它只要700块啊，比高档Hiphone还便宜呀），就像鞋跟越高脚越疼越趋之如骛一样，你不买，会有人买了在你身边秀的。
- Linux教徒。  该宗教的表现可以用两种不同的语言来表达：1, 不是自己参与创造的（这里不是指“下一步+下一步+下一步×（n-2）”或“解压+扔+用”的软件安装方式）的东西不用; 2,不折腾不舒服斯基。于是here you are：preware（各色GNU软件和webOS的patch）+internalz（1,在options里开启了master mode可以改系统文件;2, 它可以直接打开安装ipk软件;3,默认目录是/media/internal）+tamoggemon editor（纯文本编辑器）+ terminus（终端，2.1下使用点链接）。
+女生，爱美胜过爱自己的女生，有不回短信权利的女生（不是每个女生都有权利不回短信，比如我如果不回，下次就没人找了;奶茶如果不回，扑哧，人家本来就不应该回，你们懂的）。 对于啥都不懂的女生，外观就是一切（这也是我对hotot的看法）。veer鹅卵石的圆润外型，不说秒杀iPhone但至少各有千秋的内饰（但重点是它只要700块啊，比高档Hiphone还便宜呀），就像鞋跟越高脚越疼越趋之如骛一样，你不买，会有人买了在你身边秀的。
+Linux教徒。 该宗教的表现可以用两种不同的语言来表达：1, 不是自己参与创造的（这里不是指“下一步&#43;下一步&#43;下一步×（n-2）”或“解压&#43;扔&#43;用”的软件安装方式）的东西不用; 2,不折腾不舒服斯基。于是here you are：preware（各色GNU软件和webOS的patch）&#43;internalz（1,在options里开启了master mode可以改系统文件;2, 它可以直接打开安装ipk软件;3,默认目录是/media/internal）&#43;tamoggemon editor（纯文本编辑器）&#43; terminus（终端，2.1下使用点链接）。
 这些对普通用户基本就够用了。至少改个/etc/hosts（前两行是127.0.0.1 localhost.localadmin和127.0.0.1 palm-webos，其他就是#twitter #google #youtube什么的，你懂的）或编辑个openvpn.conf是没问题的。再进阶的使用就要用到WQI（webOS Quick Install 4.3.1）在电脑上操作了，我除了安装preware那次其他基本没用过。具体可以看webos-internals.org。
- 有iPod或用不着iPod的人。  如果你是音乐发烧党+正版派，那我建议你真的不要买爪机，iPod Classic是你最好的选择。veer的正版固件的音乐默认是和amazon连接，视频默认是和facebook/youtube连接，相信我已经不用再说下去了，基本没有本地多媒体应用。豆瓣电台是有的，还有国人做的google音乐WebOS Musicbox。flash是支持的。本地音频播放器可以用Koto Player（2.
-		
-			<a href="https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/">Read more...</a>
-		
-	</div>
+有iPod或用不着iPod的人。 如果你是音乐发烧党&#43;正版派，那我建议你真的不要买爪机，iPod Classic是你最好的选择。veer的正版固件的音乐默认是和amazon连接，视频默认是和facebook/youtube连接，相信我已经不用再说下去了，基本没有本地多媒体应用。豆瓣电台是有的，还有国人做的google音乐WebOS Musicbox。flash是支持的。本地音频播放器可以用Koto Player（2.1唯一），视频播放器 Mplayer 已经移植过去一年多了（光是那安装说明就够折腾一阵子）。我有ip4当mp3这个功能用不大到。
+不躺着看网页的人。 veer的五短身材连愤怒的小鸟、重力球、推箱子都能玩，默认生产力套件基本够用，在同类里甚至算突出的（甚至还能share 3G做热点），但怎么就不能锁定网页显示方向呢（2.1无解; 1.4可以直接装universe浏览器或用那个著名的slider lock orientation或者3 quick touch lock orientation补丁）。这里它又有一个领先世界的实现，veer的屏幕方向是四面的，没事可以开了浏览器转圈玩。但问题是浏览器有内容的时候它一样照转不误。precentral....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-10-26 00:00:00 +0800 CST'>October 26, 2011</span></footer>
+  <a class="entry-link" aria-label="post link to HP Veer 初心：一个备胎的自我修养" href="https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/">HP Veer 初心：一个备胎的自我修养（二）</a></h1>
-	<time>26.10.2011 00:00</time>
-	
-	<div>
-		～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>HP Veer 初心：一个备胎的自我修养（二）
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
 我的blog有音乐，控制器在最下面。我知道我有音乐，那是给我自己听的谢谢，别像谢耳朵一样到别人家收拾屋子。
 ～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
 我真的不想把这吐槽搞成连载的，毕竟只是个电子产品，有摩尔定律在作业。但推上晒它的又太讨厌，自己吞了苍蝇，胳膊折了袖里藏就好了，非要挖坑把全民都拉进来。。。搞普通青年文艺青年二逼青年。。。
@@ -254,60 +358,100 @@ marguerite作为保护推里面klout最高的那类，对其十分诟病。虽�
 webOS真的会假死，不管pre3 pixi2是什么情况，至少veer上是的。在这件事上HP确实犯了理想主义盲动错误，我猜测它对这部爪机的初始要求应该会有这么两个：一成本要低，二体验要好。但这真的不是1949年吃小龙虾度日的年代了呀。
 我之所以一直叫它备胎，因为我觉得使用它的理想状态就是备胎被使用到的情况：你的爪机么电了，从公司一直暗中倾慕你的男同事抽屉里拿出它，更新msn状态：ip无电，这个小时的爪机号码为xxx。自己爪机充满电，扔回抽屉。连插拔卡都不用。
 因为它的开机真的好慢，要想无缝切换那就要和主力机一起待机，但问题是它的电量，主力机还没关机它先扛不住了，就好比四哥每天夹着尾巴苦哈哈等老子薨了自己监国，突然有一天就被若熙给带回去了。。。
-我为我的veer只花过一块钱，就是买有人给我留言推荐的锁屏补丁。结果非常失望，还是precentral论坛那个笑话的改版，旁有，你确定freeworkzz的锁屏补丁只锁浏览器的方向？不，它连浏览器的方向都不锁。它只锁浏览器里网页的方向。摆脱，你躺被窝刷G+还得翻个身才能开新tab，我买的不是runkeeper啊。
+我为我的veer只花过一块钱，就是买有人给我留言推荐的锁屏补丁。结果非常失望，还是precentral论坛那个笑话的改版，旁有，你确定freeworkzz的锁屏补丁只锁浏览器的方向？不，它连浏览器的方向都不锁。它只锁浏览器里网页的方向。摆脱，你躺被窝刷G&#43;还得翻个身才能开新tab，我买的不是runkeeper啊。
 下面是回答上篇文章的提问： Q：为什么说点金石会毁电池啊苏酱？ A：原理我解释不清楚，但论坛有人这么讲。另外你确定无线充电是充到爪机里不是学特斯拉吸收所有以为他在充电的人的电量，去搞一次通古斯大爆炸？ Q：发图请用pixelpipe。 A：这跟我老板对我说在家请穿便装、我的IT SUPPORT对我说请用公司邮箱一样毫无道理。只有机器适应人类，没有人类适应机器，贾伯斯就是想明白了这一点。用android请上facebook，用veer请上人人。我就是不想注册账户。 Q：终端问题 A：还是上文的那句话，“如果这些只是你生活的点缀而不是准备把余生都耗费在它们上面，veer能做到让你凑合着过”。如果你已经是个linuxer了，那么terminus也好sdlterminal也好还是按照那些类似于教你如何写一个OS一样的教程port过来的vim/vi也好，对你都一样，因为命令你已经可以盲打了。veer的终端字真的太小了，HP这里犯的错误是它在把手机屏幕缩小到娇小的同时，把屏幕上的字也给娇小了，很傲娇，嗯。能用internalz pro还是用它吧。PS：sdlterminal无法用preware安装，precentral的zip是个损坏的，按照我出了名的张嘴就要的性格（见@csslayer的博文：推油印象篇。当然不是为了吐槽我，是为了吐槽花花@shellexy），这是个废软。 Q：流量问题 A：每当月初交宽带使用费的时候我都会想到一句话：“有限的流量即是有限的互联网体验”，送给你们，另附送半句：“尤其是你不知道那些流量都干什么去了的时候。” Q：版本问题 A：webOS的版本分1,2,3。基本吸引你过来的和你正需要的功能都有1和3的版本，但很可惜你是2. Q：收费问题 A：我不是绝对反对收费，毕竟劳动有价值，他帮忙你还得还人情不是，但我相信在国内还没有美帝那种正好够你在曼谷玩一年的救济金制度的时候，每一张人民币的去向最好值得。至于那些开发者和人为低估自己劳动的开发者，我只想说一你们选错了平台，至于为什么选错了平台我觉得不应该来我这看，应该去看readwriteweb或者wired; 二你们心贱所以人贱，想普世就直接选择开源，想赚钱就直接卖出值得你熬夜的价，做了婊子立牌坊没有意义，赔本赚吆喝只能让人第一印象以为这就是你们的成本，误人误己误国。番茄花园的哥哥为了他们去坐牢，出狱后有人为了他买个android爪机没有？当然如果你们真的觉得你们写的玩意确实就只值那几个，算我白说。
 正文到这里就结束了。刚看到某猫的小情人在推特上说的：革命分工不同啊。恍然。
 PS0:
-突然想到的，如果整个webOS就是个星球大战一样的骗局，那么一切看起来就自然多了。多任务后台刷新 = 浏览器的多tab+ajax，手势操作 = 浏览器的mouse gestures，这样的对应在veer上可以找出很多，再对比Palm和HP这么多年的研发能力，我宁愿相信让geek如痴如醉的东西很可能就是新瓶装老酒而已。毕竟chrome OS都没搞出来，它有那么多不完美简直太应该了，搞不好背后是最近被吐槽正凶的javascript呢。从来没有见过任何一个操作系统，有这么多的补丁，然后这些补丁中的任何一个，都没有推动过这个操作系统向前任何一步的事情。
+突然想到的，如果整个webOS就是个星球大战一样的骗局，那么一切看起来就自然多了。多任务后台刷新 = 浏览器的多tab&#43;ajax，手势操作 = 浏览器的mouse gestures，这样的对应在veer上可以找出很多，再对比Palm和HP这么多年的研发能力，我宁愿相信让geek如痴如醉的东西很可能就是新瓶装老酒而已。毕竟chrome OS都没搞出来，它有那么多不完美简直太应该了，搞不好背后是最近被吐槽正凶的javascript呢。从来没有见过任何一个操作系统，有这么多的补丁，然后这些补丁中的任何一个，都没有推动过这个操作系统向前任何一步的事情。
 PS1：
 刚才在看利比亚政变真相，比如半岛电视台反水投靠CIA，反动派屠的黎波里城，北约暴力介入内幕，利比亚屠奴事件等。之前我真的好奇怪推上那帮家伙的心态和逻辑，一方面各种要民主，一方面容不得不同的声音，他们难道没听过弗兰克林的“民主即是妥协”？因为对爸爸不满就一定要勾结外人来杀了自己亲妈弟弟和妹妹？到最后还是爸爸站出来，发了菜刀给妈妈弟弟妹妹来对抗自己的儿子，这样就不难理解为什么卡扎菲死的时候脸上那茫然的表情了，也不难理解为什么会被爆菊了，屠城都干了，爆个菊花算的了什么，至于伊斯兰法，那一瞬间他们都认为自己是默哈穆德了（当然北非人大部分真叫这个名字），还管伊斯兰法？
 这件事情教育了那些不爽天朝的人要成熟。
 不能整天教育别人政府非国家国家非政府，然后政府卖了塔吉克斯坦地就幸灾乐祸，拜托土地是国家的，你妹嫁了个孙子被揍了，你应该纠集弟弟们先去狠揍那孙子一顿再抽你妹俩嘴巴因为你妹挑事，好不好？不然小马哥为什么要去南海去钓鱼岛演戏给菲律宾给日本看，按你们的逻辑那不是他们的海，玩票呢？
 不能因为一个人表现的怎样就真的以为怎样，万一它是在下一盘很大的棋呢？当时我就没说话：
- 因为两相对比，外交方面天朝那个姜大姐要比推上这帮“言语上的侩子手，行动上的窝囊废”要成熟的多，至于CCAV为什么不报道真相，a 宣传喉舌什么时候有过真相？ b 我朝除了新闻时间全部转发朝鲜人民，你们是不是吐了？拜托，好歹我们也是泱泱上国，附属国互相打去，页眉页脚给个脚注就ok，要是真惹了宗主国不爽，嘿早就偷摸过鸭绿江了报道个啥子？不动即是真不在乎。 万一人家卡扎菲是抱着地狱不空我不成佛的心态来接触，曲线拯救你们这帮水深火热呢？若干年后wikileaks一出，你们这帮“言语上的侩子手，行动上的窝囊废”是不是又两边不是人了？  视频在此：
+因为两相对比，外交方面天朝那个姜大姐要比推上这帮“言语上的侩子手，行动上的窝囊废”要成熟的多，至于CCAV为什么不报道真相，a 宣传喉舌什么时候有过真相？ b 我朝除了新闻时间全部转发朝鲜人民，你们是不是吐了？拜托，好歹我们也是泱泱上国，附属国互相打去，页眉页脚给个脚注就ok，要是真惹了宗主国不爽，嘿早就偷摸过鸭绿江了报道个啥子？不动即是真不在乎。 万一人家卡扎菲是抱着地狱不空我不成佛的心态来接触，曲线拯救你们这帮水深火热呢？若干年后wikileaks一出，你们这帮“言语上的侩子手，行动上的窝囊废”是不是又两边不是人了？ 视频在此：
 PS2： PS1里面刺到的那些自不量力自以为是的家伙，建议读下面书籍镀镀金：
- 《美国种族简史》，托马斯索威尔，当当网，amazon，tb商城有售 《乌合之众》，古斯塔夫勒庞  
-		
-	</div>
+《美国种族简史》，托马斯索威尔，当当网，amazon，tb商城有售 《乌合之众》，古斯塔夫勒庞 </p>
+  </div>
+  <footer class="entry-footer"><span title='2011-10-26 00:00:00 +0800 CST'>October 26, 2011</span></footer>
+  <a class="entry-link" aria-label="post link to HP Veer 初心：一个备胎的自我修养（二）" href="https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/"></a>
 </article>
-
-		
-		<div>
-
-	<a href="/posts/page/3/">Previous Page</a>
-
-4 of 4
-
-</div>
-
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://marguerite.github.io/posts/page/3/">
+      «&nbsp;Prev&nbsp;
+    </a>
+  </nav>
 </footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

@@ -1,39 +1,206 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Color Emoji in openSUSE</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>Color Emoji in openSUSE</h1>
-			<time>04.11.2020 00:00</time>
-			<div>
-				<p>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Color Emoji in openSUSE | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/color_emoji_in_opensuse/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Color Emoji in openSUSE" />
+<meta property="og:description" content="上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/color_emoji_in_opensuse/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-11-04T00:00:00+08:00" />
+<meta property="article:modified_time" content="2020-11-04T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Color Emoji in openSUSE"/>
+<meta name="twitter:description" content="上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Color Emoji in openSUSE",
+      "item": "https://marguerite.github.io/posts/color_emoji_in_opensuse/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Color Emoji in openSUSE",
+  "name": "Color Emoji in openSUSE",
+  "description": "上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。\n为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。\n我们先来回忆一下之前的说法：\n除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。\n据我摸索的经验，字体的匹配分为三种场景\n第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。",
+  "keywords": [
+    
+  ],
+  "articleBody": "上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。\n为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。\n我们先来回忆一下之前的说法：\n除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。\n据我摸索的经验，字体的匹配分为三种场景\n第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。\n这部分的支持很简单，比如它要 Apple Color Emoji 或者 Segoe UI Emoji 我没有，可以写个 alias：\nApple Color Emoji Noto Color Emoji 第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）\n这部分的支持也很简单，fontconfig 已经默认把 emoji 字体的 default family 全设置成 emoji 了，我们只需要通过 prefer 来实现发行版默认的 Colored Emoji 字体就行了，如果默认的是 Noto Color Emoji 那么什么都不用做。\n第三种是字符级别的（glyph），比如你所有的 sans-serif 字体里都没有这个 unicode codepoint 对应的 glyph。这个时候 pattern match 其实已经没用了，因为已经 out of range 了，所有的 sans-serif 都没有，那 sans-serif 的 pattern 也就没用了。它用的是 fc-scan 到的 unordered list，也就是在你系统里找有这个 glyph 的字体来显示。\n第三种场景是不经常遇到的，是一种最终的 fallback。但是在面对 emoji 的时候，它是出现次数最多的场景。因为绝大部分网页不会写特定的 emoji 字体也不会写 emoji 字族。\n其实针对第三种场景，fontconfig 是提供了解决方案的，就是把字体 prefer 到 pattern 的前面。很多网上能够搜索到的方案也都是这么做的，比如 EmojiOne Color 和现在的 Twitter Color Emoji。\n推出我们的方案之前，先来说说网上的方案。大部分是把 emoji pattern 直接扔到 sans-serif，serif 和 monospace 前面。于是带来了一个问题，就是如果 emoji 字体中不只是 emoji，就会用 emoji 字体显示非 emoji 内容。这里说的不限于比如 emoji 字体里有个 A，你所有的 A 都被替换了，还包括使用 emoji 字体的字符宽度来显示 fallback 字体的字符。比如 Noto Color Emoji 作为 emoji 字体，字符宽度特别大，造成了空格的宽度也特别大，在 chromium 中，即使实际的笔画都是用 Libration Sans 显示的，空格宽度不是。你就看到了超长空格的效果。这个也许可以通过指定 emoji 字体的字宽上限来解决，但是目前没有发现谁去认真的解决这个问题。\nemoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作为第一个字体出现。为了避免上述情况，现行的解决方案是先把 emoji 扔到前面，再把一个完全没有 emoji 的字体再扔到前面。但这么做的后果就是你的默认英文字体被替换了。而且在 CJK 中问题更加严重，我们本来就是通过把 CJK 字体扔到前面，再把英文字体再扔到前面（有的发行版省略了这步，导致实际上显示英文的不是发行版选定的英文字体，而是默认 CJK 字体中自带的英文部分）来实现中文显示的，这时候要多扔一个 emoji 字体，还要多扔一个 emojiless 的英文字体。扔的顺序很重要，导致好多按数字排列的 fontconfig conf 都要重构。\n我解决这个问题的思路不是去使用 prefer 这个严重依赖顺序而且脆弱的方案。我的思路是让出现在我选的 Emoji 字体之前的所有字体都是 emojiless 的。这样就不会破坏发行版默认的字体。\n我使用的是一个小众的方法，就是在 scan 的时候从已有字体中屏蔽特定字符集（charsets）。这个方法只有一个 RedHat 的 bug#31969 提到过，但是也没提过怎么看成功没成功，我把它摸索成熟了，下面给大家讲一讲：\n",
+  "wordCount" : "537",
+  "inLanguage": "en",
+  "datePublished": "2020-11-04T00:00:00+08:00",
+  "dateModified": "2020-11-04T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/color_emoji_in_opensuse/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Color Emoji in openSUSE
+    </h1>
+    <div class="post-meta"><span title='2020-11-04 00:00:00 +0800 CST'>November 4, 2020</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。</p>
 <p>为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。</p>
 <p>我们先来回忆一下之前的说法：</p>
 <p>除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。</p>
 <p>据我摸索的经验，字体的匹配分为三种场景</p>
 <p>第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。</p>
 <p>这部分的支持很简单，比如它要 Apple Color Emoji 或者 Segoe UI Emoji 我没有，可以写个 alias：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;alias&gt;</span>
-  <span style="color:#000080">&lt;family&gt;</span>Apple Color Emoji<span style="color:#000080">&lt;/family&gt;</span>
-  <span style="color:#000080">&lt;accept&gt;&lt;family&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/family&gt;&lt;/accept&gt;</span>
-<span style="color:#000080">&lt;/alias&gt;</span>
-</code></pre></div><p>第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;alias&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;family&gt;</span>Apple Color Emoji<span style="color:#f92672">&lt;/family&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;accept&gt;&lt;family&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/family&gt;&lt;/accept&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/alias&gt;</span>
+</span></span></code></pre></div><p>第二种是通过字族匹配，fc-match “emoji” 这样，会从这个字族的 pattern 里找（emoji，symbol，math，fantasy 这四个字族与 sans-serif，serif 和 monospace 这三个主要关注的字族还有所不同，它们的 donePattern 后面还有 sans-serif 字体，因为 49-sansserif.conf）</p>
 <p>这部分的支持也很简单，fontconfig 已经默认把 emoji 字体的 default family 全设置成 emoji 了，我们只需要通过 prefer 来实现发行版默认的 Colored Emoji 字体就行了，如果默认的是 Noto Color Emoji 那么什么都不用做。</p>
 <p>第三种是字符级别的（glyph），比如你所有的 sans-serif 字体里都没有这个 unicode codepoint 对应的 glyph。这个时候 pattern match 其实已经没用了，因为已经 out of range 了，所有的 sans-serif 都没有，那 sans-serif 的 pattern 也就没用了。它用的是 fc-scan 到的 unordered list，也就是在你系统里找有这个 glyph 的字体来显示。</p>
 <p>第三种场景是不经常遇到的，是一种最终的 fallback。但是在面对 emoji 的时候，它是出现次数最多的场景。因为绝大部分网页不会写特定的 emoji 字体也不会写 emoji 字族。</p>
@@ -42,48 +209,48 @@
 <p>emoji 字体本来就是作为 Fallback 字体存在的，理论上不应该作为第一个字体出现。为了避免上述情况，现行的解决方案是先把 emoji 扔到前面，再把一个完全没有 emoji 的字体再扔到前面。但这么做的后果就是你的默认英文字体被替换了。而且在 CJK 中问题更加严重，我们本来就是通过把 CJK 字体扔到前面，再把英文字体再扔到前面（有的发行版省略了这步，导致实际上显示英文的不是发行版选定的英文字体，而是默认 CJK 字体中自带的英文部分）来实现中文显示的，这时候要多扔一个 emoji 字体，还要多扔一个 emojiless 的英文字体。扔的顺序很重要，导致好多按数字排列的 fontconfig conf 都要重构。</p>
 <p>我解决这个问题的思路不是去使用 prefer 这个严重依赖顺序而且脆弱的方案。我的思路是让出现在我选的 Emoji 字体之前的所有字体都是 emojiless 的。这样就不会破坏发行版默认的字体。</p>
 <p>我使用的是一个小众的方法，就是在 scan 的时候从已有字体中屏蔽特定字符集（charsets）。这个方法只有一个 RedHat 的 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=31969">bug#31969</a> 提到过，但是也没提过怎么看成功没成功，我把它摸索成熟了，下面给大家讲一讲：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">&#34;scan&#34;</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;charset&#34;</span> <span style="color:#008080">mode=</span><span style="color:#d14">&#34;assign&#34;</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;minus&gt;</span>
-            <span style="color:#000080">&lt;name&gt;</span>charset<span style="color:#000080">&lt;/name&gt;</span>
-            <span style="color:#000080">&lt;charset&gt;</span>
-                <span style="color:#000080">&lt;int&gt;</span>0x20<span style="color:#000080">&lt;/int&gt;</span>
-                <span style="color:#000080">&lt;range&gt;</span>
-                    <span style="color:#000080">&lt;int&gt;</span>0x21<span style="color:#000080">&lt;/int&gt;</span>
-                    <span style="color:#000080">&lt;int&gt;</span>0x22<span style="color:#000080">&lt;/int&gt;</span>
-                <span style="color:#000080">&lt;/range&gt;</span>
-            <span style="color:#000080">&lt;/charset&gt;</span>
-        <span style="color:#000080">&lt;/minus&gt;</span>
-    <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>以上就是方法，charset 支持 int 和 range。这里的 int 不是 interger 类型，实际上是个 Hex 类型 233，range 的两个字符是起止（包含起止）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">&#34;scan&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;charset&#34;</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">&#34;assign&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;minus&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;name&gt;</span>charset<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;charset&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;int&gt;</span>0x20<span style="color:#f92672">&lt;/int&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;range&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;int&gt;</span>0x21<span style="color:#f92672">&lt;/int&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;int&gt;</span>0x22<span style="color:#f92672">&lt;/int&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;/range&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/charset&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/minus&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>以上就是方法，charset 支持 int 和 range。这里的 int 不是 interger 类型，实际上是个 Hex 类型 233，range 的两个字符是起止（包含起止）。</p>
 <p>然后在 FC_DEBUG=4 fc-match “Noto Color Emoji” 就能看到这样的 debug 输出：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Add SubSt match
-[test]
-     pattern any family Equal “Noto Color Emoji”
-[edit]
-     Edit family Assign Minus charset;
-</code></pre></div><p>但是除此之外什么都没有&hellip;于是我一直以为它没有生效。实际上需要这么测试：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Add SubSt match
+</span></span><span style="display:flex;"><span>[test]
+</span></span><span style="display:flex;"><span>     pattern any family Equal “Noto Color Emoji”
+</span></span><span style="display:flex;"><span>[edit]
+</span></span><span style="display:flex;"><span>     Edit family Assign Minus charset;
+</span></span></code></pre></div><p>但是除此之外什么都没有&hellip;于是我一直以为它没有生效。实际上需要这么测试：</p>
 <p>先做一个 local fonts.conf 把 Noto Color Emoji prepend_first：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-  <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“prepend_first”</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;string&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/string&gt;</span>
-  <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>然后通过：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008080">FC_DEBUG</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span> pango-view -q -t <span style="color:#d14">&#39;🧀&#39;</span> 2&gt;&amp;<span style="color:#099">1</span> | grep -o <span style="color:#d14">&#39;family: &#34;[^&#34;]\+&#39;</span> | cut -c 10- | tail -n <span style="color:#099">1</span>
-</code></pre></div><p>来看，正常这个 cheese 表情是 Noto Color Emoji 显示的，但是屏蔽了之后就不是了，说明屏蔽成功。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“prepend_first”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;string&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>然后通过：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>FC_DEBUG<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> pango-view -q -t <span style="color:#e6db74">&#39;🧀&#39;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | grep -o <span style="color:#e6db74">&#39;family: &#34;[^&#34;]\+&#39;</span> | cut -c 10- | tail -n <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>来看，正常这个 cheese 表情是 Noto Color Emoji 显示的，但是屏蔽了之后就不是了，说明屏蔽成功。</p>
 <p>(说点题外话，很多人不知道那个表情怎么打上去，可以通过 fcitx 的 unicode 输入模式实现，就是同时按 ctrl + alt + shift + space 四键，然后输入 0x 的 unicode codepoint，最后按 Alt + 数字上屏）</p>
 <p>而 RedHat 的维护者也给了我一个更好的方案：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fc-list “Noto Color Emoji”:charset<span style="color:#000;font-weight:bold">=</span>0x20
-</code></pre></div><p>如果字体未安装或屏蔽成功，就没有结果，不然会返回字体文件和字体名称。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>fc-list “Noto Color Emoji”:charset<span style="color:#f92672">=</span>0x20
+</span></span></code></pre></div><p>如果字体未安装或屏蔽成功，就没有结果，不然会返回字体文件和字体名称。</p>
 <p>有了方法剩下就是操作的问题了，但是操作其实比方法更复杂。</p>
 <p>我们要先统一下概念。fontconfig 里用的叫做 charset（字符集），而我前面说过一个 unicode codepoint。unicode point 是一个码点，比如 A 字母 1 数字都是一个独立的码点，但是不是每个码点在现实中都能找到对应的字符。字体制作是针对 unicode point 来的。unicode codepoint 的表示法在 fontforge 里叫 U+20，在 fontconfig 的非 debug 输出里叫 20，而在写配置的时候又要用 0x20，这三个都是等价的，但是在不同的程序里必须用不同的表示法。charset 就是码点的集合。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fc-scan —format “%<span style="color:#000;font-weight:bold">{</span>charset<span style="color:#000;font-weight:bold">}</span>” NotoColorEmoji.ttf
-</code></pre></div><p>就能够看到某个字体有哪些码点。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>fc-scan —format “%<span style="color:#f92672">{</span>charset<span style="color:#f92672">}</span>” NotoColorEmoji.ttf
+</span></span></code></pre></div><p>就能够看到某个字体有哪些码点。</p>
 <p>但是 Emoji 其实有个特殊的地方，可以看 emojipedia 的这篇文章来了解。就是有的时候显示出来的是一个 emoji，但实际上背后是三个甚至四个码点组成的 sequence。我们在测试 emoji 字体的 coverage 的时候，不能随便的取舍，因为把 modifier codepoint 给屏蔽了会造成好多 emoji 都无法显示。</p>
 <p>我关于操作是这么构思的，首先我把想要使用的 Emoji 字体的 charset 找出来，转成 unicode codepoints（另一种思路是找 unicode 11 full emoji list 的 data file，这个文件能找到但是我看不懂，而且有重复出现的码点解析起来费劲，我就直接去网上爬演示的 html，再把 emoji 转成 unicode points，这个思路可以看我的 analyze-noto-color-emoji.rb），然后简单处理一下（主要是 Noto Color Emoji 还有空格数字和一些常见 symbol，比如有些在线播放器会用的▶️符号，这个用彩色显示播放器样式会出问题），再拿目标字体的 charset 去取交集，这样得到的是两个字体里都存在的 unicode point，说明这个字体提供了 emoji，最终我写出来了test_emoji_coverage.rb。</p>
 <p>剩下就是大规模应用了，我写了一个针对所有 /usr/share/fonts/truetype 文件夹下的字体文件，扫描出 emoji 部分并自动生成 fontconfig blacklist 文件的代码generate_81_emoji_blacklist_glyphs.rb。目前 fonts-config 包里是我用我的 openSUSE 生成的。但未来会想办法用 perl/go/c 之类的重写下，然后做成安装包后自动针对用户的系统生成对应的配置文件。</p>
@@ -91,70 +258,102 @@
 <p>测试 emoji 字体要有一个测试页面。我主要是用 chromium 浏览器来访问 EmojiOne Color 的测试页面，因为 Firefox 已经捆绑了自己的 Twemoji Mozilla 字体，它的 emoji 显示是没有问题的。</p>
 <p>一访问还是不行？</p>
 <p>原来是我在生成的时候没有针对 Noto Emoji 这个黑白 emoji 字体，这是正确的，因为我要给它也做 blacklist，它的 charset 就被清空了233，那样的效果等于不载入，那就直接不载入好啦：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">&#34;scan&#34;</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;selectfont&gt;</span>
-        <span style="color:#000080">&lt;rejectfont&gt;</span>
-            <span style="color:#000080">&lt;patlet</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span><span style="color:#000080">&gt;</span>
-                <span style="color:#000080">&lt;string&gt;</span>Noto Emoji<span style="color:#000080">&lt;/string&gt;</span>
-            <span style="color:#000080">&lt;/patlet&gt;</span>
-        <span style="color:#000080">&lt;/rejectfont&gt;</span>
-    <span style="color:#000080">&lt;/selectfont&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>注意不能用 prefer work，因为之前说过第三种匹配类型实际上用作匹配的字体不是 pattern 里面的字体，你在把它加入 pattern 前根本改变不了它的顺序。未来会把这部分代码也整合到生成器里面去，这样比如你指定一个 Colored Emoji 字体，会自动屏蔽所有其它 emoji 字体和非 emoji 字体中的 emoji 部分。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">&#34;scan&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;selectfont&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;rejectfont&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;patlet</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;string&gt;</span>Noto Emoji<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/patlet&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/rejectfont&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/selectfont&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>注意不能用 prefer work，因为之前说过第三种匹配类型实际上用作匹配的字体不是 pattern 里面的字体，你在把它加入 pattern 前根本改变不了它的顺序。未来会把这部分代码也整合到生成器里面去，这样比如你指定一个 Colored Emoji 字体，会自动屏蔽所有其它 emoji 字体和非 emoji 字体中的 emoji 部分。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

@@ -1,41 +1,217 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>openshift 搭建 wordpress 教程</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>openshift 搭建 wordpress 教程</h1>
-			<time>18.02.2013 00:00</time>
-			<div>
-				<p>最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>openshift 搭建 wordpress 教程 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
+你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。
+安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
+提交一次，留意命令行中的信息，会说数据库的 IP。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="openshift 搭建 wordpress 教程" />
+<meta property="og:description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
+你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。
+安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
+提交一次，留意命令行中的信息，会说数据库的 IP。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-02-18T00:00:00+08:00" />
+<meta property="article:modified_time" content="2013-02-18T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="openshift 搭建 wordpress 教程"/>
+<meta name="twitter:description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
+你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。
+安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
+提交一次，留意命令行中的信息，会说数据库的 IP。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "openshift 搭建 wordpress 教程",
+      "item": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "openshift 搭建 wordpress 教程",
+  "name": "openshift 搭建 wordpress 教程",
+  "description": "最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。\n下面把搭建时候的要点简单说一下。\n准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。\n你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。\n你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。\n安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。\n申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。\ngit clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。\n提交一次，留意命令行中的信息，会说数据库的 IP。",
+  "keywords": [
+    
+  ],
+  "articleBody": "最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。\n下面把搭建时候的要点简单说一下。\n准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。\n你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。\n你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。\n安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。\n申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。\ngit clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。\n提交一次，留意命令行中的信息，会说数据库的 IP。\n然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。\n接下来就是 wordpress 的 5 分钟安装了。\n绑定域名 先配置您的域名的 A 记录。建议最好在域名注册商那里把 NS 记录改成一些免费的 DNS 服务商的 NS 记录，然后在 DNS 服务商的面板里配置（注册商可配置的东西特别少）。比如我的是 cloudns.net。ping 一下 openshift 给你分配的那个 appname-username.rhcloud.com 的二级域名，得到一个 IP 地址。把带 www 和不带 www 的域名的 A 记录都设为那个 IP。\n然后安装 rvm 和 ruby 后 gem install rhc。您可能需要\nexport PATH=$PATH:/home/marguerite/.rvm/gems/ruby-1.9.3-p374/bin 才能使用 rhc（Linux 下）。\nrhc alias add appname 你的域名可以绑定域名，把带 www 和不带 www 的都绑定上。\n注意：\nrhc 可能需要你在本地 ssh 里有你刚生成的那个 ssh 才能正常使用 openshift 给你分配的二级域名免费送了一个 https，你千万不要傻到在 WordPress 的 General 设置里把自己的主域名也输入成 https://，那样你访问站点的时候 css/js 什么的统统加载不出来的。因为 https 只适用于二级域名，你那个域名不行。 升级和备份 （皮肤、插件、上传文件等） 绝对要看！不然您会发现 WordPress 有各种各样的问题，比如再次本地提交后之前上传的图片显示不出来了啊之类的。\nopenshift 有一个比较神秘的地方在于，你使用 git 管理。但平时你是在 WordPress 后台进行操作的，所以就产生了下面的问题：\n***你发现你在后台修改的内容是没法 git pull 取回本地的！***比如你升级了 wordpress 版本，然后在本地 git 仓库里改了下主题，一提交发现你的 wordpress 没有升级！\nRed Hat 给出的解释是说：那些叫运行时修改，是跳过 git 的。有以下几个办法可以解决，从难到易：\nssh 登录进去，把那些东西都复制到一个文件夹里，tar 压缩那个文件夹，在网页里面下载回来添加到 git。这个不说太具体，和 VPS 的管理一样，您既然都会 ssh 远程登录了，是吧。\n使用 rhc app snapshot save -a {appName} 把当前 Gear 的快照下载回来，用 app_root/repo 里面的东西覆盖到 git。然后添加、提交。\n使用配置文件：\n你会在你的 git 仓库里发现这样一个隐藏文件：.openshift/action_hooks/build\n里面有这样的内容：\nif [ ! -d $OPENSHIFT_DATA_DIR/uploads ]; then mkdir $OPENSHIFT_DATA_DIR/uploads fi ln -sf $OPENSHIFT_DATA_DIR/uploads $OPENSHIFT_REPO_DIR/php/wp-content/ 这段内容的作用就是把 uploads 文件夹作为 DATA_DIR。DATA_DIR 的内容是不会被 git 管理也不会被 git 修改的。所以我们照样子抄然后把 uploads 替换为我们的内容比如 themes 和 plugins 即可。\n注意：此方法有一个缺点就是还是无法应对升级，另外就是如果你把那些文件夹添加为 DATA_DIR 会产生一个问题就是你发现除了万能的 ssh 运程登录，你几乎没有办法再修改它，相当于一个丢失了 FTP 功能的 PHP 空间，只能在线运行，没法备份和管理。不要有侥幸心态觉得我这个博客就一直放在这里不动，可以负责任的说您的博客多运行一天，您再出问题进行修复或迁移的难度就增加一分。\n所以个人比较推荐第二种方法。\n参考文献 openshift 用户手册 https://openshift.redhat.com/community/forums/openshift/one-newbie-question OpenShift免费空间绑定顶级域名（图文教程） 小结 以上。\n至少我现在的 suse.ws 还没有任何问题地倔强地狂奔在 openshift 上。\n",
+  "wordCount" : "254",
+  "inLanguage": "en",
+  "datePublished": "2013-02-18T00:00:00+08:00",
+  "dateModified": "2013-02-18T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      openshift 搭建 wordpress 教程
+    </h1>
+    <div class="post-meta"><span title='2013-02-18 00:00:00 +0800 CST'>February 18, 2013</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。</p>
 <p>下面把搭建时候的要点简单说一下。</p>
-<h4 id="准备">准备</h4>
+<h4 id="准备">准备<a hidden class="anchor" aria-hidden="true" href="#准备">#</a></h4>
 <p>你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。</p>
 <p>你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 <a href="http://www.codeschool.com/courses/try-git">Try Git</a>，半个小时包教包会。</p>
 <p>你要安装 <a href="https://rvm.io">rvm</a>  和 ruby，然后安装 openshift 的命令行客户端 <a href="https://openshift.redhat.com/community/get-started">rhc</a>，具体的 Ruby 新新人指南可以看我的<a href="http://www.marguerite.su/2012/11/11/ruby-on-rails-hello-world/">上一篇文章</a>。</p>
-<h4 id="安装-wordpress">安装 WordPress</h4>
+<h4 id="安装-wordpress">安装 WordPress<a hidden class="anchor" aria-hidden="true" href="#安装-wordpress">#</a></h4>
 <p><a href="http://heylinux.com/archives/956.html">生成 ssh 密钥对</a>并把公共密钥贴到 openshift 去。</p>
 <p>申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。</p>
 <p><code>git clone</code> 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。</p>
 <p>提交一次，留意命令行中的信息，会说数据库的 IP。</p>
 <p>然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。</p>
 <p>接下来就是 wordpress 的 5 分钟安装了。</p>
-<h4 id="绑定域名">绑定域名</h4>
+<h4 id="绑定域名">绑定域名<a hidden class="anchor" aria-hidden="true" href="#绑定域名">#</a></h4>
 <p>先配置您的域名的 A 记录。建议最好在域名注册商那里把 NS 记录改成一些免费的 DNS 服务商的 NS 记录，然后在 DNS 服务商的面板里配置（注册商可配置的东西特别少）。比如我的是 cloudns.net。ping 一下 openshift 给你分配的那个 appname-username.rhcloud.com 的二级域名，得到一个 IP 地址。把带 www 和不带 www 的域名的 A 记录都设为那个 IP。</p>
 <p>然后安装 rvm 和 ruby 后 <code>gem install rhc</code>。您可能需要</p>
 <pre><code>export PATH=$PATH:/home/marguerite/.rvm/gems/ruby-1.9.3-p374/bin
@@ -47,7 +223,7 @@
 <li>rhc 可能需要你在本地 ssh 里有你刚生成的那个 ssh 才能正常使用</li>
 <li>openshift 给你分配的二级域名免费送了一个 https，你千万不要傻到在 WordPress 的 General 设置里<em><strong>把自己的主域名也输入成 https://</strong></em>，那样你访问站点的时候 css/js 什么的统统加载不出来的。因为 https 只适用于二级域名，你那个域名不行。</li>
 </ol>
-<h4 id="升级和备份-皮肤插件上传文件等">升级和备份 （皮肤、插件、上传文件等）</h4>
+<h4 id="升级和备份-皮肤插件上传文件等">升级和备份 （皮肤、插件、上传文件等）<a hidden class="anchor" aria-hidden="true" href="#升级和备份-皮肤插件上传文件等">#</a></h4>
 <p><em><strong>绝对要看！不然您会发现 WordPress 有各种各样的问题，比如再次本地提交后之前上传的图片显示不出来了啊之类的。</strong></em></p>
 <p>openshift 有一个比较神秘的地方在于，你使用 git 管理。但平时你是在 WordPress 后台进行操作的，所以就产生了下面的问题：</p>
 <p>***你发现你在后台修改的内容是没法 git pull 取回本地的！***比如你升级了 wordpress 版本，然后在本地 git 仓库里改了下主题，一提交发现你的 wordpress 没有升级！</p>
@@ -74,69 +250,101 @@ ln -sf $OPENSHIFT_DATA_DIR/uploads $OPENSHIFT_REPO_DIR/php/wp-content/
 <p>这段内容的作用就是把 uploads 文件夹作为 DATA_DIR。DATA_DIR 的内容是不会被 git 管理也不会被 git 修改的。所以我们照样子抄然后把 uploads 替换为我们的内容比如 themes 和 plugins 即可。</p>
 <p>注意：此方法有一个缺点就是还是无法应对升级，另外就是如果你把那些文件夹添加为 DATA_DIR 会产生一个问题就是你发现除了万能的 ssh 运程登录，你几乎没有办法再修改它，相当于一个丢失了 FTP 功能的 PHP 空间，只能在线运行，没法备份和管理。<em><strong>不要有侥幸心态觉得我这个博客就一直放在这里不动，可以负责任的说您的博客多运行一天，您再出问题进行修复或迁移的难度就增加一分。</strong></em></p>
 <p>所以个人比较推荐第二种方法。</p>
-<h4 id="参考文献">参考文献</h4>
+<h4 id="参考文献">参考文献<a hidden class="anchor" aria-hidden="true" href="#参考文献">#</a></h4>
 <ul>
 <li><a href="https://access.redhat.com/knowledge/docs/en-US/OpenShift/2.0/html/User_Guide/index.html">openshift 用户手册</a></li>
 <li><a href="https://openshift.redhat.com/community/forums/openshift/one-newbie-question">https://openshift.redhat.com/community/forums/openshift/one-newbie-question</a></li>
 <li><a href="http://www.i7086.com/openshiftbangdingdingjiyuming">OpenShift免费空间绑定顶级域名（图文教程）</a></li>
 </ul>
-<h4 id="小结">小结</h4>
+<h4 id="小结">小结<a hidden class="anchor" aria-hidden="true" href="#小结">#</a></h4>
 <p>以上。</p>
 <p>至少我现在的 suse.ws 还没有任何问题地倔强地狂奔在 openshift 上。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

@@ -1,28 +1,201 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>脑洞大开的周末</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>脑洞大开的周末</h1>
-			<time>18.01.2016 00:00</time>
-			<div>
-				<p>这个周末其实只打算维护下我的 <a href="https://github.com/marguerite/upsteam-notifier">upstream-notifier</a> 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>脑洞大开的周末 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c&#43;&#43; 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="脑洞大开的周末" />
+<meta property="og:description" content="这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c&#43;&#43; 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-01-18T00:00:00+08:00" />
+<meta property="article:modified_time" content="2016-01-18T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="脑洞大开的周末"/>
+<meta name="twitter:description" content="这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。
+写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。
+好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。
+然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。
+结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈
+写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。
+关于这个问题有三个办法：
+第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c&#43;&#43; 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "脑洞大开的周末",
+      "item": "https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "脑洞大开的周末",
+  "name": "脑洞大开的周末",
+  "description": "这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。\n写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。\n好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。\n然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。\n结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈\n写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。\n关于这个问题有三个办法：\n第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿",
+  "keywords": [
+    
+  ],
+  "articleBody": "这个周末其实只打算维护下我的 upstream-notifier 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。\n写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。\n好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。\n然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。\n结果觉得我的用 _service 抓 git 的软件包这么多，每次更新基本都是无脑的，干嘛不做个自动化工具呢？于是 obs-scm-autoupdater 就这么诞生了😈\n写完 osa 的基本功能，又开始怀疑人生了。rpm 打包这么难，新手不爱学啊！就连我自己也经常是本来要简简单单安装个软件，比如 vokoscreen，录个视频给 konsole 的人看 bug，结果看到 vokoscreen 版本太低去更新，就把报 bug 这事岔开了。生产力就是这么低的！打包不应该那么耗时间，应该简单得像本机编译一样，甚至比那个还简单，新手才喜欢。\n关于这个问题有三个办法：\n第零个是不学打包直接本地编译。我烦死本地编译了，之前本地编译安装了个 basket，后来时间长了把源代码删了，没法 make uninstall，有洁癖的我就又编译了一遍就是为了卸载掉。哦对了 basket 有 kde5port 了！我当年想学 c++ 其实就是为了维护这个项目，虽然我各种待办事宜软件搞了不少，其实有 todo 的时候多半还是用脑子记，因为要么那时手头没工具要么人太烂，就好比我是学金融的却没老老实实用 skrooge 这样的手帐软件记满哪怕一个月，嘿嘿\n第一个是在现有的包管理系统里选个最简单的学。但是 openSUSE 的 rpm 是最难的那个，总不能换系统吧=。= puppy linux 的包管理在我看来最省心，但是不好移植啊。check_install 我又看不上。\n第二个就是自己做一个“比本地编译简单或者至少差不多，学习成本不高，省心的”包管理系统。类似 puppy linux 那种。好吧我其实又选了最难的选项，强迫症就是如此啊！\n于是就有了这个 epm。我号称它是最简单的包管理系统，给我这种贪懒奸猾的人用的😂。\n设计起来想的挺简单的。\nconfigure 命令自动判断是 autotool，cmake，qmake 还是别的工程（看源代码目录就知道），然后不管它调用什么我这里一律是 easy_configure。你说参数？直接 passthrough，省心，原来能用什么现在就能用什么，最多 runtime tweak 一下 libdir 什么的让它指向我定义的编译专用目录 easy_build。\nmake 就不管了，make_install 改成 easy 命令，也是接受参数确保装到 easy_build 又不让新人感觉到。\n最后 easy_pack。直接压成一个 tar.xz 改名叫 .epm 好啦:-)\n很快就写完了。这时才发现自己还没写怎么装这个 epm 的工具。原来想的是直接复制过去就好啦，弄个最傻的 sqlite3 数据库保存下名字、版本和文件列表这些 metadata 就好啦。\n但想到还有依赖关系和安装时候的那些 pre/post/preun/postun 脚本。\n依赖关系想弄成文件级别的，就是解包之后扫描下，是 c/c++ 的就用 ldd 去找关键性文件，类似这样。反正新手用的基本就是 c/c++/python 这种工程，覆盖面不够可以后期增补嘛，这难道不就是快速迭代嘛！\n又想到依赖的文件都找到了，干脆调用 libzypp 和其它发行版上现有的包管理系统去 query 一下这个发型版的包名称嘛！就比如 chrpath-1.16.x86_64.epm 依赖的可能是 gcc.rpm 也可能是 gcc.deb。只记录包名，不强制依赖，新手打包可以写进去，安装时会提示要不要装（当然那时依赖的版本肯定有更新了，但先不去管它）也可以让 epm 主程序在安装时自行确定，至于准确率嘛，偶尔装错两个反正有现有的包管理系统管着也无伤大雅。实在找不到再看有没有提供它的 epm，再没有就报错。反正其实用到 epm 也就是新人想保存一下编译安装的成品，不太会别的东西还依赖这个成品的。\n至于 pre/post 脚本，最重要的是它们的位置。什么时候调用这个都明白，但是它们本身在哪儿呢？解压过 rpm 但没看到过呀！研究了下发现 rpm file format 是自带 metadata 的，就是生成 rpm 的时候就弄进那个文件里了，你 unrpm 出来的其实只是 data。好吧，太难了，一比一复刻 rpm 制式太麻烦，干脆就 debian 风格好了。打包时多弄进去一个 epm 文件夹，脚本都在里面，安装时让主程序在复制文件到用户系统时候忽略就好了！\n然后整理下发现自己幻想了好多，其实一开始就是想更新几个软件包的…活就是这么来的。我这也算是自我驱动了…\nPS：我的博客又由 hexo 切换到 ghost 了，因为 ghost 可以在手机上码字。什么年代了谁还会坐在电脑前中规中矩的写博客！\n",
+  "wordCount" : "182",
+  "inLanguage": "en",
+  "datePublished": "2016-01-18T00:00:00+08:00",
+  "dateModified": "2016-01-18T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      脑洞大开的周末
+    </h1>
+    <div class="post-meta"><span title='2016-01-18 00:00:00 +0800 CST'>January 18, 2016</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>这个周末其实只打算维护下我的 <a href="https://github.com/marguerite/upsteam-notifier">upstream-notifier</a> 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。</p>
 <p>写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。</p>
 <p>好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。</p>
 <p>然后在 features.opensuse.org 上看到有个人要 tox 整合进 openSUSE，想起来我还维护着 cutegram 和 qtox，于是去更新 cutegram。</p>
@@ -45,59 +218,91 @@
 <p>然后整理下发现自己幻想了好多，其实一开始就是想更新几个软件包的…活就是这么来的。我这也算是自我驱动了…</p>
 <p>PS：我的博客又由 hexo 切换到 ghost 了，因为 ghost 可以在手机上码字。什么年代了谁还会坐在电脑前中规中矩的写博客！</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

@@ -1,28 +1,201 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>WPS for Linux 预览</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>WPS for Linux 预览</h1>
-			<time>30.03.2012 00:00</time>
-			<div>
-				<p>前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>WPS for Linux 预览 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="WPS for Linux 预览" />
+<meta property="og:description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2012-03-30T00:00:00+08:00" />
+<meta property="article:modified_time" content="2012-03-30T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="WPS for Linux 预览"/>
+<meta name="twitter:description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "WPS for Linux 预览",
+      "item": "https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "WPS for Linux 预览",
+  "name": "WPS for Linux 预览",
+  "description": "前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。\n当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。\n因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。\n很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。\nWPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。\n放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。\n它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。\n它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.",
+  "keywords": [
+    
+  ],
+  "articleBody": "前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。\n当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。\n因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。\n很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。\nWPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。\n放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。\n它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。\n它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。\n总的来说，金山这次还是很「业内良心」的，至少还尊重 Linux 社区。甚至明白好奇心害死猫，明确说明，在不泄露下载地址的情况下，可以协助你的朋友安装体验。也就是说，只要「可控」，人家根本不介意你发个 deb 或者迅雷快传什么的链接给朋友。\n看到了嘛，人家有信心做一款好软件出来，不怕分发，反正早晚也免费的嘛。其实我觉得收 50 元以下的费用 Linux 社区还是会支付的（Linux 社区是中国付费的良心和希望嘛），或者可以采用「软件内付费」的方法，集中精力开发一些收费功能、收费模板什么的，毕竟靠分享这种不靠谱的方法找到专业的模板跟大海捞针差不多。甚至可以建一个模板市场，像 wordpress 主题一样抽开发者的分成嘛（毕竟模板这种东西技术含量很低，充起数量很快的），引来专业的 UI 设计师那就碉堡了，不止完爆 libreoffice，甚至能完爆 ms office。还有模板求购市场，比如我要做金融专业 PPT，我花 30 元求购一套模板，可能一个学动画的 10 分钟搞出一套我这种渣审美搞一小时的东西。\n另外看了下开发者 wiki 和 bugzilla。社区还是反馈了不少东西的。真心希望这种模式能够为其他开发 Linux 版本的商业公司学去。\n最后，关于是否开源。金山的考虑很慎重，最早版本的 wiki 说，开源是一件很慎重的问题，甚至对代码质量要求很高。看，这才是真正商业公司序员的心底话，意思就是我们为糊口写的都是渣代码暂时不能扔出来丢人现眼，传到老总耳朵里我们的日子就没法过了。后期的版本说是，未来会考虑像部分社区成员开放。当然是你贡献了很多东西之后，或者你从源代码编译打包这样子。估计也要签保密协议。不过对姐来说保密协议太多就债多不愁啦。\n姐为金山的精神稍许感动了一点，于是在寸土寸金的主博客给他们写了这篇半黑半讚（看还是蛮中立的）的不像软文的软文。\nPS：另外本博客已经聚合到 openSUSE 星球 了。今天做了一会儿一种叫做 hackergotchi （黑客秀）的特殊头像，觉得蛮有趣的。福利就是文章头部右侧的那个小人偶。当然你要是右键了帮我做一个 3D 模型出来送给我我会蛮开心的，当然别做一比一的鬼知道你拿来干什么。。。福利二（花花真相）：\n福利三（hillwood）真相：\n当然山木的博客也聚合到星球去了，早晚你们都会看见的。\n最后是姐发现 openSUSE 蜥蜴，就是它们成员才有权利进聚合的博客，有张壁纸不错，分享给壁纸控：\n也有没有 openSUSE 标识的通用版本，熟悉的人可以到推特上找我要，放这里盗链会很多的。\n",
+  "wordCount" : "137",
+  "inLanguage": "en",
+  "datePublished": "2012-03-30T00:00:00+08:00",
+  "dateModified": "2012-03-30T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      WPS for Linux 预览
+    </h1>
+    <div class="post-meta"><span title='2012-03-30 00:00:00 +0800 CST'>March 30, 2012</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。</p>
 <p>当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux  肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。</p>
 <p>因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。</p>
 <p>很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。</p>
@@ -41,59 +214,91 @@
 <p>最后是姐发现 openSUSE 蜥蜴，就是它们成员才有权利进聚合的博客，有张壁纸不错，分享给壁纸控：</p>
 <p>也有没有 openSUSE 标识的通用版本，熟悉的人可以到推特上找我要，放这里盗链会很多的。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

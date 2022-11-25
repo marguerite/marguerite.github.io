@@ -1,30 +1,206 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>openSUSE 下玩围棋</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>openSUSE 下玩围棋</h1>
-			<time>24.02.2013 00:00</time>
-			<div>
-				<p>Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>openSUSE 下玩围棋 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
+引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
+不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
+围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
+当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
+另外关于围棋程序比较好的网站是：Sensei&rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp &ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="openSUSE 下玩围棋" />
+<meta property="og:description" content="Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
+引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
+不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
+围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
+当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
+另外关于围棋程序比较好的网站是：Sensei&rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp &ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-02-24T00:00:00+08:00" />
+<meta property="article:modified_time" content="2013-02-24T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="openSUSE 下玩围棋"/>
+<meta name="twitter:description" content="Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
+引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
+不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
+围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
+当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
+另外关于围棋程序比较好的网站是：Sensei&rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp &ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "openSUSE 下玩围棋",
+      "item": "https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "openSUSE 下玩围棋",
+  "name": "openSUSE 下玩围棋",
+  "description": "Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。\n主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。\n引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。\n不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。\n围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。\n当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。\n另外关于围棋程序比较好的网站是：Sensei\u0026rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面\ngGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：\nqGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp \u0026ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。",
+  "keywords": [
+    
+  ],
+  "articleBody": "Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。\n主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。\n引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。\n不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。\n围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。\n当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。\n另外关于围棋程序比较好的网站是：Sensei’s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面\ngGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：\nqGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp –quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。\n以下是 Java 的，我不喜欢，但是肯定能用，也还在开发：\nGoGui 本地客户端，支持 GNUGo。 Jago。只能在线上 IGS，没法玩机器人。 我是 KDE 所以不是很理 GNOME，似乎 GNOME 可以用这个：\nccGo。Gtkmm 2.4 写的，最后更新于 2010 年。 在线 以上主要满足的是你打谱和被电脑虐的需求，有些时候新手还是需要和人类进行一些交流的，不然被电脑虐出来的棋风比较诡异。两个在线网站，都需要 Java：\n日本雅虎 注册方法见这个帖子，但是日本围棋比我们流行，棋力都很彪悍。 Pandanet 熊猫网，最顶级的，什么人都有，欧洲人主要都是些物理学家什么的，逻辑能力特别强，也比较难对付。你可以观战然后下他们的 sgf 自己复盘。 Peepo Pachi 引擎的前端网站。 天元围棋 这是台湾同胞的围棋网站，可以用 wine 跑起来和他们玩。 无争 楼下巨巨推荐的在线慢棋网，日本雅虎下的太快了（因为日本人赶时间）。 Android/iPad 客户端 Panda-Tetsuki。这个是最好的手机客户端，没有之一。可以上战网也可以自己玩。 Go Free。显示是核心开发者开发的，除了电脑傻别的什么都很好=。= 飞燕围棋。楼下巨巨推荐的，看了下确实蛮好，可惜桌面客户端是 Java 而且不继续开发了，而且 apk 没有进 Google Play，但是没关系，我们可以把 SGF 棋谱下载回来用 qGo2 打谱。 教材 Google Play 有一个叫“围棋教室”的小软件，用它一晚上就能入门了。比一些围棋书还快。强烈推荐。\n电子书一般去 SimpleCD 上面找，但是问题就是，因为中国是发源地嘛，中文书一般偏难，能出书的都是九段起步了，书中选的案例也都是九段比赛，而日文书选的案例一般也是棋圣战这样的水平，你根本看不懂。也就是说人家根本没有考虑我们这些小菜的需求。规则都不懂就上大师傅对你们都是煎熬，小学学围棋那种情绪都还记得吧。\n我学的时候妈妈推荐我上的这个网站 Life in 19×19。听名字你就知道是个老外的围棋网站，里面的 instruction 都是面向没有经过五千年文化熏陶的野蛮人的，非常适合二逼青年入门（连英语都学了），当然回头你还是要看一些基础的中文围棋书，不然你连什么是“打”、“提”、“冲”都不知道，平时也没法跟领导下棋是不是？\n至于死活题也一样，尽量别用中文的什么段位考试题啊、死活 5000 题啊，那些都太难了，不适用于娱乐需求。去 Go Problems，这上面的死活题简单，可以娱乐使用。楼下巨巨也推荐了一个 Go Game Guru，特点是网站特别漂亮…\n楼下的两位巨巨都推荐用日本棋院的书入门，俺娘说俺太菜不适合，不过还是放出来：\n围棋吧的电子棋书版块。\n精神 昭和棋圣 · 吴清源的《中的精神》必须看。要领会围棋是一种中和的精神，不争是非，清静无为。所以那些在贴吧秀 GNUGo 的棋力如何弱爆了的下的都是伪棋，厉害点的算个将棋，不厉害的那就把围棋下成兵棋推演了。我们要下王道之棋，娱乐为主。\n结 总之本篇算是一个 Linux 下如何入门围棋以及自娱自乐的教程吧。Enjoy！\n",
+  "wordCount" : "192",
+  "inLanguage": "en",
+  "datePublished": "2013-02-24T00:00:00+08:00",
+  "dateModified": "2013-02-24T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      openSUSE 下玩围棋
+    </h1>
+    <div class="post-meta"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。</p>
 <p>主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。</p>
-<h4 id="引擎">引擎</h4>
+<h4 id="引擎">引擎<a hidden class="anchor" aria-hidden="true" href="#引擎">#</a></h4>
 <p>GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。</p>
 <p>不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。</p>
 <p>围棋引擎流行的能跑在 Linux 下的有这些：<a href="http://fuego.sourceforge.net/">Fuego</a>（棋力 9 段，9×9 棋盘）, <a href="http://www.gnu.org/software/gnugo/devel.html">GNU Go</a>（棋力 12 级）, <a href="https://www.lri.fr/~teytaud/mogo.html">MoGo</a>, <a href="http://pachi.or.cz/">Pachi</a>（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。</p>
@@ -54,7 +230,7 @@
 <ul>
 <li><a href="http://ccdw.org/~cjj/prog/ccgo/">ccGo</a>。Gtkmm 2.4 写的，最后更新于 2010 年。</li>
 </ul>
-<h4 id="在线">在线</h4>
+<h4 id="在线">在线<a hidden class="anchor" aria-hidden="true" href="#在线">#</a></h4>
 <p>以上主要满足的是你打谱和被电脑虐的需求，有些时候新手还是需要和人类进行一些交流的，不然被电脑虐出来的棋风比较诡异。两个在线网站，都需要 Java：</p>
 <ul>
 <li><a href="http://games.yahoo.co.jp/">日本雅虎</a> 注册方法见<a href="http://forum.ubuntu.org.cn/viewtopic.php?f=34&amp;t=290181">这个帖子</a>，但是日本围棋比我们流行，棋力都很彪悍。</li>
@@ -63,77 +239,109 @@
 <li><a href="http://www.twgo.net/">天元围棋</a> 这是台湾同胞的围棋网站，可以用 wine 跑起来和他们玩。</li>
 <li><a href="http://www.wuzheng.me/">无争</a> 楼下巨巨推荐的在线慢棋网，日本雅虎下的太快了（因为日本人赶时间）。</li>
 </ul>
-<h4 id="androidipad-客户端">Android/iPad 客户端</h4>
+<h4 id="androidipad-客户端">Android/iPad 客户端<a hidden class="anchor" aria-hidden="true" href="#androidipad-客户端">#</a></h4>
 <ul>
 <li><a href="http://www.gentgo.be/tetsuki/">Panda-Tetsuki</a>。这个是最好的手机客户端，没有之一。可以上战网也可以自己玩。</li>
 <li><a href="https://play.google.com/store/apps/details?id=uk.co.aifactory.gofree&amp;hl=zh_CN">Go Free</a>。显示是核心开发者开发的，除了电脑傻别的什么都很好=。=</li>
 <li><a href="http://swiftgo.duapp.com/">飞燕围棋</a>。楼下巨巨推荐的，看了下确实蛮好，可惜桌面客户端是 Java 而且不继续开发了，而且 apk 没有进 Google Play，但是没关系，我们可以把 SGF 棋谱下载回来用 qGo2 打谱。</li>
 </ul>
-<h4 id="教材">教材</h4>
+<h4 id="教材">教材<a hidden class="anchor" aria-hidden="true" href="#教材">#</a></h4>
 <p>Google Play 有一个叫“围棋教室”的小软件，用它一晚上就能入门了。比一些围棋书还快。强烈推荐。</p>
 <p>电子书一般去 <a href="http://simplecd.me/">SimpleCD</a> 上面找，但是问题就是，因为中国是发源地嘛，中文书一般偏难，能出书的都是九段起步了，书中选的案例也都是九段比赛，而日文书选的案例一般也是棋圣战这样的水平，你根本看不懂。也就是说人家根本没有考虑我们这些小菜的需求。规则都不懂就上大师傅对你们都是煎熬，小学学围棋那种情绪都还记得吧。</p>
 <p>我学的时候妈妈推荐我上的这个网站 <a href="http://www.lifein19x19.com/forum/viewforum.php?f=6">Life in 19×19</a>。听名字你就知道是个老外的围棋网站，里面的 instruction 都是面向没有经过五千年文化熏陶的野蛮人的，非常适合二逼青年入门（连英语都学了），当然回头你还是要看一些基础的中文围棋书，不然你连什么是“打”、“提”、“冲”都不知道，平时也没法跟领导下棋是不是？</p>
 <p>至于死活题也一样，尽量别用中文的什么段位考试题啊、死活 5000 题啊，那些都太难了，不适用于娱乐需求。去 <a href="http://www.goproblems.com/">Go Problems</a>，这上面的死活题简单，可以娱乐使用。楼下巨巨也推荐了一个 <a href="http://gogameguru.com/">Go Game Guru</a>，特点是网站特别漂亮…</p>
 <p>楼下的两位巨巨都推荐用日本棋院的书入门，俺娘说俺太菜不适合，不过还是放出来：</p>
 <p><a href="http://www.weiqibar.com/forum.php?mod=forumdisplay&amp;fid=40">围棋吧</a>的电子棋书版块。</p>
-<h4 id="精神">精神</h4>
+<h4 id="精神">精神<a hidden class="anchor" aria-hidden="true" href="#精神">#</a></h4>
 <p>昭和棋圣 · 吴清源的《中的精神》必须看。要领会围棋是一种中和的精神，不争是非，清静无为。所以那些在贴吧秀 GNUGo 的棋力如何弱爆了的下的都是伪棋，厉害点的算个将棋，不厉害的那就把围棋下成兵棋推演了。我们要下王道之棋，娱乐为主。</p>
-<h4 id="结">结</h4>
+<h4 id="结">结<a hidden class="anchor" aria-hidden="true" href="#结">#</a></h4>
 <p>总之本篇算是一个 Linux 下如何入门围棋以及自娱自乐的教程吧。Enjoy！</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

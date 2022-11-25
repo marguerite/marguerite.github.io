@@ -1,307 +1,500 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>fontconfig 几个常见的坑</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>fontconfig 几个常见的坑</h1>
-			<time>04.11.2020 00:00</time>
-			<div>
-				<p>最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>fontconfig 几个常见的坑 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="fontconfig 几个常见的坑" />
+<meta property="og:description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-11-04T00:00:00+08:00" />
+<meta property="article:modified_time" content="2020-11-04T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="fontconfig 几个常见的坑"/>
+<meta name="twitter:description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "fontconfig 几个常见的坑",
+      "item": "https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "fontconfig 几个常见的坑",
+  "name": "fontconfig 几个常见的坑",
+  "description": "最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。\n后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：\n第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：\n\u0026lt;match\u0026gt; \u0026lt;test name=“family” compare=“eq”\u0026gt; \u0026lt;string\u0026gt;sans-serif\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;test name=“family” compare=“eq”\u0026gt; \u0026lt;string\u0026gt;monospace\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;edit name=“family” mode=“delete”/\u0026gt; \u0026lt;/match\u0026gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.",
+  "keywords": [
+    
+  ],
+  "articleBody": "最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。\n后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：\n第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：\n",
+  "wordCount" : "974",
+  "inLanguage": "en",
+  "datePublished": "2020-11-04T00:00:00+08:00",
+  "dateModified": "2020-11-04T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      fontconfig 几个常见的坑
+    </h1>
+    <div class="post-meta"><span title='2020-11-04 00:00:00 +0800 CST'>November 4, 2020</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。</p>
 <p>后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：</p>
-<p>##第一个坑：从 monospace 中清除 sans-serif</p>
+<h2 id="第一个坑从-monospace-中清除-sans-serif">第一个坑：从 monospace 中清除 sans-serif<a hidden class="anchor" aria-hidden="true" href="#第一个坑从-monospace-中清除-sans-serif">#</a></h2>
 <p>比如 <a href="https://github.com/source-foundry/Hack/issues/408">Hack 字体的官方配置</a>，还有最著名的 <a href="https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/">eev’s rant about fontconfig</a>，都推荐了这么一种做法：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>monospace<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“delete”/</span><span style="color:#000080">&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>monospace<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“delete”/</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif
 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）</p>
 <p>甚至还有衍生：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Hack<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“delete”/</span><span style="color:#000080">&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>把 Hack 字体从 sans-serif 字族中删除（因为 Hack 是 monospace 字体）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Hack<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“delete”/</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>把 Hack 字体从 sans-serif 字族中删除（因为 Hack 是 monospace 字体）</p>
 <p>听起来是不是很美？这样我就可以 monospace 字族只用 monospace 字体，sans-serif 字族只用 sans-serif 字体了。</p>
 <p>我面临的现实问题是 Noto Color Emoji 在 sans-serif 中优先级很低，而这个字体的英文部分会把字母之间的间距变得超大，所以不能 prepend_first 到 sans-serif（网上的教程全部都是错的，或者说你以为 EmojiOne Color 可以 Noto Color Emoji 就可以，那是你想当然了）。于是想到的就是保证出现在 Noto Color Emoji 之前的字体全部都没有 emoji，先把 monospace、serif 之类的从 sans-serif 中去除，可以极大的减少工作量。</p>
 <p>但实际完全不是这么一回事。要理解原因，我们需要补习一下 fontconfig 的基础知识（当然有些人是新学233）：</p>
 <p>fontconfig 是通过三个步骤来匹配到合适的字体的。第一步叫做 scan，就是扫描系统中的字体来构建一个 list（fc-list 可以还原这个过程），这个 list 是无序的。第二步叫 pattern match，就是针对你要匹配的字体名称比如 “sans-serif”去调整上面的 list，各种 prepend。第三步叫 font match，就是针对调整过的 list 去应用诸如 hinting antialias 之类的。</p>
-<p>虽然 fontconfig 的配置文件是有数字顺序的，但上面那三个过程是死的，意思是即使你把 <!-- raw HTML omitted --> 写到 10-<em>.conf 里去，它也不会在 90-</em>.conf 的 <!-- raw HTML omitted --> 之前执行。所以开发者在 pattern match 阶段只需要关注对应的 pattern 的先后顺序就可以了。</p>
+<p>虽然 fontconfig 的配置文件是有数字顺序的，但上面那三个过程是死的，意思是即使你把 <code>&lt;match target=&quot;font&quot;&gt;</code> 写到 <code>10-*.conf</code> 里去，它也不会在 <code>90-*.conf</code> 的 <code>&lt;match target=&quot;pattern&quot;&gt;</code> 之前执行。所以开发者在 pattern match 阶段只需要关注对应的 pattern 的先后顺序就可以了。</p>
 <p>通过 FC_DEBUG=4 fc-match -s monospace 查看（搜索 “Edit family Delete none”），这段是添加规则</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">Add SubSt match 
-[test]
-         pattern any family Equal “sans-serif”
-         pattern any family Equal “monospace”
-[edit]
-         Edit family Delete none;
-</code></pre></div><p>注意这里的 none，不表示没匹配到。它表示的是 <!-- raw HTML omitted --> 这个 edit block 里面没有东西，因为 delete 和 delete_all 规则就是这样的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>Add SubSt match 
+</span></span><span style="display:flex;"><span>[test]
+</span></span><span style="display:flex;"><span>         pattern any family Equal “sans-serif”
+</span></span><span style="display:flex;"><span>         pattern any family Equal “monospace”
+</span></span><span style="display:flex;"><span>[edit]
+</span></span><span style="display:flex;"><span>         Edit family Delete none;
+</span></span></code></pre></div><p>注意这里的 none，不表示没匹配到。它表示的是 <!-- raw HTML omitted --> 这个 edit block 里面没有东西，因为 delete 和 delete_all 规则就是这样的。</p>
 <p>真正的匹配阶段是类似这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">FcConfigSubstitute test pattern any family Equal “mono”
-No match
-FcConfigSubstitute test pattern any family Equal “sans serif”
-No match
-FcConfigSubstitute test pattern any family Equal “sans”
-Substitute Edit family Assign “sans-serif”
-
-Append list before “sans”(s) [marker]
-Append list after “sans”(s) “sans-serif”(s) 
-FcConfigSubstitute editPattern has 3 elts (size 16)
-    family: “sans-serif”(s)
-    lang: “en”(w)
-    prgname: “fc-match”(s)
-</code></pre></div><p>这个是比较完整的规则，还原成 xml 形式就是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">“pattern”</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">“any”</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>mono<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">“any”</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">“any”</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“assign”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>通过几个 No match 和 editPattern 我们可以看出，这段其实匹配到了一个对 sans 的请求，但把它完全替换成了 sans-serif。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “mono”
+</span></span><span style="display:flex;"><span>No match
+</span></span><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “sans serif”
+</span></span><span style="display:flex;"><span>No match
+</span></span><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “sans”
+</span></span><span style="display:flex;"><span>Substitute Edit family Assign “sans-serif”
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Append list before “sans”(s) [marker]
+</span></span><span style="display:flex;"><span>Append list after “sans”(s) “sans-serif”(s) 
+</span></span><span style="display:flex;"><span>FcConfigSubstitute editPattern has 3 elts (size 16)
+</span></span><span style="display:flex;"><span>    family: “sans-serif”(s)
+</span></span><span style="display:flex;"><span>    lang: “en”(w)
+</span></span><span style="display:flex;"><span>    prgname: “fc-match”(s)
+</span></span></code></pre></div><p>这个是比较完整的规则，还原成 xml 形式就是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">“pattern”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">“any”</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>mono<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">“any”</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">“any”</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“assign”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>通过几个 No match 和 editPattern 我们可以看出，这段其实匹配到了一个对 sans 的请求，但把它完全替换成了 sans-serif。</p>
 <p>上面的懂了，就可以拔高一些了。Edit Delete 的匹配阶段的 Debug 代码是类似这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>DejaVu Sans<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“delete”/</span><span style="color:#000080">&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-
-FcConfigSubstitute test pattern any family Equal “monospace”
-No match
-FcConfigSubstitute test pattern any family Equal “DejaVu Sans”
-FcConfigSubstitute test pattern any family Equal “sans-serif”
-Substitute Edit family Delete none
-
-FcConfigSubstitute editPattern has 3 elts (size 16)
-    family: “Noto Sans”(w) “sans-serif”(w)
-    lang: “en”(w)
-    prgname: “fc-match”(s)
-</code></pre></div><p>第一，它会自作主张的给你加一段针对 monospace 的测试（原因没有详查）；第二，它没有告诉你删除成功了没。你需要去看它前面一个规则的 editPattern 来自己比较才知道删除成功了没。我这里前面规则的 editPattern 里有 “DejaVu Sans”，但这里的 editPattern 没有了。所以是成功了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>DejaVu Sans<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“delete”/</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “monospace”
+</span></span><span style="display:flex;"><span>No match
+</span></span><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “DejaVu Sans”
+</span></span><span style="display:flex;"><span>FcConfigSubstitute test pattern any family Equal “sans-serif”
+</span></span><span style="display:flex;"><span>Substitute Edit family Delete none
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FcConfigSubstitute editPattern has 3 elts (size 16)
+</span></span><span style="display:flex;"><span>    family: “Noto Sans”(w) “sans-serif”(w)
+</span></span><span style="display:flex;"><span>    lang: “en”(w)
+</span></span><span style="display:flex;"><span>    prgname: “fc-match”(s)
+</span></span></code></pre></div><p>第一，它会自作主张的给你加一段针对 monospace 的测试（原因没有详查）；第二，它没有告诉你删除成功了没。你需要去看它前面一个规则的 editPattern 来自己比较才知道删除成功了没。我这里前面规则的 editPattern 里有 “DejaVu Sans”，但这里的 editPattern 没有了。所以是成功了。</p>
 <p>拔高成功了，直接上炼狱模式，去真实的 FC_DEBUG=4 fc-match -s monospace 里面找，会发现只有添加规则的，别的什么都没有找到。这就是 fontconfig interesting 的地方了，如果规则没有应用，它不会告诉你。</p>
 <p>但是我会告诉你呀！再来看这条规则：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>monospace<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“delete”/</span><span style="color:#000080">&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>它需要测试 pattern 的 family 字段中有 sans-serif，<strong>并且</strong>有 monospace。但实际上把整个匹配过程从头到尾读过了之后，会发现这样的条件永远也不会满足。之所以有这么一个无用的测试，是对 49-sansserif.conf 的误解造成的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">&#34;pattern&#34;</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">&#34;all&#34;</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span> <span style="color:#008080">compare=</span><span style="color:#d14">&#34;not_eq&#34;</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-  <span style="color:#000080">&lt;/test&gt;</span>
-  <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">&#34;all&#34;</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span> <span style="color:#008080">compare=</span><span style="color:#d14">&#34;not_eq&#34;</span><span style="color:#000080">&gt;</span>
-	<span style="color:#000080">&lt;string&gt;</span>serif<span style="color:#000080">&lt;/string&gt;</span>
-  <span style="color:#000080">&lt;/test&gt;</span>
-  <span style="color:#000080">&lt;test</span> <span style="color:#008080">qual=</span><span style="color:#d14">&#34;all&#34;</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span> <span style="color:#008080">compare=</span><span style="color:#d14">&#34;not_eq&#34;</span><span style="color:#000080">&gt;</span>
-	<span style="color:#000080">&lt;string&gt;</span>monospace<span style="color:#000080">&lt;/string&gt;</span>
-  <span style="color:#000080">&lt;/test&gt;</span>
-  <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;family&#34;</span> <span style="color:#008080">mode=</span><span style="color:#d14">&#34;append_last&#34;</span><span style="color:#000080">&gt;</span>
-	<span style="color:#000080">&lt;string&gt;</span>sans-serif<span style="color:#000080">&lt;/string&gt;</span>
-  <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>这段规则的实际意思是说，如果去匹配一个字体 fc-match -s “我瞎编的字体名”，这时 fontconfig 不知道“我瞎编的字体名”究竟是什么字族，甚至不知道这个字体在系统中有没有，为了防止显示不出来，就把 sans-serif 旗标放在最后，这样后续针对 sans-serif 旗标的各种 prefer 往 list 里加字体，最后用的是 sans-serif 的第一个字体显示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>monospace<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“delete”/</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>它需要测试 pattern 的 family 字段中有 sans-serif，<strong>并且</strong>有 monospace。但实际上把整个匹配过程从头到尾读过了之后，会发现这样的条件永远也不会满足。之所以有这么一个无用的测试，是对 49-sansserif.conf 的误解造成的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">&#34;pattern&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">&#34;all&#34;</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">&#34;not_eq&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">&#34;all&#34;</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">&#34;not_eq&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;string&gt;</span>serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">qual=</span><span style="color:#e6db74">&#34;all&#34;</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">&#34;not_eq&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;string&gt;</span>monospace<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;family&#34;</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">&#34;append_last&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;string&gt;</span>sans-serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>这段规则的实际意思是说，如果去匹配一个字体 fc-match -s “我瞎编的字体名”，这时 fontconfig 不知道“我瞎编的字体名”究竟是什么字族，甚至不知道这个字体在系统中有没有，为了防止显示不出来，就把 sans-serif 旗标放在最后，这样后续针对 sans-serif 旗标的各种 prefer 往 list 里加字体，最后用的是 sans-serif 的第一个字体显示。</p>
 <p>但是如果是 fc-match -s monospace 呢？不好意思 monospace 已经有了，永远也不会添加 sans-serif 旗标到最后。也就永远也不存在两个字族在一个 list 里的场景。</p>
 <p>好，杠精来了，如果我手动把一个字体既 alias 成 sans-serif，又 alias 成 monospace 呢？那也没有影响。下面这个规则：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;alias&gt;</span>
-    <span style="color:#000080">&lt;family&gt;</span>Georgia<span style="color:#000080">&lt;/family&gt;</span>
-    <span style="color:#000080">&lt;default&gt;</span>
-        <span style="color:#000080">&lt;family&gt;</span>serif<span style="color:#000080">&lt;/family&gt;</span>
-    <span style="color:#000080">&lt;/default&gt;</span>
-<span style="color:#000080">&lt;/alias&gt;</span>
-</code></pre></div><p>实际上等于：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">“pattern”</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>serif<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“append_last”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Georgia<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>就是语法糖而已。alias 后，fc-match -s sans-serif/monospace 肯定都有这个字体，但也只是这样了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;alias&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;family&gt;</span>Georgia<span style="color:#f92672">&lt;/family&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;default&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;family&gt;</span>serif<span style="color:#f92672">&lt;/family&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/default&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/alias&gt;</span>
+</span></span></code></pre></div><p>实际上等于：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">“pattern”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>serif<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“append_last”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Georgia<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>就是语法糖而已。alias 后，fc-match -s sans-serif/monospace 肯定都有这个字体，但也只是这样了。</p>
 <p>我明白你们的逻辑，alias 是替身的意思，一个字体即是 sans-serif 的替身，又是 monospace 的替身，那么匹配这个字体，list 里面必然又有 sans-serif 又有 monospace。</p>
 <p>但这个逻辑是完全没有道理的。绝大多数人都有这样的误区：</p>
 <p>认为 sans-serif 字族像 family 一样，是一个子列表，匹配 sans-serif 等于匹配了整个字族的所有字体。append sans-serif 等于把所有的 sans-serif 字体放在后面。这实际上是把 sans-serif/serif/monospace 看成了字体的一个 bool 属性，把现实中对 sans-serif 字体的理解代入到 fontconfig 里面来了。</p>
 <p>我很早就说过，没有名为 sans-serif 的字体。在 fontconfig 中，sans-serif 只是一个锚点。这个锚点跟 DejaVu Sans 或 Noto Sans 这些真实字体的地位是相同，唯一的不同就是现实中没有名为 sans-serif 的字体，因此永远也匹配不到，所以才需要各种 append/prepend work，保证在匹配 sans-serif 锚点的时候 family 列表的 sans-serif 之前或之后有别的字体，即使 family 列表中的 sans-serif 永远不会匹配到，也总有字体会匹配到。你们认为的过程是类似这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">family: DemoFont
-hintstyle: 1
-lang: en
-arbitrary_attributeA: sans-serif
-arbitrary_attributeB: monospace
-</code></pre></div><p>然后匹配 sans-serif 是去所有字体中找属性。但真实的过程中 family 列表的增长是类似这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">family: sans-serif
-family: Noto Sans, sans-serif
-family: Noto Sans, sans-serif, DejaVu Sans
-lang: en
-hintstyle: 1
-</code></pre></div><p>最后程序拿着这个 family 列表要求 sans-serif，第一个 Noto Sans 没安装，第二个永远没有，于是就用第三个 DejaVu Sans。我们可以看出来，无论是 prepend/append 还是 alias，都是针对一个对象去调整它之前之后的字体。这才是 pattern match 的意思。而你们认为的其实是在第二阶段 font match 也就是 <!-- raw HTML omitted --> 阶段发生的事情，但这个阶段的 pattern 是已经固定的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>family: DemoFont
+</span></span><span style="display:flex;"><span>hintstyle: 1
+</span></span><span style="display:flex;"><span>lang: en
+</span></span><span style="display:flex;"><span>arbitrary_attributeA: sans-serif
+</span></span><span style="display:flex;"><span>arbitrary_attributeB: monospace
+</span></span></code></pre></div><p>然后匹配 sans-serif 是去所有字体中找属性。但真实的过程中 family 列表的增长是类似这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>family: sans-serif
+</span></span><span style="display:flex;"><span>family: Noto Sans, sans-serif
+</span></span><span style="display:flex;"><span>family: Noto Sans, sans-serif, DejaVu Sans
+</span></span><span style="display:flex;"><span>lang: en
+</span></span><span style="display:flex;"><span>hintstyle: 1
+</span></span></code></pre></div><p>最后程序拿着这个 family 列表要求 sans-serif，第一个 Noto Sans 没安装，第二个永远没有，于是就用第三个 DejaVu Sans。我们可以看出来，无论是 prepend/append 还是 alias，都是针对一个对象去调整它之前之后的字体。这才是 pattern match 的意思。而你们认为的其实是在第二阶段 font match 也就是 <!-- raw HTML omitted --> 阶段发生的事情，但这个阶段的 pattern 是已经固定的。</p>
 <p>如果把一个字体既 alias 到 monospace 又 alias 到 sans-serif，那么其实是两个对象，sans-serif 和 monospace。但如果对象本身就没在 family 列表中，针对它的 match 就不会应用。所以你去匹配 monospace 的过程是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">family: monospace
-family: monospace, DejaVu Sans Mono
-</code></pre></div><p>前面说过了，有 monospace 不会自动加 sans-serif。sans-serif 对象都没有，针对它的调整肯定也不会应用。而你 fc-match -s “DejaVu Sans Mono” 呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>family: monospace
+</span></span><span style="display:flex;"><span>family: monospace, DejaVu Sans Mono
+</span></span></code></pre></div><p>前面说过了，有 monospace 不会自动加 sans-serif。sans-serif 对象都没有，针对它的调整肯定也不会应用。而你 fc-match -s “DejaVu Sans Mono” 呢？</p>
 <p>会被当作 sans-serif 处理。family 列表的增长是这样：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">family: DejaVu Sans Mono
-family: DejaVu Sans Mono, sans-serif
-family: DejaVu Sans Mono, Noto Sans, sans-serif
-</code></pre></div><p>这里根本没有 monospace 出现。因为你的 alias 的作用对象是 monospace 而不是 DejaVu Sans Mono。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>family: DejaVu Sans Mono
+</span></span><span style="display:flex;"><span>family: DejaVu Sans Mono, sans-serif
+</span></span><span style="display:flex;"><span>family: DejaVu Sans Mono, Noto Sans, sans-serif
+</span></span></code></pre></div><p>这里根本没有 monospace 出现。因为你的 alias 的作用对象是 monospace 而不是 DejaVu Sans Mono。</p>
 <p>所以除非你手动的把 sans-serif append 到 monospace 后面，否则不会出现两个虚拟字体在一个 family 列表的情况。</p>
 <p>这里再澄清一点：</p>
 <p>即使你能够把 sans-serif append 到 monospace 后面，你 append 的也只是 sans-serif 这个虚拟字体本身，而不是所有的 sans-serif 字体。因为这些已知的字体是通过别的 append/prepend 加到 sans-serif 前后的。但是 pattern match 是有先后顺序的，你的 sans-serif append 的晚了，别的 match 已经完事了，你也就只能 append 一个虚拟字体。因此 fontconfig 的出厂配置在 append sans-serif 时才会尽量在 pattern match 的最前面做。</p>
 <p>好，杠精又来了，Hack 字体的配置总不会错了吧？如果既有 Hack 又有 sans-serif 就把 Hack 删了。实际上也完全不是这回事。我们用 DejaVu Sans 做个测试：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ fc-match -a sans-serif
-“DejaVu Sans” “Book”
-“DejaVu Math TeX Gyre”
-...
-</code></pre></div><p>应用了上面的那个 conf 之后结果是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> $ fc-match -a sans-serif
- “DejaVu Math TeX Gyre”
- “DejaVu Sans” “Book”
- ...
-</code></pre></div><p>咦？DejaVu Sans 怎么还有？更 interesting 的是：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ fc-match -a “DejaVu Sans”
-“DejaVu Sans” “Book”
-...
-</code></pre></div><p>这时就需要去理解我说的三个阶段了。要知道，pattern 永不会落在虚处。fontconfig 的 pattern 里面存在了太多不一定存在的字体名称，比如 sans-serif 自己就是。如果直接返回 pattern，就存在整个 family 列表中的字体都没有安装在你的电脑上的场景。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ fc-match -a sans-serif
+</span></span><span style="display:flex;"><span>“DejaVu Sans” “Book”
+</span></span><span style="display:flex;"><span>“DejaVu Math TeX Gyre”
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>应用了上面的那个 conf 之后结果是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> $ fc-match -a sans-serif
+</span></span><span style="display:flex;"><span> “DejaVu Math TeX Gyre”
+</span></span><span style="display:flex;"><span> “DejaVu Sans” “Book”
+</span></span><span style="display:flex;"><span> ...
+</span></span></code></pre></div><p>咦？DejaVu Sans 怎么还有？更 interesting 的是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ fc-match -a “DejaVu Sans”
+</span></span><span style="display:flex;"><span>“DejaVu Sans” “Book”
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>这时就需要去理解我说的三个阶段了。要知道，pattern 永不会落在虚处。fontconfig 的 pattern 里面存在了太多不一定存在的字体名称，比如 sans-serif 自己就是。如果直接返回 pattern，就存在整个 family 列表中的字体都没有安装在你的电脑上的场景。</p>
 <p>那么 fontconfig 是怎么做的呢？我没有详细看过源代码，但合理猜测是这样：</p>
 <p>在 scan 阶段把指定文件夹的全部字体都扫描成一个无序列表。在 pattern 和 font 阶段处理 pattern 和字体渲染属性。在最终匹配阶段，把 pattern 应用到无序列表。根据 pattern 里的项，如果无序列表中没有，没安装的字体就 drop 掉，如果有，就根据 pattern 调整位置，得到微调过的无序列表，而最终顺序是根据算法（family lang style 等有不同的权重）匹配所需字体属性和列表字体提供的属性，再调整微调过的无序列表输出。</p>
 <p>那么问题来了，如果是 pattern 中没有的字体呢？只要无序列表中有，一样参与运算，最终结果也有。</p>
 <p>这就解释了为什么 fc-match -a sans-serif 时还有 DejaVu Sans 了。虽然规则生效了，从 pattern 中删掉了，但是任何非 scan 阶段的规则都无法改变扫描阶段生成的无序列表。于是它又继续出现了。</p>
 <p>而直接 fc-match -a “DejaVu Sans” 它会出现在第一个的原因也一样，它自身参与了运算，那么自己肯定是最匹配自己的。</p>
 <p>所以无论怎么调整，只能调整排序。如果不想要某个字体，要么直接删掉，要么在扫描阶段通过：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match</span> <span style="color:#008080">target=</span><span style="color:#d14">“scan”</span><span style="color:#000080">&gt;</span>
-    <span style="color:#000080">&lt;selectfont&gt;</span>
-        <span style="color:#000080">&lt;rejectfont&gt;</span>
-            <span style="color:#000080">&lt;patlet</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span><span style="color:#000080">&gt;</span>
-                <span style="color:#000080">&lt;string&gt;</span>DejaVu Sans<span style="color:#000080">&lt;/string&gt;</span>
-            <span style="color:#000080">&lt;/patlet&gt;</span>
-        <span style="color:#000080">&lt;/rejectfont&gt;</span>
-    <span style="color:#000080">&lt;/selectfont&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>来做。</p>
-<p>##第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match</span> <span style="color:#a6e22e">target=</span><span style="color:#e6db74">“scan”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;selectfont&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;rejectfont&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;patlet</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;string&gt;</span>DejaVu Sans<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/patlet&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/rejectfont&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/selectfont&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>来做。</p>
+<h2 id="第二个坑禁用-mozilla-firefox-自带的-twemoji-mozilla-这个-emoji-字体">第二个坑：禁用 Mozilla Firefox 自带的 Twemoji Mozilla 这个 emoji 字体<a hidden class="anchor" aria-hidden="true" href="#第二个坑禁用-mozilla-firefox-自带的-twemoji-mozilla-这个-emoji-字体">#</a></h2>
 <p>Firefox 自己捆绑了一个 emoji 字体，并且在源代码里面把它作为默认的 emoji 字体。而 Linux 上面的 emoji 字体大部分是 Noto Color Emoji。为了统一风格，我想要让 firefox 匹配字体时不匹配它：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Twemoji Mozilla<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“prgname”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Firefox<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“delete”/</span><span style="color:#000080">&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>看似完美，但实际上不能用，道理跟上面讲的一样。因为现在网页字体在 css 里不会在最前面指定 emoji 字体：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#000080">font-family</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#a61717;background-color:#e3d2d2">“</span><span style="color:#000080">emoji</span><span style="color:#a61717;background-color:#e3d2d2">”</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#a61717;background-color:#e3d2d2">“</span><span style="color:#000080">sans-serif</span><span style="color:#a61717;background-color:#e3d2d2">”</span><span style="color:#000;font-weight:bold">;</span>
-</code></pre></div><p>做的差的直接就是 sans-serif，做的好的用的也都是真正的 emoji 字体名，比如：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#000080">font-family</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#a61717;background-color:#e3d2d2">“</span><span style="color:#000080">Apple</span> <span style="color:#000080">Color</span> <span style="color:#000080">Emoji</span><span style="color:#a61717;background-color:#e3d2d2">”</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#a61717;background-color:#e3d2d2">“</span><span style="color:#000080">sans-serif</span><span style="color:#a61717;background-color:#e3d2d2">”</span><span style="color:#000;font-weight:bold">;</span>
-</code></pre></div><p>主要是 fontconfig 的 emoji 标准（lang=“und-zsye” 和 “emoji” 这个 generic name）定晚了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Twemoji Mozilla<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“prgname”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Firefox<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“delete”/</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>看似完美，但实际上不能用，道理跟上面讲的一样。因为现在网页字体在 css 里不会在最前面指定 emoji 字体：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">font-family</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">“</span><span style="color:#f92672">emoji</span><span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">,</span> <span style="color:#960050;background-color:#1e0010">“</span><span style="color:#f92672">sans-serif</span><span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">;</span>
+</span></span></code></pre></div><p>做的差的直接就是 sans-serif，做的好的用的也都是真正的 emoji 字体名，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">font-family</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">“</span><span style="color:#f92672">Apple</span> <span style="color:#f92672">Color</span> <span style="color:#f92672">Emoji</span><span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">,</span> <span style="color:#960050;background-color:#1e0010">“</span><span style="color:#f92672">sans-serif</span><span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">;</span>
+</span></span></code></pre></div><p>主要是 fontconfig 的 emoji 标准（lang=“und-zsye” 和 “emoji” 这个 generic name）定晚了。</p>
 <p>针对 Apple Color Emoji，我们可以用 alias 来把 Noto Color Emoji append 到后面，这样原装字体没有就会用我们的李鬼字体。但是绝大多数时候我们的 emoji 其实是在跟 sans-serif 在争。</p>
 <p>根据我们在第一个坑里面讲的原理，即使把 Twemoji Mozilla 从 pattern 里面删了也没用，它还是会出现在 sans-serif 中。所以要么把它整个 reject 掉，要么把 Noto Color Emoji 扔到它的前面：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;match&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Twemoji Mozilla<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;test</span> <span style="color:#008080">name=</span><span style="color:#d14">“prgname”</span> <span style="color:#008080">compare=</span><span style="color:#d14">“eq”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>firefox<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/test&gt;</span>
-    <span style="color:#000080">&lt;edit</span> <span style="color:#008080">name=</span><span style="color:#d14">“family”</span> <span style="color:#008080">mode=</span><span style="color:#d14">“prepend”</span><span style="color:#000080">&gt;</span>
-        <span style="color:#000080">&lt;string&gt;</span>Noto Color Emoji<span style="color:#000080">&lt;/string&gt;</span>
-    <span style="color:#000080">&lt;/edit&gt;</span>
-<span style="color:#000080">&lt;/match&gt;</span>
-</code></pre></div><p>这样的 block 可以有多个，最终保证无论它要哪一种 emoji 字体，不管安装没安装，第一个匹配到的字体都只会是 Noto Color Emoji。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;match&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Twemoji Mozilla<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;test</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“prgname”</span> <span style="color:#a6e22e">compare=</span><span style="color:#e6db74">“eq”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>firefox<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/test&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;edit</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">“family”</span> <span style="color:#a6e22e">mode=</span><span style="color:#e6db74">“prepend”</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;string&gt;</span>Noto Color Emoji<span style="color:#f92672">&lt;/string&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/edit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/match&gt;</span>
+</span></span></code></pre></div><p>这样的 block 可以有多个，最终保证无论它要哪一种 emoji 字体，不管安装没安装，第一个匹配到的字体都只会是 Noto Color Emoji。</p>
 <p>未完待续。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

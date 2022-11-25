@@ -1,36 +1,212 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</h1>
-			<time>12.10.2013 00:00</time>
-			<div>
-				<p>做这个的初衷很简单：IRC 对小白太远了。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC" />
+<meta property="og:description" content="做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-10-12T00:00:00+08:00" />
+<meta property="article:modified_time" content="2013-10-12T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC"/>
+<meta name="twitter:description" content="做这个的初衷很简单：IRC 对小白太远了。
+它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
+但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
+于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
+看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
+言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
+wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压："/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC",
+      "item": "https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC",
+  "name": "openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC",
+  "description": "做这个的初衷很简单：IRC 对小白太远了。\n它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。\n但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）\n于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。\n看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。\n安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！\n但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。\n言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：\nwget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：",
+  "keywords": [
+    
+  ],
+  "articleBody": "做这个的初衷很简单：IRC 对小白太远了。\n它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。\n但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）\n于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。\n看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。\n安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！\n但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。\n言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：\nwget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：\nunzip download-stable-zip 进入文件夹：\ncd qwebirc-qwebirc-516de557ddc7 配置 把 config.py.example 复制为 config.py：\ncp -r config.py.example config.py 打开\nvi config.py 要改的我都写好：\n连接到的服务器:\nIRCSERVER, IRCPORT = \"chat.freenode.net\", 6667 因为我们是网页客户端不是网页服务器端，我们要连一个服务器的…\nREALNAME:\nREALNAME = \"http://irc.suse.org.cn/\" 你要提供服务的那个网址\nBASE_URL:\nBASE_URL = \"http://irc.suse.org.cn/\" 同上\nNETWORK_NAME = “openSUSE 中文” 你的客户端显示给客户看的「你叫什么名」字段。这里需要注意，如果你要用中文，要在这个页面的最上面加上这两行：\n#!/usr/bin/python # -*- coding: utf-8 -*- 因为它用 python2 写的，默认是英文编码…\nNginx 相关配置:\nFORWARDED_FOR_HEADER=\"x-forwarded-for\" FORWARDED_FOR_IPS=[\"127.0.0.1\"] ARGS = \"-i 127.0.0.1 -p 9090\" 简单说就是在你 VPS 上的 127.0.0.1:9090 开一个网页 IRC，然后 Nginx 后面干的事就是把对你的某个网址比如 irc.suse.org.cn 的访问全中转给 127.0.0.1:9090 上。我不太懂，但听起来像是挺安全的，因为我觉得 127.0.0.1 只有登录到那台 VPS 才能用的嘛。\n当然你也可以试试把前两个的 # 号继续留着，然后直接：\nARGS = \"-i 你的公网 IP -p 80\" 没试验哦，估计这样就能直接开在你的 80 端口了，也不用 nginx 了。但这样做最大的问题就是你的那个公网 IP 也只能做网页 IRC 了。因为不管你怎么做域名解析，通过浏览器过来的都默认跑 80 端口就来到这里了，如果别的还用（我不懂网络那些哦），可能就会出现我前面 nginx 重定向配置错误时的情况，时而打开网页 IRC，时而打开你别的网站…\n而用 nginx 做反向代理的话，那个 IP 还可以干别的。（我说的是 IP 不是域名哦，你不可能 irc.suse.org.cn 又当 wordpress 博客又当网页 IRC 的）\n剩下的配置就留默认就好\n编译和启动 这里其实我有点不能理解，它编译应该是把 *.py 编译为 *.pyc/pyo 才对，但事实上，你在 javascript 里面的硬翻译，也是由编译来管的…我刚开始先架设了一个英文的，然后本地翻译完，上传，我想 js 应该刷新网页就好了吧，结果不行…debug 了好久，后来在官网 Installation 指南看到\nRun compile.py to \"compile the HTML/js/css\" 整个人都呆掉了…\n开始编译：\n./compile.py 把它跑起来：\n./run.py 它写的就比较有节操，自己会 fork 自己到后台，不像我之前写的那些 openshift 跑 python 的教程里面的脚本都要使用 nohup 来跑…\nqwebirc 就配置好了。\nNginx 反向代理 cd /etc/nginx 你是直接编辑 /etc/nginx/nginx.conf 还是建一个 /etc/nginx/vhosts.d/irc.suse.org.cn.conf 我管不着，反正里面是像这样的：\nserver { listen 80; listen [::]:80; server_name webchat.domain.tld; access_log /var/log/qwebirc.access.log; error_log /var/log/qwebirc.error.log; proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_buffering off; location / { proxy_pass http://127.0.0.1:9090; } } 它和 Nginx Wiki 上说的那个配置的唯一不同之处在于：\nlisten 80; listen [::]:80; Wiki 上用的是：\nlisten 127.0.0.1:80; listen [::1]:80; 导致我在不明白其原理的时候狂刷 irc.suse.org.cn。。。。\n后来才反应过来：Wiki 的教学的场景是说，你在本机（127.0.0.1）跑起来了一个 qwebirc，然后嫌用 127.0.0.1:9090 访问它比较的麻烦，于是做下反向代理让 127.0.0.1 可以直接访问到它。\n但我们的场景是说，我在本机（127.0.0.1）跑起来了一个 qwebirc，然后想用 http://irc.suse.org.cn 直接访问它！127.0.0.1:9090 和我没一毛钱关系，因为我没在服务器上登录装图形界面开网页浏览器…\n我们要让 Nginx 去监听对 irc.suse.org.cn 的 80 端口访问，然后把它扔给 VPS 上的 127.0.0.1:9090。。。所以直接监听 server_name 的 80 端口就好了嘛…\n这个错误很难反应过来，尤其对我这种水货 SA！Nginx 还会正常跑，但你在 VPS 外面是访问不到它的：\nqwebirc 提供的服务在 127.0.0.1 不是你的公网 IP，所以你用 xxx.xxx.xxx.xxx:9090 根本打不开…甚至 Nginx 也不知道你在干啥，因为别的配置是没有用 9090 端口的，连 Fallback 这种安慰奖都没有…\nnginx 监听着你的内！网！IP！你访问 irc.suse.org.cn，是有这个配置，但是它找了一圈发现没有跟 irc.suse.org.cn: 有关的事啊，这个配置在管 127.0.0.1 呢…\n还有注意：proxy_pass http://127.0.0.1:9090; 这个不要手贱把 127.0.0.1 改成 irc.suse.org.cn 了。。。因为那个域名的 A 记录是你的公网 IP，而 qwebirc 并没有对公网提供服务…血泪的教训！\n接着重启下 Nginx 服务器：\nsudo systemctl restart nginx.service 就 OK 了！\nPS：终于有个顺手的 IRC 去调戏 #kde-cn 的 BadGirl 了…\n",
+  "wordCount" : "353",
+  "inLanguage": "en",
+  "datePublished": "2013-10-12T00:00:00+08:00",
+  "dateModified": "2013-10-12T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC
+    </h1>
+    <div class="post-meta"><span title='2013-10-12 00:00:00 +0800 CST'>October 12, 2013</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>做这个的初衷很简单：IRC 对小白太远了。</p>
 <p>它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。</p>
 <p>但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）</p>
 <p>于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。</p>
 <p>看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。</p>
-<h4 id="安装依赖opensuse-下">安装依赖（openSUSE 下）</h4>
+<h4 id="安装依赖opensuse-下">安装依赖（openSUSE 下）<a hidden class="anchor" aria-hidden="true" href="#安装依赖opensuse-下">#</a></h4>
 <pre><code>sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk
 </code></pre>
-<h4 id="下载">下载</h4>
+<h4 id="下载">下载<a hidden class="anchor" aria-hidden="true" href="#下载">#</a></h4>
 <p>然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！</p>
 <p>但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。</p>
 <p>言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：</p>
@@ -42,7 +218,7 @@
 <p>进入文件夹：</p>
 <pre><code>cd qwebirc-qwebirc-516de557ddc7
 </code></pre>
-<h4 id="配置">配置</h4>
+<h4 id="配置">配置<a hidden class="anchor" aria-hidden="true" href="#配置">#</a></h4>
 <p>把 config.py.example 复制为 config.py：</p>
 <pre><code>cp -r config.py.example config.py
 </code></pre>
@@ -81,7 +257,7 @@ ARGS = &quot;-i 127.0.0.1 -p 9090&quot;
 <p>没试验哦，估计这样就能直接开在你的 80 端口了，也不用 nginx 了。但这样做最大的问题就是你的那个公网 IP 也只能做网页 IRC 了。因为不管你怎么做域名解析，通过浏览器过来的都默认跑 80 端口就来到这里了，如果别的还用（我不懂网络那些哦），可能就会出现我前面 nginx 重定向配置错误时的情况，时而打开网页 IRC，时而打开你别的网站…</p>
 <p>而用 nginx 做反向代理的话，那个 IP 还可以干别的。（我说的是 IP 不是域名哦，你不可能 irc.suse.org.cn 又当 wordpress 博客又当网页 IRC 的）</p>
 <p>剩下的配置就留默认就好</p>
-<h4 id="编译和启动">编译和启动</h4>
+<h4 id="编译和启动">编译和启动<a hidden class="anchor" aria-hidden="true" href="#编译和启动">#</a></h4>
 <p>这里其实我有点不能理解，它编译应该是把 *.py 编译为 *.pyc/pyo 才对，但事实上，你在 javascript 里面的硬翻译，也是由编译来管的…我刚开始先架设了一个英文的，然后本地翻译完，上传，我想 js 应该刷新网页就好了吧，结果不行…debug 了好久，后来在官网 Installation 指南看到</p>
 <pre><code>Run compile.py to &quot;compile the HTML/js/css&quot;
 </code></pre>
@@ -94,7 +270,7 @@ ARGS = &quot;-i 127.0.0.1 -p 9090&quot;
 </code></pre>
 <p>它写的就比较有节操，自己会 fork 自己到后台，不像我之前写的那些 openshift 跑 python 的教程里面的脚本都要使用 nohup 来跑…</p>
 <p>qwebirc 就配置好了。</p>
-<h4 id="nginx-反向代理">Nginx 反向代理</h4>
+<h4 id="nginx-反向代理">Nginx 反向代理<a hidden class="anchor" aria-hidden="true" href="#nginx-反向代理">#</a></h4>
 <pre><code>cd /etc/nginx
 </code></pre>
 <p>你是直接编辑 /etc/nginx/nginx.conf 还是建一个 /etc/nginx/vhosts.d/irc.suse.org.cn.conf 我管不着，反正里面是像这样的：</p>
@@ -139,59 +315,91 @@ listen [::1]:80;
 <p>就 OK 了！</p>
 <p>PS：终于有个顺手的 IRC 去调戏 #kde-cn 的 BadGirl 了…</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

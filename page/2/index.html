@@ -1,53 +1,157 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta name="generator" content="Hugo 0.78.1" />
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">高手创造工具</a></h1>
-	<time>12.01.2016 00:00</time>
-	
-	<div>
-		今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
-金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+<head>
+	<meta name="generator" content="Hugo 0.107.0"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://marguerite.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+  "url": "https://marguerite.github.io",
+  "description": "",
+  "thumbnailUrl": "https://marguerite.github.io/favicon.ico",
+  "sameAs": [
+      "https://github.com/marguerite", "https://moe.cat/@marguerite"
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>高手创造工具
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
 我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
-这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
 现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
-而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。
-		
-			<a href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">Read more...</a>
-		
-	</div>
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2016-01-12 00:00:00 +0800 CST'>January 12, 2016</span></footer>
+  <a class="entry-link" aria-label="post link to 高手创造工具" href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">RPM specfile 中  值的研究</a></h1>
-	<time>02.08.2015 00:00</time>
-	
-	<div>
-		研究这个问题是因为论坛上的一个讨论：zypper reinstall package
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>RPM specfile 中  值的研究
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>研究这个问题是因为论坛上的一个讨论：zypper reinstall package
 略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：
 第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：
-if [ $1 == 0 ] ; then  $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
+if [ $1 == 0 ] ; then $1 的值当然是有意义的，它代表安装在你系统上的同名软件包的版本数。比如你升级软件包，那默认是 1，但在某个状态是 2，因为这时新包装上旧包还没卸载，0 就代表这个包在你系统上已经不存在了。
 http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm
 第二个是 RPM reinstall 的作业流程是怎样的，是遵循升级的流程也就是：
 软件包升级的过程是先安装新包后卸载旧包，只有来自旧包的差异文件会被删除。也就是 pre -&gt; install -&gt; post; preun -&gt; uninstall -&gt; postun
@@ -56,20 +160,19 @@ http://stackoverflow.com/questions/7398834/rpm-upgrade-uninstalls-the-rpm
 这个问题我们需要做一个实证，代码在这里：
 https://build.opensuse.org/package/show/home:MargueriteSu/rpm-reinstall-demo
 相应的测试用 RPM 也可以在那边取得。下面直接上结果：
-sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm drwxr-xr-x 1 root root 0 8 月 2 22:25 demo  通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。
-		
-			<a href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/">Read more...</a>
-		
-	</div>
+sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm drwxr-xr-x 1 root root 0 8 月 2 22:25 demo 通过 /var/tmp/demo 的时间戳记可以发现安装前后 demo 没有被删除重建。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2015-08-02 00:00:00 +0800 CST'>August 2, 2015</span></footer>
+  <a class="entry-link" aria-label="post link to RPM specfile 中  值的研究" href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">关于 Deepin 用户开发者大会的浅见</a></h1>
-	<time>11.07.2014 00:00</time>
-	
-	<div>
-		这篇文章是唱反调的，可能会不舒服的可以离席了。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>关于 Deepin 用户开发者大会的浅见
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这篇文章是唱反调的，可能会不舒服的可以离席了。
 最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
 先说两点：
 (1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
@@ -86,41 +189,39 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
 我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
 首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
-先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。
-		
-			<a href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">Read more...</a>
-		
-	</div>
+先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2014-07-11 00:00:00 +0800 CST'>July 11, 2014</span></footer>
+  <a class="entry-link" aria-label="post link to 关于 Deepin 用户开发者大会的浅见" href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</a></h1>
-	<time>12.10.2013 00:00</time>
-	
-	<div>
-		做这个的初衷很简单：IRC 对小白太远了。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>做这个的初衷很简单：IRC 对小白太远了。
 它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
 但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
 于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
 看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
-安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk  下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
+安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
 但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
 言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
-wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解压：
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/">Read more...</a>
-		
-	</div>
+wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-10-12 00:00:00 +0800 CST'>October 12, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/">openSUSE 特殊国情有关的 FAQ</a></h1>
-	<time>26.03.2013 00:00</time>
-	
-	<div>
-		引子 —— 能解决的是技术，不能解决的是人心。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 特殊国情有关的 FAQ
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 —— 能解决的是技术，不能解决的是人心。
 为什么我们开发者要用 Gtalk 和 IRC？ 跟 Google 没一毛钱关系。我们需要一个全球性的网络，因为我们面对的不只是用户，还有其它国家地区的开发者。就 openSUSE 来说，我没有理由去要求台湾地区的开发者用 QQ，也没有理由去要求他们的用户在官方论坛转简体。我们需要开放而成熟的技术，以便于进行二次开发。二次开发就是「修复」一些原本没有「坏」的东西来满足自己的需要，非开放而不能为。Gtalk 后面的 XMPP 协议坏了吗？没有，但是我需要与 IRC #opensuse-cn 互通的机器人、需要群组机器人、需要网页的聊天记录，于是我「修复」了它。现在我们有了 ~~talk@suse.ws，有了 https://talk-marguerite.rhcloud.com。~~Update: Gtalk 群组地址变更为 talk@suse.org.cn。（IRC/Gtalk/QQ 群三网合一），聊天记录地址变更为 https://forum.suse.org.cn/log.html
 而 IRC 就像你们的 QQ 一样，我一样不爱用。我至今不会它的指令，也不会每天挂着。但是有需要我还是会去，就像开会要去会议室一样。你可以不参加会议，你可以选择不去会议室听自己非常想听的东西，但你不能要求别人围着你的桌子开会。
 为什么我们要用论坛？ 我们需要一个 default to open 的地方，能够存档我们回复过的东西，避免重复工作。
@@ -128,156 +229,191 @@ wget http://qwebirc.org/download-stable-zip  它没后缀但它是个 zip，解�
 我们需要一个多人的氛围。
 为什么我们要用维基、文档甚至 manpage？ 我们需要一个说明书性质的东西。
 说明书一个人是写不完的，在所有人都有权利去写的情况下，说维基、文档不全实际上是在骂你自己，不全？你干嘛了？
-为什么我们不用 QQ 群？ Update：1. 勇敢地像现实低头 2. Gentoo 社区的 microcai 博士开发了搞定 QQ 的 avbot， Fcitx 社区的 csslayer 翁学天博士友善帮助在自己的服务器运行它，Ubuntu 社区的 shellexy 大神帮助推荐了印度阿三的人肉验证码识别服务 3. 我的一些个人思想转变。于是支持了。但是，QQ/贴吧永远只会是你 Linux 生涯的一个暂住之地，如果你非要永久居留，那你是体会不到 Linux 社区的魅力的。我们为你点亮了一盏灯，而不是帮你推倒窝棚鸟枪换炮，真正的风景在 openSUSE 中文论坛
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/">Read more...</a>
-		
-	</div>
+为什么我们不用 QQ 群？ Update：1. 勇敢地像现实低头 2. Gentoo 社区的 microcai 博士开发了搞定 QQ 的 avbot， Fcitx 社区的 csslayer 翁学天博士友善帮助在自己的服务器运行它，Ubuntu 社区的 shellexy 大神帮助推荐了印度阿三的人肉验证码识别服务 3. 我的一些个人思想转变。于是支持了。但是，QQ/贴吧永远只会是你 Linux 生涯的一个暂住之地，如果你非要永久居留，那你是体会不到 Linux 社区的魅力的。我们为你点亮了一盏灯，而不是帮你推倒窝棚鸟枪换炮，真正的风景在 openSUSE 中文论坛...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-26 00:00:00 +0800 CST'>March 26, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 特殊国情有关的 FAQ" href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">培育开源 NGO 的一些思考</a></h1>
-	<time>23.03.2013 00:00</time>
-	
-	<div>
-		这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>培育开源 NGO 的一些思考
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
 大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
 首先提到 openSUSE，大家想到的应该是：
- 华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。  一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
- 宣传不到位 沉默的大多数  这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
+华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。 一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
+宣传不到位 沉默的大多数 这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
 宣传不到位 宣传不到位的常见原因有以下几种：
- 投入不够 政策错 没有细分用户  投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
+投入不够 政策错 没有细分用户 投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
 金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。
 为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？
 很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。
-		
-			<a href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">Read more...</a>
-		
-	</div>
+政策错 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-23 00:00:00 +0800 CST'>March 23, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to 培育开源 NGO 的一些思考" href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/">openSUSE 中文社区面临的若干问题</a></h1>
-	<time>21.03.2013 00:00</time>
-	
-	<div>
-		一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 中文社区面临的若干问题
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
 （一） 中文社区
 Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区，Fedora 肯定是最爱交际的中文社区，openSUSE 肯定是最宅的中文社区。
 首先我们应该没有多少活跃的大学用户。我们的用户据我观察应该是企业用户居多。这种人的优点在于他们都非常强，缺点在于他们都非常懒。如果我能解决自己的问题，而且我只用 openSUSE 挣口粮，那我为什么要帮助你使用 openSUSE？你能想象一群 Intel 员工，SuSE 员工，中兴的软件开发科长做你的成员，然后中文社区的基础设施是一个人生前 22 年没见过立式服务器的女生搭建的么？就像我在 Gtalk 群里怒喷的一样：你们呀，什么都会，就是不帮我，对吧。
 其次我们一直是一个单核心的社区。我不是说开发，是说社区建设。开发牛人多了去了，我这种 CPP 指针数组都不会的肯定排不上号。苏哲时代（SuSE 9），我在上初中，但提 SuSE 9 老人都知道，几乎就是：Linux 是 SuSE 9 与硬件通信的工具。Thruth 时代，我在上大学，「用 SuSE 就是用 Thruth」，这也不是我说的。现在是缝缝补补吃老本的玛格丽特时代。我不会开发啊，只能根据长老们灌顶得到的经验盲修 bug，修好了，说明我逻辑和交际比较强。我一般是，看到 bug，用人类逻辑而不是机器逻辑去猜，不能开机？好，systemd，然后去找 Lennart; btrfs？去找 John; GNOME？Vincent/DimStar; Build Service？Adrian/Coolo; 输入法坏了？翁学天出列; Bash 支援？花花; Python？以前是 Hicro Kee 现在是 Felix Yan。懂了吧，openSUSE 的社区管理对我来说就是打牌，我就是拿着满手不情不愿看你是女生帮帮你的大王，用户出什么我都出大王，用户出大王？好，是用户你的不对，我不赢钱白跟你玩牌，你怎么能出大王赢我呢？
-但我给自己的定位是 Coordinator，中文翻译为办公室主任。我希望 openSUSE 有几个强有力的男性领导，各管一摊，有推广的，有集会的，有开发的，有答疑的，有翻译的，有维基的…然后我就每天上线发 task 定 deadline 随手卖个萌就好。但是没有。于是手比较贱（处女座就是你骂我一句我下套也要还回去，不然今天就不完美了我睡不安稳），慢慢就都抓自己手上了。一个单核心的社区是没有活力和前途的。商业上是该给那个核心上巨额保险。但开源事业不行，我要钱干嘛？我就要东西。你能跑到保险公司去说哦如果玛格丽特不用 openSUSE 了你赔我一个能妥妥的骑住微软的 openSUSE 吗？
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/">Read more...</a>
-		
-	</div>
+但我给自己的定位是 Coordinator，中文翻译为办公室主任。我希望 openSUSE 有几个强有力的男性领导，各管一摊，有推广的，有集会的，有开发的，有答疑的，有翻译的，有维基的…然后我就每天上线发 task 定 deadline 随手卖个萌就好。但是没有。于是手比较贱（处女座就是你骂我一句我下套也要还回去，不然今天就不完美了我睡不安稳），慢慢就都抓自己手上了。一个单核心的社区是没有活力和前途的。商业上是该给那个核心上巨额保险。但开源事业不行，我要钱干嘛？我就要东西。你能跑到保险公司去说哦如果玛格丽特不用 openSUSE 了你赔我一个能妥妥的骑住微软的 openSUSE 吗？...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-21 00:00:00 +0800 CST'>March 21, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 中文社区面临的若干问题" href="https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/">OpenShift 搭建 rawdog 实现部落格聚合</a></h1>
-	<time>19.03.2013 00:00</time>
-	
-	<div>
-		因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>OpenShift 搭建 rawdog 实现部落格聚合
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
 这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
 你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
-rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
-另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。
-		
-			<a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/">Read more...</a>
-		
-	</div>
+rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-19 00:00:00 +0800 CST'>March 19, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to OpenShift 搭建 rawdog 实现部落格聚合" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/">openshift 搭建和 IRC 频道互通的 Gtalk 群聊</a></h1>
-	<time>17.03.2013 00:00</time>
-	
-	<div>
-		Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openshift 搭建和 IRC 频道互通的 Gtalk 群聊
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
 Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：
- 不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。 在线时间不能保证。也就是说你没有 schduled_maintenance 的权利，只能它在线你就聊，它离线你就歇息。 大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。  所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。
+不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。 在线时间不能保证。也就是说你没有 schduled_maintenance 的权利，只能它在线你就聊，它离线你就歇息。 大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。 所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。
 打听了一下，这种群聊是使用依云(@lilydjwg 写的两个软件在 VPS 上搭建的，分别是 xmpptalk 和 ircbindxmpp。
 但问题出来了，我没有 VPS。当时 openshift 这种 PaaS 已经出现了，只是还比较新鲜，我不会用。于是去年 9 月的一次尝试就可耻地失败了。
 当时（甚至至今）网上关于这两个软件的文章只有两篇：
- 依云自己的介绍性文章，但是太粗略了。 StarBrilliant 的稍微详细一些的文章，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。  于是逼迫我们群里的 douglarek 写了一篇在 openshift 上折腾它们的文章给我：
+依云自己的介绍性文章，但是太粗略了。 StarBrilliant 的稍微详细一些的文章，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。 于是逼迫我们群里的 douglarek 写了一篇在 openshift 上折腾它们的文章给我：
 Openshift 折腾 xmpptalk
 但实际上这篇文章很水。反正看过就知道啦，到处都是「凑合」。实际上你看它也根本架设不起来（好多致命细节都没说）。
 当时我就是在这种情况下开始折腾的。
-首先我开了 Do it yourself 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…
-		
-			<a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/">Read more...</a>
-		
-	</div>
+首先我开了 Do it yourself 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-17 00:00:00 +0800 CST'>March 17, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openshift 搭建和 IRC 频道互通的 Gtalk 群聊" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/">openshift 安装 owncloud 取代 Google Reader</a></h1>
-	<time>15.03.2013 00:00</time>
-	
-	<div>
-		Google Reader’s sunset is the dawn of ownCloud news.
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openshift 安装 owncloud 取代 Google Reader
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Google Reader’s sunset is the dawn of ownCloud news.
 翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。
-相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000+。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
+相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000&#43;。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！
 是小企鹅输入法的作者翁学天让我意识到了：哦，好在还有替代。虽然我是它的简体中文翻译者，但是我以前真的不知道嘿嘿。
 首先这个替代目前装起来还是有一点困难的。所以需要一个这样的中文教学来教大家怎么才能装上有 News 的 ownCloud。
 我们开始吧。（以 openSUSE 为例）
 下载 首先我们需要 Git。因为现在只有 Git 版的 ownCloud Apps 才有这个功能。
-sudo zypper in git  安装好了 Git，我们需要下载这些源码
-git clone https://github.com/owncloud/core  这是核心组件。
-git clone https://github.com/owncloud/apps  这是带 News 的 apps。
-git clone https://github.com/owncloud/themes  这是新的 responsive 主题。
-git clone https://github.com/owncloud/3rdparty  这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。
-		
-			<a href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/">Read more...</a>
-		
-	</div>
+sudo zypper in git 安装好了 Git，我们需要下载这些源码
+git clone https://github.com/owncloud/core 这是核心组件。
+git clone https://github.com/owncloud/apps 这是带 News 的 apps。
+git clone https://github.com/owncloud/themes 这是新的 responsive 主题。
+git clone https://github.com/owncloud/3rdparty 这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。
+cd apps git clone https://github....</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-15 00:00:00 +0800 CST'>March 15, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openshift 安装 owncloud 取代 Google Reader" href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/"></a>
 </article>
-
-		
-		<div>
-
-	<a href="/">Previous Page</a>
-
-2 of 4
-
-	<a href="/page/3/">Next Page</a>
-
-</div>
-
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://marguerite.github.io/">
+      «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="https://marguerite.github.io/page/3/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
 </footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

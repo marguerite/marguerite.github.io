@@ -1,48 +1,206 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>本周开发札记</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>本周开发札记</h1>
-			<time>23.01.2016 00:00</time>
-			<div>
-				<p>盘点一下本周自己在 openSUSE 上面做的工作：</p>
-<h4 id="解决了-wine-的-desktop-file-长期以来位于未知类别的-bug">解决了 wine 的 desktop file 长期以来位于未知类别的 bug</h4>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>本周开发札记 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="盘点一下本周自己在 openSUSE 上面做的工作：
+解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
+对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="本周开发札记" />
+<meta property="og:description" content="盘点一下本周自己在 openSUSE 上面做的工作：
+解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
+对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-01-23T00:00:00+08:00" />
+<meta property="article:modified_time" content="2016-01-23T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="本周开发札记"/>
+<meta name="twitter:description" content="盘点一下本周自己在 openSUSE 上面做的工作：
+解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
+对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "本周开发札记",
+      "item": "https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "本周开发札记",
+  "name": "本周开发札记",
+  "description": "盘点一下本周自己在 openSUSE 上面做的工作：\n解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。\n对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。",
+  "keywords": [
+    
+  ],
+  "articleBody": "盘点一下本周自己在 openSUSE 上面做的工作：\n解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。\n对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。\n对 golang-packaging 做了三次 bugfix release 它总是会 filter 掉含有 test,example 字样的编译结果 (类似 test.a，没用)，但是针对 importpath 里有这种字样的（比如 github.com/stretchr/testify）要进行跳过，不然它就什么 Provides/Requires 也抓不出来了。之前仅针对 importpath 本身作了判断，实际上 buildroot 里也会有，因为包名是 golang-github-stretchr-testify 这种，加上了对 buildroot 的判断。\n还修复了 golang.attr 里面写错 prefix 的问题。\n修了 TW 编译失败的 libtunepimp 这个值得一提的是失败的原因：\n有些 autotools 工程喜欢用 expr 来比较版本号，这实际上是非常错误的。因为在 expr 下面 1.10 是小于 1.4 的。正确的比较方法是使用 bc：\necho \"$TAGLIB_VERSION \u003e= 1.4\" | /usr/bin/bc -l 还值得一提的就是在 .m4 文件里，你是用不了 [ 和 ] 的，因为那是保留的，正确的写法是 @\u003c:@ 和 @:\u003e@。\n对 Leap 推送了 nodejs 更新 之前推的更新又把 nodejs-npm 重命名回 npm 了。因为独立打包的 npm 在 Tumbleweed 和 devel:languages:nodejs 里已经移除了（之前在 released product 里一直也都没存在过），命名空间又可用了。但是产生了一个小问题，会导致老的 nodejs-npm 卸载不掉，必须手动卸载然后安装 npm。\n更新了 TexLive 2015 其实编译已经完全通过了，但我放弃了。\n因为我编译完发现会产生一些莫名奇妙的 release numbers，而在 version 标签里面的 svn version numbers 我又不知道怎么来的。\n在 opensuse-packaging 列表上面问才发现，openSUE 下面的 texlive 工程是自动编译的，由 Publishing:Texlive Meta 这个软件包里的脚本控制，我们甚至打包了整个 ctan…那我的硬盘不够跑的，Werner 已经有了，我就没必要干破坏自动化的事情了。\n更新了一些软件包 Cutegram，WeCase，doubanfm-qt5。\n把文泉驿微米黑更新到最新的 nightly build 版本（wenq.org 论坛里的那个 NB 其实房教授一直不定期的跑）。\n把一些失效的中文项目比如 lwqq，openfetion 进行了禁用编译、保留软件包工程的操作。\n在 home:MargueriteSu 里打包了 shadowsocks-go\n在 home:opensuse_zh:infinality 打包了最新的打过 infinality 补丁的 cairo, freetype2, fontconfig。\n帮助 syncthing 的打包者修复了编译（go 应用）\n把 toxcore, qtox 提交到了 server:messaging 源，等通过后让 qtox 进入 Tumbleweed\n新打包 basket5，basket 笔记的 KF5 移植，功能都保留着，非常好用。\nsadlen 的 marknoto/markpado。前者是一个笔记应用，后者是一个非常好的 KDE 5 下面的 Markdown 编辑器，基于 katepart。我本人都在用。\nTODO 本周末主要的任务就是把 Fedora 的 nodejs-packaging 的原理搞明白，用 Ruby port 到 openSUSE，并支持我们的 bundled packaging 模式。\n接下来在本地搭建一个 discourse 服务器看下内存占用，毕竟 @phoenixlzx 现在是根本不要前在给我们跑论坛和域名，总不好又恬着大脸要加内存吧（想再搞一次捐款，可确实没什么可以送的）\n写文章的话准备写一下我的博客程序 ghost 是怎么搭建的，或者谈一下我对 devel:languages:nodejs 源自动化打包的蓝图设计。\n至于论坛活动啊，调试 ocserv/telepathy-kde/privoxy，这些长期的或者尚未取得进展的活动就不值得预告了。\n",
+  "wordCount" : "272",
+  "inLanguage": "en",
+  "datePublished": "2016-01-23T00:00:00+08:00",
+  "dateModified": "2016-01-23T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      本周开发札记
+    </h1>
+    <div class="post-meta"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>盘点一下本周自己在 openSUSE 上面做的工作：</p>
+<h4 id="解决了-wine-的-desktop-file-长期以来位于未知类别的-bug">解决了 wine 的 desktop file 长期以来位于未知类别的 bug<a hidden class="anchor" aria-hidden="true" href="#解决了-wine-的-desktop-file-长期以来位于未知类别的-bug">#</a></h4>
 <p>openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 <a href="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html">desktop entry specification</a> 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。</p>
-<h4 id="对-devellanguagesnodejs-源进行了-big-cleanup">对 devel:languages:nodejs 源进行了 big cleanup</h4>
+<h4 id="对-devellanguagesnodejs-源进行了-big-cleanup">对 devel:languages:nodejs 源进行了 big cleanup<a hidden class="anchor" aria-hidden="true" href="#对-devellanguagesnodejs-源进行了-big-cleanup">#</a></h4>
 <p>主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。</p>
-<h4 id="对-golang-packaging-做了三次-bugfix-release">对 golang-packaging 做了三次 bugfix release</h4>
+<h4 id="对-golang-packaging-做了三次-bugfix-release">对 golang-packaging 做了三次 bugfix release<a hidden class="anchor" aria-hidden="true" href="#对-golang-packaging-做了三次-bugfix-release">#</a></h4>
 <p>它总是会 filter 掉含有 test,example 字样的编译结果 (类似 test.a，没用)，但是针对 importpath 里有这种字样的（比如 github.com/stretchr/testify）要进行跳过，不然它就什么 Provides/Requires 也抓不出来了。之前仅针对 importpath 本身作了判断，实际上 buildroot 里也会有，因为包名是 golang-github-stretchr-testify 这种，加上了对 buildroot 的判断。</p>
 <p>还修复了 golang.attr 里面写错 prefix 的问题。</p>
-<h4 id="修了-tw-编译失败的-libtunepimp">修了 TW 编译失败的 libtunepimp</h4>
+<h4 id="修了-tw-编译失败的-libtunepimp">修了 TW 编译失败的 libtunepimp<a hidden class="anchor" aria-hidden="true" href="#修了-tw-编译失败的-libtunepimp">#</a></h4>
 <p>这个值得一提的是失败的原因：</p>
 <p>有些 autotools 工程喜欢用 expr 来比较版本号，这实际上是非常错误的。因为在 expr 下面 1.10 是小于 1.4 的。正确的比较方法是使用 bc：</p>
 <pre><code>echo &quot;$TAGLIB_VERSION &gt;= 1.4&quot; | /usr/bin/bc -l
 </code></pre>
 <p>还值得一提的就是在 .m4 文件里，你是用不了 [ 和 ] 的，因为那是保留的，正确的写法是 @&lt;:@ 和 @:&gt;@。</p>
-<h4 id="对-leap-推送了-nodejs-更新">对 Leap 推送了 nodejs 更新</h4>
+<h4 id="对-leap-推送了-nodejs-更新">对 Leap 推送了 nodejs 更新<a hidden class="anchor" aria-hidden="true" href="#对-leap-推送了-nodejs-更新">#</a></h4>
 <p>之前推的更新又把 nodejs-npm 重命名回 npm 了。因为独立打包的 npm 在 Tumbleweed 和 devel:languages:nodejs 里已经移除了（之前在 released product 里一直也都没存在过），命名空间又可用了。但是产生了一个小问题，会导致老的 nodejs-npm 卸载不掉，必须手动卸载然后安装 npm。</p>
-<h4 id="更新了-texlive-2015">更新了 TexLive 2015</h4>
+<h4 id="更新了-texlive-2015">更新了 TexLive 2015<a hidden class="anchor" aria-hidden="true" href="#更新了-texlive-2015">#</a></h4>
 <p>其实编译已经完全通过了，但我放弃了。</p>
 <p>因为我编译完发现会产生一些莫名奇妙的 release numbers，而在 version 标签里面的 svn version numbers 我又不知道怎么来的。</p>
 <p>在 opensuse-packaging 列表上面问才发现，openSUE 下面的 texlive 工程是自动编译的，由 Publishing:Texlive Meta 这个软件包里的脚本控制，我们甚至打包了整个 ctan&hellip;那我的硬盘不够跑的，Werner 已经有了，我就没必要干破坏自动化的事情了。</p>
-<h4 id="更新了一些软件包">更新了一些软件包</h4>
+<h4 id="更新了一些软件包">更新了一些软件包<a hidden class="anchor" aria-hidden="true" href="#更新了一些软件包">#</a></h4>
 <p>Cutegram，WeCase，doubanfm-qt5。</p>
 <p>把文泉驿微米黑更新到最新的 nightly build 版本（wenq.org 论坛里的那个 NB 其实房教授一直不定期的跑）。</p>
 <p>把一些失效的中文项目比如 lwqq，openfetion 进行了禁用编译、保留软件包工程的操作。</p>
@@ -50,68 +208,100 @@
 <p>在 home:opensuse_zh:infinality 打包了最新的打过 infinality 补丁的 cairo, freetype2, fontconfig。</p>
 <p>帮助 syncthing 的打包者修复了编译（go 应用）</p>
 <p>把 toxcore, qtox 提交到了 server:messaging 源，等通过后让 qtox 进入 Tumbleweed</p>
-<h4 id="新打包">新打包</h4>
+<h4 id="新打包">新打包<a hidden class="anchor" aria-hidden="true" href="#新打包">#</a></h4>
 <p>basket5，basket 笔记的 KF5 移植，功能都保留着，非常好用。</p>
 <p>sadlen 的 marknoto/markpado。前者是一个笔记应用，后者是一个非常好的 KDE 5 下面的 Markdown 编辑器，基于 katepart。我本人都在用。</p>
-<h4 id="todo">TODO</h4>
+<h4 id="todo">TODO<a hidden class="anchor" aria-hidden="true" href="#todo">#</a></h4>
 <p>本周末主要的任务就是把 Fedora 的 nodejs-packaging 的原理搞明白，用 Ruby port 到 openSUSE，并支持我们的 bundled packaging 模式。</p>
 <p>接下来在本地搭建一个 discourse 服务器看下内存占用，毕竟 @phoenixlzx 现在是根本不要前在给我们跑论坛和域名，总不好又恬着大脸要加内存吧（想再搞一次捐款，可确实没什么可以送的）</p>
 <p>写文章的话准备写一下我的博客程序 ghost 是怎么搭建的，或者谈一下我对 devel:languages:nodejs 源自动化打包的蓝图设计。</p>
 <p>至于论坛活动啊，调试 ocserv/telepathy-kde/privoxy，这些长期的或者尚未取得进展的活动就不值得预告了。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

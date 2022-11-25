@@ -1,28 +1,195 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>高手创造工具</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>高手创造工具</h1>
-			<time>12.01.2016 00:00</time>
-			<div>
-				<p>今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。</p>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>高手创造工具 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
+现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="高手创造工具" />
+<meta property="og:description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
+现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-01-12T00:00:00+08:00" />
+<meta property="article:modified_time" content="2016-01-12T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="高手创造工具"/>
+<meta name="twitter:description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
+我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
+这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
+现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "高手创造工具",
+      "item": "https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "高手创造工具",
+  "name": "高手创造工具",
+  "description": "今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。\n金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。\n我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。\n这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。\n现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。\n而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。",
+  "keywords": [
+    
+  ],
+  "articleBody": "今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。\n金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。\n我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。\n这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。\n现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。\n而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。\n过段日子再做一个自动填充剩余 tag 的 go2rpm（可能会有图形界面哦），再写一个 autoupdater 实现 devel:languages:go 的自动化任务，就像 perl/rubygems 源那样，我就可以撒手干别的去了，由维护几百个包变成只维护一个工具。\n然后就是去对 devel:languages:nodejs 做同样的事情。那个工具的设计我会在以后的文章讲。\n现在在做的是 github.com/marguerite/upstream-notifier，就是检查我目前的 300 多个包里哪个有更新的工具。\n",
+  "wordCount" : "102",
+  "inLanguage": "en",
+  "datePublished": "2016-01-12T00:00:00+08:00",
+  "dateModified": "2016-01-12T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      高手创造工具
+    </h1>
+    <div class="post-meta"><span title='2016-01-12 00:00:00 +0800 CST'>January 12, 2016</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。</p>
 <p>金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。</p>
 <p>我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。</p>
 <p>这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200+ 个依赖，导致我其它包的维护几乎就是停滞了。</p>
@@ -32,59 +199,91 @@
 <p>然后就是去对 devel:languages:nodejs 做同样的事情。那个工具的设计我会在以后的文章讲。</p>
 <p>现在在做的是 github.com/marguerite/upstream-notifier，就是检查我目前的 300 多个包里哪个有更新的工具。</p>
 
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

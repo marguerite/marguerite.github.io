@@ -1,228 +1,421 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-</head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
-</header>
+<html lang="en" dir="auto">
 
-	
-	<main>
-		<article>
-			<h1>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</h1>
-			<time>28.11.2020 16:07</time>
-			<div>
-				<p>我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    browser <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Watir</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Browser</span><span style="color:#000;font-weight:bold">.</span>new(<span style="color:#990073">:chrome</span>, <span style="color:#990073">chromeOptions</span>: { <span style="color:#990073">args</span>: <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;--headless&#39;</span>, <span style="color:#d14">&#39;--window-size=1200x600&#39;</span>, <span style="color:#d14">&#39;--no-sandbox&#39;</span>, <span style="color:#d14">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#000;font-weight:bold">]</span> })
-    browser<span style="color:#000;font-weight:bold">.</span>goto(link)
-    browser<span style="color:#000;font-weight:bold">.</span>image(<span style="color:#0086b3">id</span>: reload_id)<span style="color:#000;font-weight:bold">.</span>click
-</code></pre></div><p>但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。</p>
-<p>我们测试用的界面是 <a href="https://build.opensuse.org/package/show/home:MargueriteSu/marketo">marketo</a> package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">div</span> <span style="color:#008080">accesskey</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;r&#39;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;btn btn-outline-primary build-refresh float-right&#39;</span> <span style="color:#008080">onclick</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39;</span> <span style="color:#008080">title</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;Refresh Build Results&#39;</span>&gt;
-      Refresh
-      &lt;<span style="color:#000080">i</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;fas fa-sync-alt&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;build-reload&#39;</span>&gt;&lt;/<span style="color:#000080">i</span>&gt;
-    &lt;/<span style="color:#000080">div</span>&gt;
-</code></pre></div><p>点击它的时候执行的是“updateBuildResult('')”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">script</span> <span style="color:#008080">src</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;</span>&gt;&lt;/<span style="color:#000080">script</span>&gt;
-</code></pre></div><p>使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#000;font-weight:bold">function</span> updateBuildResult(t) {
-    <span style="color:#000;font-weight:bold">var</span> i <span style="color:#000;font-weight:bold">=</span> []
-      , o <span style="color:#000;font-weight:bold">=</span> {};
-    $(<span style="color:#d14">&#34;.result div.collapse:not(.show)&#34;</span>).map(<span style="color:#000;font-weight:bold">function</span>(e, t) {
-        <span style="color:#000;font-weight:bold">var</span> n <span style="color:#000;font-weight:bold">=</span> $(t).data(<span style="color:#d14">&#34;main&#34;</span>) <span style="color:#000;font-weight:bold">?</span> $(t).data(<span style="color:#d14">&#34;main&#34;</span>) <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#34;project&#34;</span>;
-        o[n] <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> (o[n] <span style="color:#000;font-weight:bold">=</span> []),
-        $(t).data(<span style="color:#d14">&#34;repository&#34;</span>) <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span> <span style="color:#000;font-weight:bold">?</span> i.push(n) <span style="color:#000;font-weight:bold">:</span> o[n].push($(t).data(<span style="color:#d14">&#34;repository&#34;</span>))
-    });
-    <span style="color:#000;font-weight:bold">var</span> e <span style="color:#000;font-weight:bold">=</span> $(<span style="color:#d14">&#34;#buildresult&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-box&#34;</span>).data();
-    e.show_all <span style="color:#000;font-weight:bold">=</span> $(<span style="color:#d14">&#34;#show_all_&#34;</span> <span style="color:#000;font-weight:bold">+</span> t).is(<span style="color:#d14">&#34;:checked&#34;</span>),
-    e.collapsedPackages <span style="color:#000;font-weight:bold">=</span> i,
-    e.collapsedRepositories <span style="color:#000;font-weight:bold">=</span> o,
-    $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-reload&#34;</span>).addClass(<span style="color:#d14">&#34;fa-spin&#34;</span>),
-    $.ajax({
-        url<span style="color:#000;font-weight:bold">:</span> $(<span style="color:#d14">&#34;#buildresult&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-urls&#34;</span>).data(<span style="color:#d14">&#34;buildresultUrl&#34;</span>),
-        data<span style="color:#000;font-weight:bold">:</span> e,
-        success<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>(e) {
-            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; .result&#34;</span>).html(e)
-        },
-        error<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>() {
-            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; .result&#34;</span>).html(<span style="color:#d14">&#34;&lt;p&gt;No build results available&lt;/p&gt;&#34;</span>)
-        },
-        complete<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">function</span>() {
-            $(<span style="color:#d14">&#34;#build&#34;</span> <span style="color:#000;font-weight:bold">+</span> t <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;-reload&#34;</span>).removeClass(<span style="color:#d14">&#34;fa-spin&#34;</span>),
-            initializePopovers(<span style="color:#d14">&#39;[data-toggle=&#34;popover&#34;]&#39;</span>)
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
         }
-    })
-}
-</code></pre></div><p>可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。</p>
-<p>我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：</p>
-<p>url 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">    &lt;<span style="color:#000080">div</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;bg-light&#39;</span> <span style="color:#008080">data-buildresult-url</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;/package/buildresult&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;buildresult-urls&#39;</span>&gt;
-    &lt;<span style="color:#000080">ul</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;nav nav-tabs pt-2 px-3 flex-nowrap&#39;</span> <span style="color:#008080">data-index</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;&#39;</span> <span style="color:#008080">data-package</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;marketo&#39;</span> <span style="color:#008080">data-project</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;home:MargueriteSu&#39;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;buildresult-box&#39;</span> <span style="color:#008080">role</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;tablist&#39;</span>&gt;
-</code></pre></div><p>是 <code>/package/buildresult</code>。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 <code>&lt;div class=&quot;result&quot;&gt;&lt;/div&gt;</code> 下面的 <code>&lt;div class=&quot;collapsed&quot;</code> 里的 <code>data-main</code> 和 <code>data-repository</code> 项。但网页源代码里 <code>&lt;div class=&quot;result&quot;&gt;</code> 是空的。</p>
-<p>我想这跟 <code>updateBuildResult()</code> 这个函数需要面对的情景有关的，我们现在的情景是 div result 是空的，而它在按钮被按下过一次后是有值的。反正 Get 请求没有参数都可以，我们就先来写一下试一试也无妨：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#34;net/http&#34;</span>
-<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;uri&#34;</span>
 
-url <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;https://build.opensuse.org/package/buildresult?index=&amp;package=marketo&amp;project=home%3AMargueriteSu&#39;</span>
-uri <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(url)
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
 
-resp <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>get_response(uri)
-<span style="color:#0086b3">puts</span> resp<span style="color:#000;font-weight:bold">.</span>body
-</code></pre></div><p>结果返回了 404。一想也对嘛，毕竟 openSUSE 的 web developer 是 darix, 不可能不验证嘛。但是 package build status 是不需要登录 openSUSE 账户就能看见的，那么验证的方式应该就是 cookie 了，我们在 chriomium 网页调试器的 Netowrk 界面点开请求看一下是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#000080">:authority</span>:<span style="color:#bbb"> </span>build.opensuse.org<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">:method</span>:<span style="color:#bbb"> </span>GET<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">:path</span>:<span style="color:#bbb"> </span>/package/buildresult?project=home%3AMargueriteSu&amp;package=marketo&amp;index=&amp;show_all=false<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">:scheme</span>:<span style="color:#bbb"> </span>https<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">accept</span>:<span style="color:#bbb"> </span><span style="color:#999;font-weight:bold;font-style:italic">*/*</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">accept-encoding</span>:<span style="color:#bbb"> </span>gzip, deflate, br<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">accept-language</span>:<span style="color:#bbb"> </span>zh-CN,zh;q=0.9,en;q=0.8,fr;q=0.7,ja;q=0.6,zh-TW;q=0.5<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">cookie</span>:<span style="color:#bbb"> </span>_obs_api_session=Wofeza%2B6Orv1yBRudIdkuaVk2%2FrGU3aawTLraZjoBHDZgiAghLJ6Rty8%2F6LkYJq35V1X9AewWVteQaKjbc8bkBz%2BCXVgvnw1LCHTLENEcJ%2BOrDZduKxogn92p8JtGkrsAg2eCFNIf9PlHqZUO3VRxsQCCchW0Yctf%2FVKS5Dt9w%2FFK4MuNgcepd%2F9efbaMGuD8tPXH6BswiOb6AhF9cMvWB09UiQM0jB5Pw0J6L0x6hTOYNigz7%2BFc1yJxlgMK%2B39RQCEBGUPuvB8npwzovKq9I0ufkQYooTln0GX4trsfpjq4xN4JgGo1WxUlcVurN4AOfg%2FFw%3D%3D--6GcZFXO4PpWG7EZU--HxRMQH1UYEi16AZFmLSEnw%3D%3D<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">if-none-match</span>:<span style="color:#bbb"> </span>W/&#34;f218b807b90379d9cf5bbc186b1f0310&#34;<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">referer</span>:<span style="color:#bbb"> </span>https://build.opensuse.org/package/show/home:MargueriteSu/marketo<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-dest</span>:<span style="color:#bbb"> </span>empty<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-mode</span>:<span style="color:#bbb"> </span>cors<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">sec-fetch-site</span>:<span style="color:#bbb"> </span>same-origin<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">user-agent</span>:<span style="color:#bbb"> </span>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">x-csrf-token</span>:<span style="color:#bbb"> </span>iSzEuQG8YQKZwuCk7Ka5dhIJjhKmSyCIckRXjmjqt+IKhO0R4x3L6r639vSiF0RA3KOMVedCT+zBUp0JIK/xNg==<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#000080">x-requested-with</span>:<span style="color:#bbb"> </span>XMLHttpRequest<span style="color:#bbb">
-</span></code></pre></div><p>好么，不只是 cookie 里有 token，还有 x-csrf-token。验证一般就是验证 User Agent 是不是爬虫，cookie 内容，再就是如果是 ajax 请求，我们用普通的 GET 可能也不行，服务器可能会查 x-requested-with 甚至是 referer。</p>
-<p>cookie 我们可以通过先访问一下网页来得到，但是 csrf-token 怎么得到呢？网页源代码里面有：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">meta</span> <span style="color:#008080">name</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;csrf-token&#34;</span> <span style="color:#008080">content</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;XJTaLoLQsp6EyezGStiZgW2O5FectHPabI+hcnEdT/jfPPOGYHEYdqO8+pYEaWS3oyTmEN29HL7fmWv1OVgJLA==&#34;</span> /&gt;
-</code></pre></div><p>同样这些 index, package, project 也都在网页源代码里，show_all 就一直让它为 false 好了。于是我们写出了第二版：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#34;net/http&#34;</span>
-<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;uri&#34;</span>
-<span style="color:#0086b3">require</span> <span style="color:#d14">&#34;nokogiri&#34;</span>
+            .list {
+                background: var(--theme);
+            }
 
-url <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;https://build.opensuse.org/package/show/home:MargueriteSu/marketo&#39;</span>
-uri <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span>(url)
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
 
-resp <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>get_response(uri)
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
 
-cookie <span style="color:#000;font-weight:bold">=</span> resp<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Set-Cookie&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">获取</span> cookie
+    </style>
+</noscript><meta property="og:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖" />
+<meta property="og:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-11-28T16:07:00+08:00" />
+<meta property="article:modified_time" content="2020-11-28T16:07:00+08:00" />
 
-doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(resp<span style="color:#000;font-weight:bold">.</span>body)
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖"/>
+<meta name="twitter:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用："/>
 
-token <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;meta[name=&#39;csrf-token&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;content&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">抓</span> csrf token
-path <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;div[id=&#39;buildresult-urls&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-buildresult-url&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">抓</span> path
-index <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-index&#39;</span><span style="color:#000;font-weight:bold">]</span>
-package <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-package&#39;</span><span style="color:#000;font-weight:bold">]</span>
-project <span style="color:#000;font-weight:bold">=</span> doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-project&#39;</span><span style="color:#000;font-weight:bold">]</span>
 
-query <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;index&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>index,<span style="color:#d14">&#34;package&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>package,<span style="color:#d14">&#34;project&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>project,<span style="color:#d14">&#34;show_all&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">造一个</span> uri <span style="color:#a61717;background-color:#e3d2d2">的</span> query
-new_uri <span style="color:#000;font-weight:bold">=</span> uri
-new_uri<span style="color:#000;font-weight:bold">.</span>path <span style="color:#000;font-weight:bold">=</span> path
-new_uri<span style="color:#000;font-weight:bold">.</span>query <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">URI</span><span style="color:#000;font-weight:bold">.</span>encode_www_form(query)
-
-http <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">.</span>new(new_uri<span style="color:#000;font-weight:bold">.</span>host, new_uri<span style="color:#000;font-weight:bold">.</span>port)
-http<span style="color:#000;font-weight:bold">.</span>use_ssl <span style="color:#000;font-weight:bold">=</span> new_uri<span style="color:#000;font-weight:bold">.</span>scheme <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;https&#39;</span>
-request <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Net</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTTP</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">Get</span><span style="color:#000;font-weight:bold">.</span>new(new_uri)
-request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Cookie&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> cookie
-request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;X-Requested-With&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;XMLHttpRequest&#39;</span>
-request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;X-CSRF-Token&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> token
-request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;Referer&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> uri<span style="color:#000;font-weight:bold">.</span>to_s
-request<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;User-Agent&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36&#39;</span> <span style="color:#009926">//</span> <span style="color:#a61717;background-color:#e3d2d2">从上面扒的</span> <span style="color:#008080">UA</span>
-
-response <span style="color:#000;font-weight:bold">=</span> http<span style="color:#000;font-weight:bold">.</span>request(request)
-<span style="color:#0086b3">puts</span> response<span style="color:#000;font-weight:bold">.</span>body
-</code></pre></div><p>运行一下，结果得到了正确的页面。我们这么直接 puts 肯定不行，需要一个数据结构的嘛：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#0086b3">require</span> <span style="color:#d14">&#39;json&#39;</span>
-new_doc <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Nokogiri</span><span style="color:#000;font-weight:bold">::</span><span style="color:#008080">HTML</span>(response<span style="color:#000;font-weight:bold">.</span>body)
-
-buildstatus <span style="color:#000;font-weight:bold">=</span> new_doc<span style="color:#000;font-weight:bold">.</span>at(<span style="color:#d14">&#34;div[id=&#39;package-buildstatus&#39;]&#34;</span>)
-repositories <span style="color:#000;font-weight:bold">=</span> buildstatus<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;div[class*=&#39;show&#39;]&#34;</span>)
-
-buildresult <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">.</span>new
-repositories<span style="color:#000;font-weight:bold">.</span>each <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>repository<span style="color:#000;font-weight:bold">|</span>
-  target <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#39;data-repository&#39;</span><span style="color:#000;font-weight:bold">]</span>
-  arch <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;.repository-state&#34;</span>)<span style="color:#000;font-weight:bold">.</span>text()<span style="color:#000;font-weight:bold">.</span>strip!
-  state <span style="color:#000;font-weight:bold">=</span> repository<span style="color:#000;font-weight:bold">.</span>css(<span style="color:#d14">&#34;.build-state&#34;</span>)<span style="color:#000;font-weight:bold">.</span>text()<span style="color:#000;font-weight:bold">.</span>strip!
-  h <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">Hash</span><span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;arch&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>arch, <span style="color:#d14">&#34;state&#34;</span><span style="color:#000;font-weight:bold">=&gt;</span>state<span style="color:#000;font-weight:bold">]</span>
-  <span style="color:#000;font-weight:bold">if</span> buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">].</span>nil?
-    buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">Array</span><span style="color:#000;font-weight:bold">[</span>h<span style="color:#000;font-weight:bold">]</span>
-  <span style="color:#000;font-weight:bold">else</span>
-    buildresult<span style="color:#000;font-weight:bold">[</span>target<span style="color:#000;font-weight:bold">].</span>append(h)
-  <span style="color:#000;font-weight:bold">end</span>
-<span style="color:#000;font-weight:bold">end</span>
-
-<span style="color:#0086b3">puts</span> <span style="color:#008080">JSON</span><span style="color:#000;font-weight:bold">.</span>pretty_generate(buildresult)
-</code></pre></div><p>于是就得到了一个散列结构和很好看的输出：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#000080">&#34;openSUSE_Tumbleweed&#34;</span>: [
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
     {
-      <span style="color:#000080">&#34;arch&#34;</span>: <span style="color:#d14">&#34;x86_64&#34;</span>,
-      <span style="color:#000080">&#34;state&#34;</span>: <span style="color:#d14">&#34;succeeded&#34;</span>
-    },
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
     {
-      <span style="color:#000080">&#34;arch&#34;</span>: <span style="color:#d14">&#34;i586&#34;</span>,
-      <span style="color:#000080">&#34;state&#34;</span>: <span style="color:#d14">&#34;unresolvable&#34;</span>
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+      "item": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
     }
   ]
 }
-</code></pre></div><p>到了这里，我们只需要把这些测试代码变成一个 Class 写到 <code>engine/openbuildservice_onebox.rb</code> 里面去，就可以删掉 buildstatus 函数了。最终的结果见：<a href="https://github.com/openSUSE-zh/discourse-openbuildservice-onebox">discourse-openbuildservice-onebox</a></p>
-
-			</div>
-			
-			<div>
-				<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "innamoramento" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+  "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+  "description": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: [\u0026#39;--headless\u0026#39;, \u0026#39;--window-size=1200x600\u0026#39;, \u0026#39;--no-sandbox\u0026#39;, \u0026#39;--disable-dev-shm-usage\u0026#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u0026lt;div accesskey=\u0026#39;r\u0026#39; class=\u0026#39;btn btn-outline-primary build-refresh float-right\u0026#39; onclick=\u0026#39;updateBuildResult(\u0026amp;#39;\u0026amp;#39;)\u0026#39; title=\u0026#39;Refresh Build Results\u0026#39;\u0026gt; Refresh \u0026lt;i class=\u0026#39;fas fa-sync-alt\u0026#39; id=\u0026#39;build-reload\u0026#39;\u0026gt;\u0026lt;/i\u0026gt; \u0026lt;/div\u0026gt; 点击它的时候执行的是“updateBuildResult(\u0026rsquo;\u0026rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：",
+  "keywords": [
+    
+  ],
+  "articleBody": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600', '--no-sandbox', '--disable-dev-shm-usage'] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u003cdiv accesskey='r' class='btn btn-outline-primary build-refresh float-right' onclick='updateBuildResult(\u0026#39;\u0026#39;)' title='Refresh Build Results'\u003e Refresh \u003ci class='fas fa-sync-alt' id='build-reload'\u003e\u003c/i\u003e \u003c/div\u003e 点击它的时候执行的是“updateBuildResult(’’)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：\n\u003cscript src=\"/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js\"\u003e\u003c/script\u003e 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：\nfunction updateBuildResult(t) { var i = [] , o = {}; $(\".result div.collapse:not(.show)\").map(function(e, t) { var n = $(t).data(\"main\") ? $(t).data(\"main\") : \"project\"; o[n] === undefined \u0026\u0026 (o[n] = []), $(t).data(\"repository\") === undefined ? i.push(n) : o[n].push($(t).data(\"repository\")) }); var e = $(\"#buildresult\" + t + \"-box\").data(); e.show_all = $(\"#show_all_\" + t).is(\":checked\"), e.collapsedPackages = i, e.collapsedRepositories = o, $(\"#build\" + t + \"-reload\").addClass(\"fa-spin\"), $.ajax({ url: $(\"#buildresult\" + t + \"-urls\").data(\"buildresultUrl\"), data: e, success: function(e) { $(\"#build\" + t + \" .result\").html(e) }, error: function() { $(\"#build\" + t + \" .result\").html(\"No build results available\n\") }, complete: function() { $(\"#build\" + t + \"-reload\").removeClass(\"fa-spin\"), initializePopovers('[data-toggle=\"popover\"]') } }) } 可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。\n我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：\nurl 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：\n\u003cdiv class='bg-light' data-buildresult-url='/package/buildresult' id='buildresult-urls'\u003e \u003cul class='nav nav-tabs pt-2 px-3 flex-nowrap' data-index='' data-package='marketo' data-project='home:MargueriteSu' id='buildresult-box' role='tablist'\u003e 是 /package/buildresult。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 下面的 ",
+  "wordCount" : "560",
+  "inLanguage": "en",
+  "datePublished": "2020-11-28T16:07:00+08:00",
+  "dateModified": "2020-11-28T16:07:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖
+    </h1>
+    <div class="post-meta"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>    browser <span style="color:#f92672">=</span> <span style="color:#66d9ef">Watir</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Browser</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">:chrome</span>, <span style="color:#e6db74">chromeOptions</span>: { <span style="color:#e6db74">args</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;--headless&#39;</span>, <span style="color:#e6db74">&#39;--window-size=1200x600&#39;</span>, <span style="color:#e6db74">&#39;--no-sandbox&#39;</span>, <span style="color:#e6db74">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#f92672">]</span> })
+</span></span><span style="display:flex;"><span>    browser<span style="color:#f92672">.</span>goto(link)
+</span></span><span style="display:flex;"><span>    browser<span style="color:#f92672">.</span>image(id: reload_id)<span style="color:#f92672">.</span>click
+</span></span></code></pre></div><p>但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。</p>
+<p>我们测试用的界面是 <a href="https://build.opensuse.org/package/show/home:MargueriteSu/marketo">marketo</a> package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">accesskey</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;r&#39;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;btn btn-outline-primary build-refresh float-right&#39;</span> <span style="color:#a6e22e">onclick</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39;</span> <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Refresh Build Results&#39;</span>&gt;
+</span></span><span style="display:flex;"><span>      Refresh
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;fas fa-sync-alt&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;build-reload&#39;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><p>点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p>使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">updateBuildResult</span>(<span style="color:#a6e22e">t</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>      , <span style="color:#a6e22e">o</span> <span style="color:#f92672">=</span> {};
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;.result div.collapse:not(.show)&#34;</span>).<span style="color:#a6e22e">map</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">t</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">$</span>(<span style="color:#a6e22e">t</span>).<span style="color:#a6e22e">data</span>(<span style="color:#e6db74">&#34;main&#34;</span>) <span style="color:#f92672">?</span> <span style="color:#a6e22e">$</span>(<span style="color:#a6e22e">t</span>).<span style="color:#a6e22e">data</span>(<span style="color:#e6db74">&#34;main&#34;</span>) <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;project&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">o</span>[<span style="color:#a6e22e">n</span>] <span style="color:#f92672">===</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#a6e22e">o</span>[<span style="color:#a6e22e">n</span>] <span style="color:#f92672">=</span> []),
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">$</span>(<span style="color:#a6e22e">t</span>).<span style="color:#a6e22e">data</span>(<span style="color:#e6db74">&#34;repository&#34;</span>) <span style="color:#f92672">===</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">n</span>) <span style="color:#f92672">:</span> <span style="color:#a6e22e">o</span>[<span style="color:#a6e22e">n</span>].<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">$</span>(<span style="color:#a6e22e">t</span>).<span style="color:#a6e22e">data</span>(<span style="color:#e6db74">&#34;repository&#34;</span>))
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">e</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#buildresult&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-box&#34;</span>).<span style="color:#a6e22e">data</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">show_all</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#show_all_&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span>).<span style="color:#a6e22e">is</span>(<span style="color:#e6db74">&#34;:checked&#34;</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">collapsedPackages</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">i</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">collapsedRepositories</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">o</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#build&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-reload&#34;</span>).<span style="color:#a6e22e">addClass</span>(<span style="color:#e6db74">&#34;fa-spin&#34;</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$</span>.<span style="color:#a6e22e">ajax</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#buildresult&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-urls&#34;</span>).<span style="color:#a6e22e">data</span>(<span style="color:#e6db74">&#34;buildresultUrl&#34;</span>),
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">e</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">success</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">e</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#build&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; .result&#34;</span>).<span style="color:#a6e22e">html</span>(<span style="color:#a6e22e">e</span>)
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">error</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#build&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; .result&#34;</span>).<span style="color:#a6e22e">html</span>(<span style="color:#e6db74">&#34;&lt;p&gt;No build results available&lt;/p&gt;&#34;</span>)
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">complete</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;#build&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-reload&#34;</span>).<span style="color:#a6e22e">removeClass</span>(<span style="color:#e6db74">&#34;fa-spin&#34;</span>),
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">initializePopovers</span>(<span style="color:#e6db74">&#39;[data-toggle=&#34;popover&#34;]&#39;</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。</p>
+<p>我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：</p>
+<p>url 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bg-light&#39;</span> <span style="color:#a6e22e">data-buildresult-url</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;/package/buildresult&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;buildresult-urls&#39;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">ul</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;nav nav-tabs pt-2 px-3 flex-nowrap&#39;</span> <span style="color:#a6e22e">data-index</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span> <span style="color:#a6e22e">data-package</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;marketo&#39;</span> <span style="color:#a6e22e">data-project</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;home:MargueriteSu&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;buildresult-box&#39;</span> <span style="color:#a6e22e">role</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;tablist&#39;</span>&gt;
+</span></span></code></pre></div><p>是 <code>/package/buildresult</code>。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 <code>&lt;div class=&quot;result&quot;&gt;&lt;/div&gt;</code> 下面的 <code>&lt;div class=&quot;collapsed&quot;</code> 里的 <code>data-main</code> 和 <code>data-repository</code> 项。但网页源代码里 <code>&lt;div class=&quot;result&quot;&gt;</code> 是空的。</p>
+<p>我想这跟 <code>updateBuildResult()</code> 这个函数需要面对的情景有关的，我们现在的情景是 div result 是空的，而它在按钮被按下过一次后是有值的。反正 Get 请求没有参数都可以，我们就先来写一下试一试也无妨：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;uri&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://build.opensuse.org/package/buildresult?index=&amp;package=marketo&amp;project=home%3AMargueriteSu&#39;</span>
+</span></span><span style="display:flex;"><span>uri <span style="color:#f92672">=</span> <span style="color:#66d9ef">URI</span>(url)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resp <span style="color:#f92672">=</span> <span style="color:#66d9ef">Net</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTTP</span><span style="color:#f92672">.</span>get_response(uri)
+</span></span><span style="display:flex;"><span>puts resp<span style="color:#f92672">.</span>body
+</span></span></code></pre></div><p>结果返回了 404。一想也对嘛，毕竟 openSUSE 的 web developer 是 darix, 不可能不验证嘛。但是 package build status 是不需要登录 openSUSE 账户就能看见的，那么验证的方式应该就是 cookie 了，我们在 chriomium 网页调试器的 Netowrk 界面点开请求看一下是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">:authority</span>: <span style="color:#ae81ff">build.opensuse.org</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">:method</span>: <span style="color:#ae81ff">GET</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">:path</span>: <span style="color:#ae81ff">/package/buildresult?project=home%3AMargueriteSu&amp;package=marketo&amp;index=&amp;show_all=false</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">:scheme</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">accept</span>: <span style="color:#75715e">*/*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">accept-encoding</span>: <span style="color:#ae81ff">gzip, deflate, br</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">accept-language</span>: <span style="color:#ae81ff">zh-CN,zh;q=0.9,en;q=0.8,fr;q=0.7,ja;q=0.6,zh-TW;q=0.5</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">cookie</span>: <span style="color:#ae81ff">_obs_api_session=Wofeza%2B6Orv1yBRudIdkuaVk2%2FrGU3aawTLraZjoBHDZgiAghLJ6Rty8%2F6LkYJq35V1X9AewWVteQaKjbc8bkBz%2BCXVgvnw1LCHTLENEcJ%2BOrDZduKxogn92p8JtGkrsAg2eCFNIf9PlHqZUO3VRxsQCCchW0Yctf%2FVKS5Dt9w%2FFK4MuNgcepd%2F9efbaMGuD8tPXH6BswiOb6AhF9cMvWB09UiQM0jB5Pw0J6L0x6hTOYNigz7%2BFc1yJxlgMK%2B39RQCEBGUPuvB8npwzovKq9I0ufkQYooTln0GX4trsfpjq4xN4JgGo1WxUlcVurN4AOfg%2FFw%3D%3D--6GcZFXO4PpWG7EZU--HxRMQH1UYEi16AZFmLSEnw%3D%3D</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">if-none-match</span>: <span style="color:#ae81ff">W/&#34;f218b807b90379d9cf5bbc186b1f0310&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">referer</span>: <span style="color:#ae81ff">https://build.opensuse.org/package/show/home:MargueriteSu/marketo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">sec-fetch-dest</span>: <span style="color:#ae81ff">empty</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">sec-fetch-mode</span>: <span style="color:#ae81ff">cors</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">sec-fetch-site</span>: <span style="color:#ae81ff">same-origin</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">user-agent</span>: <span style="color:#ae81ff">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">x-csrf-token</span>: <span style="color:#ae81ff">iSzEuQG8YQKZwuCk7Ka5dhIJjhKmSyCIckRXjmjqt+IKhO0R4x3L6r639vSiF0RA3KOMVedCT+zBUp0JIK/xNg==</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">x-requested-with</span>: <span style="color:#ae81ff">XMLHttpRequest</span>
+</span></span></code></pre></div><p>好么，不只是 cookie 里有 token，还有 x-csrf-token。验证一般就是验证 User Agent 是不是爬虫，cookie 内容，再就是如果是 ajax 请求，我们用普通的 GET 可能也不行，服务器可能会查 x-requested-with 甚至是 referer。</p>
+<p>cookie 我们可以通过先访问一下网页来得到，但是 csrf-token 怎么得到呢？网页源代码里面有：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;csrf-token&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;XJTaLoLQsp6EyezGStiZgW2O5FectHPabI+hcnEdT/jfPPOGYHEYdqO8+pYEaWS3oyTmEN29HL7fmWv1OVgJLA==&#34;</span> /&gt;
+</span></span></code></pre></div><p>同样这些 index, package, project 也都在网页源代码里，show_all 就一直让它为 false 好了。于是我们写出了第二版：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;uri&#34;</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;nokogiri&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://build.opensuse.org/package/show/home:MargueriteSu/marketo&#39;</span>
+</span></span><span style="display:flex;"><span>uri <span style="color:#f92672">=</span> <span style="color:#66d9ef">URI</span>(url)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resp <span style="color:#f92672">=</span> <span style="color:#66d9ef">Net</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTTP</span><span style="color:#f92672">.</span>get_response(uri)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cookie <span style="color:#f92672">=</span> resp<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;Set-Cookie&#39;</span><span style="color:#f92672">]</span> <span style="color:#e6db74">//</span> <span style="color:#960050;background-color:#1e0010">获取</span> cookie
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>doc <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nokogiri</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTML</span>(resp<span style="color:#f92672">.</span>body)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>token <span style="color:#f92672">=</span> doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;meta[name=&#39;csrf-token&#39;]&#34;</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;content&#39;</span><span style="color:#f92672">]</span> <span style="color:#e6db74">//</span> <span style="color:#960050;background-color:#1e0010">抓</span> csrf token
+</span></span><span style="display:flex;"><span>path <span style="color:#f92672">=</span> doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;div[id=&#39;buildresult-urls&#39;]&#34;</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;data-buildresult-url&#39;</span><span style="color:#f92672">]</span> <span style="color:#e6db74">//</span> <span style="color:#960050;background-color:#1e0010">抓</span> path
+</span></span><span style="display:flex;"><span>index <span style="color:#f92672">=</span> doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;data-index&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>package <span style="color:#f92672">=</span> doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;data-package&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>project <span style="color:#f92672">=</span> doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;ul[id=&#39;buildresult-box&#39;]&#34;</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;data-project&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>query <span style="color:#f92672">=</span> <span style="color:#66d9ef">Hash</span><span style="color:#f92672">[</span><span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">=&gt;</span>index,<span style="color:#e6db74">&#34;package&#34;</span><span style="color:#f92672">=&gt;</span>package,<span style="color:#e6db74">&#34;project&#34;</span><span style="color:#f92672">=&gt;</span>project,<span style="color:#e6db74">&#34;show_all&#34;</span><span style="color:#f92672">=&gt;</span><span style="color:#66d9ef">false</span><span style="color:#f92672">]</span> <span style="color:#e6db74">//</span> <span style="color:#960050;background-color:#1e0010">造一个</span> uri <span style="color:#960050;background-color:#1e0010">的</span> query
+</span></span><span style="display:flex;"><span>new_uri <span style="color:#f92672">=</span> uri
+</span></span><span style="display:flex;"><span>new_uri<span style="color:#f92672">.</span>path <span style="color:#f92672">=</span> path
+</span></span><span style="display:flex;"><span>new_uri<span style="color:#f92672">.</span>query <span style="color:#f92672">=</span> <span style="color:#66d9ef">URI</span><span style="color:#f92672">.</span>encode_www_form(query)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>http <span style="color:#f92672">=</span> <span style="color:#66d9ef">Net</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTTP</span><span style="color:#f92672">.</span>new(new_uri<span style="color:#f92672">.</span>host, new_uri<span style="color:#f92672">.</span>port)
+</span></span><span style="display:flex;"><span>http<span style="color:#f92672">.</span>use_ssl <span style="color:#f92672">=</span> new_uri<span style="color:#f92672">.</span>scheme <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;https&#39;</span>
+</span></span><span style="display:flex;"><span>request <span style="color:#f92672">=</span> <span style="color:#66d9ef">Net</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTTP</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Get</span><span style="color:#f92672">.</span>new(new_uri)
+</span></span><span style="display:flex;"><span>request<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;Cookie&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> cookie
+</span></span><span style="display:flex;"><span>request<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;X-Requested-With&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;XMLHttpRequest&#39;</span>
+</span></span><span style="display:flex;"><span>request<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;X-CSRF-Token&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> token
+</span></span><span style="display:flex;"><span>request<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;Referer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> uri<span style="color:#f92672">.</span>to_s
+</span></span><span style="display:flex;"><span>request<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;User-Agent&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36&#39;</span> <span style="color:#e6db74">//</span> <span style="color:#960050;background-color:#1e0010">从上面扒的</span> <span style="color:#66d9ef">UA</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> http<span style="color:#f92672">.</span>request(request)
+</span></span><span style="display:flex;"><span>puts response<span style="color:#f92672">.</span>body
+</span></span></code></pre></div><p>运行一下，结果得到了正确的页面。我们这么直接 puts 肯定不行，需要一个数据结构的嘛：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;json&#39;</span>
+</span></span><span style="display:flex;"><span>new_doc <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nokogiri</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTML</span>(response<span style="color:#f92672">.</span>body)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buildstatus <span style="color:#f92672">=</span> new_doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;div[id=&#39;package-buildstatus&#39;]&#34;</span>)
+</span></span><span style="display:flex;"><span>repositories <span style="color:#f92672">=</span> buildstatus<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#34;div[class*=&#39;show&#39;]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buildresult <span style="color:#f92672">=</span> <span style="color:#66d9ef">Hash</span><span style="color:#f92672">.</span>new
+</span></span><span style="display:flex;"><span>repositories<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>repository<span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span>  target <span style="color:#f92672">=</span> repository<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;data-repository&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  arch <span style="color:#f92672">=</span> repository<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#34;.repository-state&#34;</span>)<span style="color:#f92672">.</span>text()<span style="color:#f92672">.</span>strip!
+</span></span><span style="display:flex;"><span>  state <span style="color:#f92672">=</span> repository<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#34;.build-state&#34;</span>)<span style="color:#f92672">.</span>text()<span style="color:#f92672">.</span>strip!
+</span></span><span style="display:flex;"><span>  h <span style="color:#f92672">=</span> <span style="color:#66d9ef">Hash</span><span style="color:#f92672">[</span><span style="color:#e6db74">&#34;arch&#34;</span><span style="color:#f92672">=&gt;</span>arch, <span style="color:#e6db74">&#34;state&#34;</span><span style="color:#f92672">=&gt;</span>state<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> buildresult<span style="color:#f92672">[</span>target<span style="color:#f92672">].</span>nil?
+</span></span><span style="display:flex;"><span>    buildresult<span style="color:#f92672">[</span>target<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> Array<span style="color:#f92672">[</span>h<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    buildresult<span style="color:#f92672">[</span>target<span style="color:#f92672">].</span>append(h)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>puts <span style="color:#66d9ef">JSON</span><span style="color:#f92672">.</span>pretty_generate(buildresult)
+</span></span></code></pre></div><p>于是就得到了一个散列结构和很好看的输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;openSUSE_Tumbleweed&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;arch&#34;</span>: <span style="color:#e6db74">&#34;x86_64&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;succeeded&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;arch&#34;</span>: <span style="color:#e6db74">&#34;i586&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;unresolvable&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>到了这里，我们只需要把这些测试代码变成一个 Class 写到 <code>engine/openbuildservice_onebox.rb</code> 里面去，就可以删掉 buildstatus 函数了。最终的结果见：<a href="https://github.com/openSUSE-zh/discourse-openbuildservice-onebox">discourse-openbuildservice-onebox</a></p>
 
 
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

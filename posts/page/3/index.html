@@ -1,37 +1,143 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Posts</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	<link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Posts | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="Posts - Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/posts/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Posts" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://marguerite.github.io/posts/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Posts"/>
+<meta name="twitter:description" content=""/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }
+  ]
+}
+</script>
 </head>
-<body>
-	<header>
-	<a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
-	
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Posts
+  </h1>
 </header>
 
-	
-	<main>
-		
-		<div>
-			<h1>Posts</h1>
-			
-		</div>
-		
-
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/">SUSE 新年飨礼</a></h1>
-	<time>08.03.2013 00:00</time>
-	
-	<div>
-		亲爱的 openSUSE 贡献者们，
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>SUSE 新年飨礼
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>亲爱的 openSUSE 贡献者们，
 为了感谢您在过去的一年中为 openSUSE 项目所做的杰出贡献，值此新版发布在即，SUSE Desktop Team 的 FJKong 孔叔从 SUSE 市场部虎口夺食，抢到了一些礼品送给大家（实物图见下文）。礼品价值不是很高、数量也很少（因为我们没有社区经费，礼物也不是 SUSE 官方支出，纯属孔叔和市场部员工的个人情宜（？哈哈）得到的，所以我们会尽量把礼物交给已经证明最能呵护它们的贡献者），主要是为了表达一份微不足道的心意，openSUSE 没有忘记你们，正是你们或多或少的在他人眼里可能很怪很傻很宅的贡献，支持着 openSUSE 一直有勇气有动力面对不可知的未来，在这个 complicated 的世界里艰难前行。
 同时新官上任的 SUSE Desktop Lead 梁辰晔（Da Liang）梁叔（原 SUSE 北京服务器组的 Senior）携 Desktop Team 全体同仁 Lance， 王伶卓，向 openSUSE 中文圈的用户们致意。（郑宇 jzheng 郑叔从 SUSE 暂时跳槽到 Canonical 准备创业中，但仍然在 openSUSE 社区和论坛上积极出没）
 先上图（由于我个人并不参与此次礼品赠送，所以内部细节我可能描述的不是很清楚）：
@@ -39,71 +145,69 @@
 水晶笔（似乎是 SUSE 标的中性笔杆）：
 马克杯（去年我收到一个，图也是去年的）：
 Novell 杯具
-数量：  手包：6/8 个 水晶笔：7/9 个 马克杯：1 只 公仔：0/1 只  领取人：  hillwood，重庆道桥，公仔一只 douglarek，英特尔北京，手包一只，笔一只  一些说明： 公仔是可遇不可求的，因为这是 SuSE 中国的营销道具，至少需要提前一年预定（hillwood 是补去年的货，他也不参与今年的礼品赠送），稀缺到了什么程度呢，全日本就两只（SUSE JP 持有），全台湾据我所知个人持有的只有 swyear 一只。
-		
-			<a href="https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/">Read more...</a>
-		
-	</div>
+数量： 手包：6/8 个 水晶笔：7/9 个 马克杯：1 只 公仔：0/1 只 领取人： hillwood，重庆道桥，公仔一只 douglarek，英特尔北京，手包一只，笔一只 一些说明： 公仔是可遇不可求的，因为这是 SuSE 中国的营销道具，至少需要提前一年预定（hillwood 是补去年的货，他也不参与今年的礼品赠送），稀缺到了什么程度呢，全日本就两只（SUSE JP 持有），全台湾据我所知个人持有的只有 swyear 一只。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-08 00:00:00 +0800 CST'>March 8, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to SUSE 新年飨礼" href="https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/">openSUSE 下的 Fcitx 输入法</a></h1>
-	<time>05.03.2013 00:00</time>
-	
-	<div>
-		这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 下的 Fcitx 输入法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
 Youku：
 Download:
-http://115.com/u/26338483
-		
-	</div>
+http://115.com/u/26338483</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-05 00:00:00 +0800 CST'>March 5, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 下的 Fcitx 输入法" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/">openSUSE Linux 战渣浪详解教程</a></h1>
-	<time>24.02.2013 00:00</time>
-	
-	<div>
-		自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
-“战渣浪” 原理  Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。  来战！
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE Linux 战渣浪详解教程
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
+“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！
 查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
-Input #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv': Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.
-		
-			<a href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/">Read more...</a>
-		
-	</div>
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE Linux 战渣浪详解教程" href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">openSUSE 下玩围棋</a></h1>
-	<time>24.02.2013 00:00</time>
-	
-	<div>
-		Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 下玩围棋
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
 主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
 引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
 不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
 围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
 当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
-另外关于围棋程序比较好的网站是：Sensei&rsquo;s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
- gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。  这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
- qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp &ndash;quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。  其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。
-		
-			<a href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/">Read more...</a>
-		
-	</div>
+另外关于围棋程序比较好的网站是：Sensei’s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp –quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 下玩围棋" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">openshift 搭建 wordpress 教程</a></h1>
-	<time>18.02.2013 00:00</time>
-	
-	<div>
-		最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openshift 搭建 wordpress 教程
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
 下面把搭建时候的要点简单说一下。
 准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
 你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
@@ -111,72 +215,68 @@ Input #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.102
 安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
 申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
 git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
-提交一次，留意命令行中的信息，会说数据库的 IP。
-		
-			<a href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">Read more...</a>
-		
-	</div>
+提交一次，留意命令行中的信息，会说数据库的 IP。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-02-18 00:00:00 +0800 CST'>February 18, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openshift 搭建 wordpress 教程" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/">Ruby on Rails 学习笔记－安装和 Hello World</a></h1>
-	<time>11.11.2012 00:00</time>
-	
-	<div>
-		因为想给 Open Build Service 加 i18n 支持，所以要学习下 Ruby on Rails。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Ruby on Rails 学习笔记－安装和 Hello World
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>因为想给 Open Build Service 加 i18n 支持，所以要学习下 Ruby on Rails。
 什么是 Ruby on Rails？ 推特上有 Ruby 程序员说是「肉夹馍」的关系，意思是其实硬菜在 Ruby。
 对新手这么要求可能太苛刻了，初心者应该是「荷叶包饭」的关系，意思是你真正一开始吃的部分是 Rails。
-但是要想学好 Ruby on Rails，其实应该是「鸡蛋灌饼」的关系，就是 Ruby &amp; Rails，两手都要硬，毕竟所有的东西都是用 Ruby 写，要是没有系统学习过 Ruby 可能登不了大雅之堂。但 Rails 不熟悉啥都当 C++ 写那用它开发就没意思了。
+但是要想学好 Ruby on Rails，其实应该是「鸡蛋灌饼」的关系，就是 Ruby &amp; Rails，两手都要硬，毕竟所有的东西都是用 Ruby 写，要是没有系统学习过 Ruby 可能登不了大雅之堂。但 Rails 不熟悉啥都当 C&#43;&#43; 写那用它开发就没意思了。
 科学的解释是这样的，Ruby 是屌丝松本行弘有感于白富美们漂亮的胸不大，胸大的腿不长，腿长的说话声音不好听，声音好听的长相又不是 S 级而自主研发的一个女神，同时兼顾了其他屌丝的需求（几乎所有的内置方法都可以由类在运行时重定义，眼前的加不是加，你说的 &lt; 是什么 &lt;，什么的）。gem 类似于芭比娃娃的衣橱（类似 perl 的 CPAN，python 的 PYPI，带平台的分发格式）。Rails 是其中一个 gem，一个网络框架。于是 Ruby on Rails 就有点像，Wordpress on PHP 的意思，然后你就是在 WordPress 上开发主题。。。
 不要怪我吐槽它啊。。。less is more：()少做多。还有：Ruby 是让程序员「快乐」的一门语言。。。。您再想想？
-开发环境 教材：Ruby on Rails Tutorial 3rd editon（好象是新浪爱问上下载的）
-		
-			<a href="https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/">Read more...</a>
-		
-	</div>
+开发环境 教材：Ruby on Rails Tutorial 3rd editon（好象是新浪爱问上下载的）...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-11-11 00:00:00 +0800 CST'>November 11, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to Ruby on Rails 学习笔记－安装和 Hello World" href="https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/">[Solved] btrfs 开机 initramfs 加载时间过长</a></h1>
-	<time>20.10.2012 00:00</time>
-	
-	<div>
-		这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>[Solved] btrfs 开机 initramfs 加载时间过长
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
 最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
-这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
-中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。
-		
-			<a href="https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/">Read more...</a>
-		
-	</div>
+这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000&#43;ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
+中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to [Solved] btrfs 开机 initramfs 加载时间过长" href="https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">当梦想照进现实  记 Ubuntu Tweak 的烂尾</a></h1>
-	<time>20.10.2012 00:00</time>
-	
-	<div>
-		本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>当梦想照进现实  记 Ubuntu Tweak 的烂尾
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
 大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：
- 针对超级大牛：SuSE/RedHat -&gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&gt; Canonical -&gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&gt; forever  不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &lt;-&gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
+针对超级大牛：SuSE/RedHat -&gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&gt; Canonical -&gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&gt; forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &lt;-&gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
 其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
-主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。
-		
-			<a href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">Read more...</a>
-		
-	</div>
+主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">CJK 的尊嚴（三）塵埃</a></h1>
-	<time>16.05.2012 00:00</time>
-	
-	<div>
-		首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>CJK 的尊嚴（三）塵埃
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
 虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
 它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
 但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
@@ -188,20 +288,19 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
 @csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
 「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。
-		
-			<a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">Read more...</a>
-		
-	</div>
+套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-05-16 00:00:00 +0800 CST'>May 16, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）塵埃" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"></a>
 </article>
 
-		
-			<article>
-	<h1><a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/">CJK 的尊嚴（三）聖戰</a></h1>
-	<time>15.05.2012 00:00</time>
-	
-	<div>
-		前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>CJK 的尊嚴（三）聖戰
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
 前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。
 但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。
 標題的含義 我們其實一直都很沒有尊嚴。請不要民族主義衝頭反駁。下面是一些普通用戶不知道的開發細節，解釋了爲什麼。這是爭論的基礎。不要對它爭論，因爲你真的不懂。你可以要求更多的例子和細節，但請不要就此爭論。沒有結果。
@@ -215,52 +314,90 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 這還僅僅是設計，還不包括實現。知道前面 X11 做了一件什麼事嗎？加了有史以來最大的一個 patch，一萬多行代碼。幹了什麼事情呢？報道這個消息的 Phoronix 都無奈了，什麼特性都沒加，把那些渣實現改掉了。不知道同學們是怎麼看的，我當時的想法是，幸虧我不懂代碼，不然我這個潔癖知道系統上用了一萬多行的渣代碼，我會瘋掉的。
 所以爲什麼不在做事情的時候都負責任一點呢！？以前做的不好，至少現在起，我們做好它，之前的錯誤，想要加特性的人幹不了，總會有牛人能幹的。當然，牛人肯幹，GNOME 收不收還是兩說。GNOME 被紅帽和西施社區背後的公司影響很深，就好比這次如果只是幾個輸入法開發者去鬧的話，沒結果的。他們是因爲西施的 CJK 決定放棄 IBus 了。所以才停掉的。
 所以有人說我「挾西施以令 GNOME」也好，說我自以爲是 Hero 也好，不重要的，因爲這就是事實。被輸入法開發者承認並尊重的事實。就像小企鵝輸入法作者說的「I’d be happy」。因爲他們之前也鬧過，Lauchpad/Unity/GNOME/KDE/GTK/…，他們的郵件打印出來嚇死你。結果呢？兩手空空。實力不對等的爭吵，都是撒嬌。不管你是小企鵝，還是 IBus，又或是你能想像得到的任何中文開發面向中文用戶的東西。不要以爲你有十四億人口就可以是老大了，在人家眼裏，你叫少數族裔。「CJK 不可放棄」，那是憐憫，霸道的時候還沒到。強推，又怎樣？又能怎樣？你們這些自以爲是大爺吵來吵去的傢伙們，最後不也都捏着鼻子認了？
-重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。
-		
-			<a href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/">Read more...</a>
-		
-	</div>
+重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-05-15 00:00:00 +0800 CST'>May 15, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）聖戰" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/"></a>
 </article>
-
-		
-		<div>
-
-	<a href="/posts/page/2/">Previous Page</a>
-
-3 of 4
-
-	<a href="/posts/page/4/">Next Page</a>
-
-</div>
-
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">使用 google 的 fontmake 复活文泉驿项目</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</a></li>
-				
-				<li><a href="/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</a></li>
-				
-				<li><a href="/posts/color_emoji_in_opensuse/">Color Emoji in openSUSE</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
-
-
-	<footer>
-	<p>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></p>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://marguerite.github.io/posts/page/2/">
+      «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="https://marguerite.github.io/posts/page/4/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
 </footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>
