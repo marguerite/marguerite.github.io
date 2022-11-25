@@ -6,7 +6,24 @@
     <description>Recent content in Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 25 Nov 2022 12:13:29 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 25 Nov 2022 19:17:09 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解 Linux fontconfig 第二部分</title>
+      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/</link>
+      <pubDate>Fri, 25 Nov 2022 19:17:09 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/</guid>
+      <description>这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
+前面说到了 FcConfigSubstitute这个函数，它实际封装了：
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
+它先是获取了 config：
+config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+FcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：
+FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：
+config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.</description>
+    </item>
+    
     <item>
       <title>深入理解 Linux fontconfig 第一部分</title>
       <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</link>

@@ -133,6 +133,28 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>openshift 搭建和 IRC 频道互通的 Gtalk 群聊
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 opensuse_zh@im.partych.at。
+Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：
+不能和 IRC 互通。作为一个开源社区，要是没有利用上 IRC，总感觉少了点什么。 在线时间不能保证。也就是说你没有 schduled_maintenance 的权利，只能它在线你就聊，它离线你就歇息。 大于 300 人的群拒绝服务。也就是说你的群是顶着地雷的，到了 300 人整个群就会消失，因为 Party Chat 不能承担那些多出来的流量钱。你交钱也不给你提供额外服务。 所以几十个人的小社群还是可以应付的，但是人满了之后迁移成本特别大。所以就想着趁人少迁移到 ikde 那种高级群里去。
+打听了一下，这种群聊是使用依云(@lilydjwg 写的两个软件在 VPS 上搭建的，分别是 xmpptalk 和 ircbindxmpp。
+但问题出来了，我没有 VPS。当时 openshift 这种 PaaS 已经出现了，只是还比较新鲜，我不会用。于是去年 9 月的一次尝试就可耻地失败了。
+当时（甚至至今）网上关于这两个软件的文章只有两篇：
+依云自己的介绍性文章，但是太粗略了。 StarBrilliant 的稍微详细一些的文章，但是还是有点犯了程序员的通病：普通用户不知所云。如果你是一个已有 VPS 的博主，看了也得折腾一会儿，要是麻瓜的话，恐怕也就只能看个热闹了。 于是逼迫我们群里的 douglarek 写了一篇在 openshift 上折腾它们的文章给我：
+Openshift 折腾 xmpptalk
+但实际上这篇文章很水。反正看过就知道啦，到处都是「凑合」。实际上你看它也根本架设不起来（好多致命细节都没说）。
+当时我就是在这种情况下开始折腾的。
+首先我开了 Do it yourself 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-03-17 00:00:00 +0800 CST'>March 17, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openshift 搭建和 IRC 频道互通的 Gtalk 群聊" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>openshift 安装 owncloud 取代 Google Reader
     </h2>
   </header>
@@ -292,30 +314,6 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
   </div>
   <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
   <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>CJK 的尊嚴（三）塵埃
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
-虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
-它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
-但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
-正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西，但這取決於 GNOME 的要求，大策略是他們定的。」
-意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。
-另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。
-這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。
-但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。
-這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
-@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
-「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2012-05-16 00:00:00 +0800 CST'>May 16, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）塵埃" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

@@ -133,6 +133,26 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>深入理解 Linux fontconfig 第二部分
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
+前面说到了 FcConfigSubstitute这个函数，它实际封装了：
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
+它先是获取了 config：
+config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+FcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：
+FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：
+config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-11-25 19:17:09 +0800 CST'>November 25, 2022</span></footer>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第二部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>深入理解 Linux fontconfig 第一部分
     </h2>
   </header>
@@ -269,20 +289,6 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
   </div>
   <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
   <a class="entry-link" aria-label="post link to Introducing the brand new nodejs packaging" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>本周开发札记
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>盘点一下本周自己在 openSUSE 上面做的工作：
-解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
-对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 本周开发札记" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深入理解 Linux fontconfig 第二部分 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
+前面说到了 FcConfigSubstitute这个函数，它实际封装了：
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
+它先是获取了 config：
+config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+FcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：
+FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：
+config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="深入理解 Linux fontconfig 第二部分" />
+<meta property="og:description" content="这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
+前面说到了 FcConfigSubstitute这个函数，它实际封装了：
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
+它先是获取了 config：
+config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+FcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：
+FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：
+config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-25T19:17:09+08:00" />
+<meta property="article:modified_time" content="2022-11-25T19:17:09+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解 Linux fontconfig 第二部分"/>
+<meta name="twitter:description" content="这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
+前面说到了 FcConfigSubstitute这个函数，它实际封装了：
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
+它先是获取了 config：
+config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+FcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：
+FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：
+config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "深入理解 Linux fontconfig 第二部分",
+      "item": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解 Linux fontconfig 第二部分",
+  "name": "深入理解 Linux fontconfig 第二部分",
+  "description": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.",
+  "keywords": [
+    
+  ],
+  "articleBody": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：\nFcConfig * FcInitLoadOwnConfigAndFonts (FcConfig *config) { config = FcInitLoadOwnConfig (config); if (!config) return 0; if (!FcConfigBuildFonts (config)) { FcConfigDestroy (config); return 0; } return config; } 它首先是使用 FcInitLoadOwnConfig 去加载默认 config，然后看看默认 config 能否 FcConfigBuildFonts，如果能就返回。\nFcInitLoadOwnConfig 这个函数非常大，但是由于前面传过来的是 NULL, 理解起来反而更简单。它其实就是生成了一份默认的什么都没有但是能相应各种请求的 FcConfig，内容就是这样：\nFC_DEFAULT_FONTS fonts \" FC_CACHEDIR \" fontconfig \" CONFIGDIR \" fontconfig/conf.d fontconfig/fonts.conf 重要的反而是 FcConfigBuildFonts。而后者里面最重要的函数是 FcConfigAddDirList 。接着最重要的是 FcDirCacheRead-\u003eFcDirCacheScan-\u003eFcDirScanConfig-\u003e FcFileScanConfig -\u003e FcFileScanFontConfig。\nFcFileScanFontConfig 这个函数是一个非常重要的底层函数，因为它有：\nif (!FcFreeTypeQueryAll (file, -1, NULL, NULL, set)) 去真正的扫描字体文件，并且对扫描出的 FontSet 逐个有：\nif (config \u0026\u0026 !FcConfigSubstitute (config, font, FcMatchScan)) 也就是应用 规则。而我们的 charset minus 应用的正是 scan 规则。而后面：\nif (FcDebug() \u0026 FC_DBG_SCANV) { printf (\"Final font pattern:\\n\"); FcPatternPrint (font); } 也给了我们一个搜索点 Final font pattern来确定 scan 规则是否应用成功。但是由于没有 FcCharsetPrint只有 FcPatternPrint，我们很难精确的在输出中看到 charset 的。\n至此我们的函数理解阶段就到此为止了。因为我们能够确定：\n只要传递给 FcConfigSubstitute 中的 config 是 0，那么一定能够得到应用了 charset minus 方法后的字体。\n结论 首先，我们之前一直在说 fontconfig 的 scan 阶段生成的是一个无序列表，实际上不对。\n它的 directory 是严格按照 config-\u003efontDirs的顺序来的，而每个文件夹中字体文件的扫描顺序是：\n/* * Sort files to make things prettier */ qsort(files-\u003estrs, files-\u003enum, sizeof(FcChar8 *), cmpstringp); 它实际上是 strcmp 的顺序。可以在 fcdir.c 里看到。\n其次， scan-\u003epattern-\u003efont 的 match 顺序还是正确的。\n再次，通过 FcFontList 带 objectset 的方式和 FcConfigSubstitute传空 config（第一个参数为 0）的方式都可以获取到应用了 charset minus 方法的字体。\n最后，使用以上方法，字体缓存中就是应用了 charset minus 方法的字体，最终返回的 font_pattern 的 charset 里也没有被减掉的字符。但是如果没有使用以上方法，FcInitLoadOwnConfig 就会跳转到下一段去，解析它提供的 config，那么比如缓存文件夹就可能会与系统的不同，那它缓存文件怎么来的就不好说了…再换句话说，config 用没用系统的都不好说呢。\n后续 原理部分讲完了。下一篇我们就该继续前面的 Chromium 话题了。因为 Chromium 给 FcConfigSubstitute 传的 config 不是 0 而是它自己的：\nFcConfig* config = GetGlobalFontConfig(); 敬请期待。\n",
+  "wordCount" : "273",
+  "inLanguage": "en",
+  "datePublished": "2022-11-25T19:17:09+08:00",
+  "dateModified": "2022-11-25T19:17:09+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      深入理解 Linux fontconfig 第二部分
+    </h1>
+    <div class="post-meta"><span title='2022-11-25 19:17:09 +0800 CST'>November 25, 2022</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>这是深入理解 Linux fontconfig 系列的第二部分，第一部分请<a href="https://marguerite.su/posts/getting_to_know_fontconfig_part_one/">移步</a>。</p>
+<p>前面说到了 <code>FcConfigSubstitute</code>这个函数，它实际封装了：</p>
+<pre><code>FcConfigSubstituteWithPat (FcConfig    *config,
+		   FcPattern   *p,
+		   FcPattern   *p_pat,
+		   FcMatchKind kind)
+{
+</code></pre>
+<p>这不过第二个 p_pat 是 0。</p>
+<p>整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在<a href="https://github.com/freedesktop/fontconfig/blob/master/src/fccfg.c">这里</a>。</p>
+<p>它先是获取了 config：</p>
+<pre><code>config = FcConfigReference (config);
+</code></pre>
+<p>然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。</p>
+<h2 id="fcconfigreference">FcConfigReference<a hidden class="anchor" aria-hidden="true" href="#fcconfigreference">#</a></h2>
+<p>实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：</p>
+<pre><code>FcConfig* config = GetGlobalFontConfig();
+</code></pre>
+<p>实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：</p>
+<pre><code>config = FcInitLoadConfigAndFonts ();
+</code></pre>
+<p>这个函数在 <a href="https://github.com/freedesktop/fontconfig/blob/6f27f42e6140030715075aa3bd3e5cc9e2fdc6f1/src/fcinit.c">fcinit.c</a>。实际封装了 <code>FcInitLoadOwnConfigAndFonts(NULL) </code>。这个函数长这样：</p>
+<pre><code>FcConfig *
+FcInitLoadOwnConfigAndFonts (FcConfig *config) {
+    config = FcInitLoadOwnConfig (config);
+    if (!config)
+      return 0;
+    if (!FcConfigBuildFonts (config)) {
+      FcConfigDestroy (config);
+      return 0;
+    }
+    return config;
+}
+</code></pre>
+<p>它首先是使用 <code>FcInitLoadOwnConfig</code> 去加载默认 config，然后看看默认 config 能否 <code>FcConfigBuildFonts</code>，如果能就返回。</p>
+<p><code>FcInitLoadOwnConfig</code> 这个函数非常大，但是由于前面传过来的是 NULL, 理解起来反而更简单。它其实就是生成了一份默认的什么都没有但是能相应各种请求的 FcConfig，内容就是这样：</p>
+<pre><code> &lt;fontconfig&gt;
+ FC_DEFAULT_FONTS
+ &lt;dir prefix=\&quot;xdg\&quot;&gt;fonts&lt;/dir&gt;
+ &lt;cachedir&gt;&quot; FC_CACHEDIR &quot;&lt;/cachedir&gt;
+ &lt;cachedir prefix=\&quot;xdg\&quot;&gt;fontconfig&lt;/cachedir&gt;
+ &lt;include ignore_missing=\&quot;yes\&quot;&gt;&quot; CONFIGDIR &quot;&lt;/include&gt;
+ &lt;include ignore_missing=\&quot;yes\&quot; prefix=\&quot;xdg\&quot;&gt;fontconfig/conf.d&lt;/include&gt;
+ &lt;include ignore_missing=\&quot;yes\&quot; prefix=\&quot;xdg\&quot;&gt;fontconfig/fonts.conf&lt;/include&gt;
+&lt;/fontconfig&gt;
+</code></pre>
+<p>重要的反而是 <code>FcConfigBuildFonts</code>。而后者里面最重要的函数是 <code>FcConfigAddDirList </code>。接着最重要的是 <code> FcDirCacheRead</code>-&gt;<code>FcDirCacheScan</code>-&gt;<code>FcDirScanConfig</code>-&gt; <code>FcFileScanConfig </code>-&gt; <code>FcFileScanFontConfig</code>。</p>
+<h2 id="fcfilescanfontconfig">FcFileScanFontConfig<a hidden class="anchor" aria-hidden="true" href="#fcfilescanfontconfig">#</a></h2>
+<p>这个函数是一个非常重要的底层函数，因为它有：</p>
+<pre><code>if (!FcFreeTypeQueryAll (file, -1, NULL, NULL, set))
+</code></pre>
+<p>去真正的扫描字体文件，并且对扫描出的 FontSet 逐个有：</p>
+<pre><code>if (config &amp;&amp; !FcConfigSubstitute (config, font, FcMatchScan))
+</code></pre>
+<p>也就是应用 <code>&lt;match target=&quot;scan&quot;&gt;</code> 规则。而我们的 charset minus 应用的正是 scan 规则。而后面：</p>
+<pre><code>if (FcDebug() &amp; FC_DBG_SCANV)
+{
+    printf (&quot;Final font pattern:\n&quot;);
+    FcPatternPrint (font);
+}
+</code></pre>
+<p>也给了我们一个搜索点 <code>Final font pattern</code>来确定 <code>scan</code> 规则是否应用成功。但是由于没有 <code>FcCharsetPrint</code>只有 <code>FcPatternPrint</code>，我们很难精确的在输出中看到 charset 的。</p>
+<p>至此我们的函数理解阶段就到此为止了。因为我们能够确定：</p>
+<p><strong>只要传递给 FcConfigSubstitute 中的 config 是 0，那么一定能够得到应用了 charset minus 方法后的字体。</strong></p>
+<h2 id="结论">结论<a hidden class="anchor" aria-hidden="true" href="#结论">#</a></h2>
+<p>首先，我们之前一直在说 fontconfig 的 scan 阶段生成的是一个<code>无序列表</code>，实际上不对。</p>
+<p>它的 directory 是严格按照 <code>config-&gt;fontDirs</code>的顺序来的，而每个文件夹中字体文件的扫描顺序是：</p>
+<pre><code> /*
+ * Sort files to make things prettier
+ */
+qsort(files-&gt;strs, files-&gt;num, sizeof(FcChar8 *), cmpstringp);
+</code></pre>
+<p>它实际上是 <a href="https://www.programiz.com/c-programming/library-function/string.h/strcmp">strcmp</a> 的顺序。可以在 fcdir.c 里看到。</p>
+<p>其次， <code>scan-&gt;pattern-&gt;font</code> 的 match 顺序还是正确的。</p>
+<p>再次，通过 FcFontList 带 <code>objectset</code> 的方式和 <code>FcConfigSubstitute</code>传空 config（第一个参数为 0）的方式都可以获取到应用了 charset minus 方法的字体。</p>
+<p>最后，使用以上方法，字体缓存中就是应用了 charset minus 方法的字体，最终返回的 font_pattern 的 charset 里也没有被减掉的字符。但是如果没有使用以上方法，<code>FcInitLoadOwnConfig</code> 就会跳转到下一段去，解析它提供的 config，那么比如缓存文件夹就可能会与系统的不同，那它缓存文件怎么来的就不好说了&hellip;再换句话说，config 用没用系统的都不好说呢。</p>
+<h2 id="后续">后续<a hidden class="anchor" aria-hidden="true" href="#后续">#</a></h2>
+<p>原理部分讲完了。下一篇我们就该继续前面的 Chromium 话题了。因为 Chromium 给 <code>FcConfigSubstitute</code> 传的 config 不是 0 而是它自己的：</p>
+<pre><code>FcConfig* config = GetGlobalFontConfig();
+</code></pre>
+<p>敬请期待。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
