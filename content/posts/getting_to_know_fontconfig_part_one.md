@@ -91,9 +91,9 @@ draft: false
     
 得到 FontSet。
 
-FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这里的 config 是 `config = FcConfigReference (config);` 但很明显我们传给它的 config 是 0 所以没什么用。`sets` 和 `nsets`是 FcFontList 里定义的并传过来的，我们传过来的 `pattern` 和 `objectset` 在这里起到的是筛选的作用，如果 `sets->fonts[n]` 不满足 pattern，loop 就会 continue, 相当于是丢弃了这个 font。
+FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这里的 config 是 `config = FcConfigReference (config);`, `sets` 和 `nsets`是 FcFontList 里定义的并传过来的，我们传过来的 `pattern` 和 `objectset` 在这里起到的是筛选的作用，如果 `sets->fonts[n]` 不满足 pattern，loop 就会 continue, 相当于是丢弃了这个 font。
 
-这个 FcFontSetList 函数下次使用 `os` 是在 `if (!FcListAppend (&table, s->fonts[f], os, lang))` (如果没有 os，FcFontSetList 在前面会创建一个空的 os)。这里的 `&table` 是 `FcListHashTable`, 最终是通过 `FcFontSetAdd` 把 table 里的 font 加到 ` ret = FcFontSetCreate();` 这个新建的 FontSet 中并返回这个新建的 ret，作为 FcFontList 返回的 FontSet。
+而 `FcFontSetList` 使用 `os` 是在 `if (!FcListAppend (&table, s->fonts[f], os, lang))` (如果没有 os，FcFontSetList 在前面会创建一个空的 os)。这里的 `&table` 是 `FcListHashTable`, 最终是通过 `FcFontSetAdd` 把 table 里的 font 加到 ` ret = FcFontSetCreate();` 这个新建的 FontSet 中并返回这个新建的 ret，作为 FcFontList 返回的 FontSet。
 
 所以这里 `FcListAppend` 的作用是通过 `objectset` 和 `lang` 去判断这个字体可不可以加入到最终的 FontSet。后面再深入的代码我们就不继续看了。下面是结论：
 
