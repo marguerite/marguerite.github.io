@@ -436,18 +436,6 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
     </item>
     
     <item>
-      <title>[Solved] btrfs 开机 initramfs 加载时间过长</title>
-      <link>https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/</link>
-      <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
-      
-      <guid>https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/</guid>
-      <description>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
-最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
-这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
-中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。</description>
-    </item>
-    
-    <item>
       <title>当梦想照进现实  记 Ubuntu Tweak 的烂尾</title>
       <link>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</link>
       <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
@@ -458,6 +446,18 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 针对超级大牛：SuSE/RedHat -&amp;gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&amp;gt; Canonical -&amp;gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&amp;gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&amp;gt; forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&amp;gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &amp;lt;-&amp;gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
 其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
 主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。</description>
+    </item>
+    
+    <item>
+      <title>解决 btrfs 开机 initramfs 加载时间过长</title>
+      <link>https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/</link>
+      <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/</guid>
+      <description>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
+最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
+这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
+中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。</description>
     </item>
     
     <item>

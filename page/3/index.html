@@ -281,21 +281,6 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>[Solved] btrfs 开机 initramfs 加载时间过长
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
-最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
-这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000&#43;ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
-中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to [Solved] btrfs 开机 initramfs 加载时间过长" href="https://marguerite.github.io/posts/solved_btrfs_%E5%BC%80%E6%9C%BA_initramfs_%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>当梦想照进现实  记 Ubuntu Tweak 的烂尾
     </h2>
   </header>
@@ -308,6 +293,21 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
   </div>
   <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
   <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>解决 btrfs 开机 initramfs 加载时间过长
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。
+最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）
+这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000&#43;ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。
+中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
+  <a class="entry-link" aria-label="post link to 解决 btrfs 开机 initramfs 加载时间过长" href="https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
