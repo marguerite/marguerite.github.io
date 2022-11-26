@@ -41,15 +41,15 @@ draft: false
 
 以上 charset minus 的方法源于我（可能也是大多数人）的一个朴素假设：
 
-**fontconfig 的工作流程是先取系统上安装的全部字体，生成一个无序列表，然后通过 pattern match 调整这个列表，最后使用 font match 调整最终列表中字体的属性，返回给调用它的程序使用**。
+**fontconfig 的工作流程是先扫描(`scan match`)系统上安装的全部字体，生成一个列表，然后通过 pattern match 调整这个列表，最后使用 font match 调整最终列表中字体的属性，返回给调用它的程序使用**。
 
 换句话说，我们假设的是，程序调用 fontconfig 是调用一个完整的工作流，最终返回给程序的字体中没有这个被减掉的 charset。返回的字体可以是 fontconfig 的缓存，也可以是真实的字体但同时返回的字体 charset 属性中没有这个被减掉的 charset，导致程序通过通过 charset 匹配 text 的阶段会失败，从而不去使用这个字体去显示这个字符。
 
 当然了，fontconfig 毕竟不是 fontforge 这样的字体编辑程序，真实的在硬盘上的字体文件里这个字符肯定还是存在的。也许是 fontconfig 在缓存 binary data 的时候就去掉了这个 charset，也许只是在字体属性中去掉了。
 
-但很可惜，这个假设通过我的 debug 发现它，**对也不对**。对的地方是在 fontconfig 自己的 utilities 比如 fc-match, fc-list 里，它是对的。错的地方是在别的程序里，调用方式的不同导致这个工作流**很可能**被掐头去尾取中间了。也就是说别的程序可能只是使用了 fontconfig 的 pattern match 阶段，得到字体就万事大吉了。后面的 font match 阶段可能根本就没有用（这个存疑，目前还没有 debug 到这里）。
+但很可惜，这个假设通过我的 debug 发现它，**对也不对**。对的地方是在 fontconfig 自己的 utilities 比如 fc-match, fc-list 里，它是对的。错的地方是在别的程序里，调用方式的不同导致这个工作流**很可能**被掐头去尾取中间了。也就是说别的程序可能只是使用了 fontconfig 的 pattern match 阶段，得到字体就万事大吉了。前面的 scan match、后面的 font match 可能根本就没有用（这个存疑，目前还没有 debug 到这里）。
 
-## 可能是正确的获取字体的方式（以 fc-list 为例）
+## 薛定谔的 FontSet
 
 我们前面文章已经说过了，测试 charset minus 方法是否成功的方式有一种是使用：
 
@@ -58,12 +58,12 @@ draft: false
 而我还看到过一种方式，就是依云的[
 使用 fontconfig 进行字体查询](https://blog.lilydjwg.me/2011/10/23/use-fontconfig-to-query-font.30393.html)。
 
-首先我复制了一份 [fc-list.c](https://github.com/freedesktop/fontconfig/blob/master/fc-list/fc-list.c) 的代码（不到没有办法肯定不能 runtime 改系统的 fontconfig 啊），改了以下地方：
+首先我复制了一份 [fc-list.c](https://github.com/freedesktop/fontconfig/blob/master/fc-list/fc-list.c) 的代码（不到万不得已肯定不能 runtime 改系统的 fontconfig 啊），改了以下地方：
 
-    + printf("%d\n", i);
-    + printf("%d\n", argc);
-    + printf("%s\n", argv[1]);
-    + printf("%s\n", argv[2]);
+    printf("%d\n", i);
+    printf("%d\n", argc);
+    printf("%s\n", argv[1]);
+    printf("%s\n", argv[2]);
     if (argv[i]) { 
       pat = FcNameParse ((FcChar8 *) argv[i]);
       if (!pat) {
@@ -99,11 +99,10 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
 
 **通过 `pattern` 和 `objectset` 一起得到的 FontSet 会得到应用了 charset minus 的结果。**
 
-说人话就是**显式地使用 `:charset=0x2122` 去要求 charset 就会得到精确的减除 charset 后的字体。**
+说人话就是**显式地使用 `:charset=0x2122` 就一定会得到精确的含有某个 charset 的字体，即返回结果去掉了减除该 charset 的字体。**不显式使用 `:charset=0x2122` 返回 `Noto Sans CJK SC` 也符合 `fc-list` 的初衷，你不要 charset 只要 Noto Sans CJK SC 肯定会给你返回它。
 
-那么隐含式的调用呢？我们来看依云的代码（我做了截取）：
+那么隐式的调用呢？我们来看依云的代码：
 
-    int main(int argc, char **argv) {
       FcFontSet* fs = NULL;
       FcPattern* pat = NULL;
       FcObjectSet* os = NULL;
@@ -112,11 +111,33 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
       pat = FcNameParse(strpat);
       os = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char *)0);
       fs = FcFontList(0, pat, os);
+
+
+他这里的 os 相当于是新建的空 ObjectSet，所以他最终的 FontSet 里面包含了 "Noto Sans CJK SC"。下面的 `FcPatternGetCharSet` 取的 Charset，却包含了 TM 字符：
+
+    if(FcPatternGetCharSet(fs->fonts[i], FC_CHARSET, 0, &cs) != FcResultMatch){
+
+这就有点不对了啊。因为我们如果显式去使用 `objectset`，是对 FontSet 进行修改，如果 FontSet 里的 `Noto Sans CJK SC`含有这个 charset 肯定不会去掉它的。但隐式地先取到 FontSet，再去调用 `FcPatternGetCharset`，得到的结果确是 FontSet 里含有这个 charset。
+
+    FcResult
+    FcPatternGetCharSet(const FcPattern *p, const char *object, int id, FcCharSet **c) {
+      FcValue	v;
+      FcResult	r;
+
+      r = FcPatternGet (p, object, id, &v);
+      if (r != FcResultMatch)
+	    return r;
+      if (v.type != FcTypeCharSet)
+        return FcResultTypeMismatch;
+      *c = (FcCharSet *)v.u.c;
+      return FcResultMatch;
     }
 
-他这里的 os 相当于是新建的空 ObjectSet，所以他最终的 FontSet 里面包含了 "Noto Sans CJK SC"。下面的 `FcPatternGetCharSet` 取的是真实字体的 Charset，也包含了 TM 字符。这在 `FcCharSetHasChar` 也得到了验证。
+同时，`FcPatternGetCharset` 是一个 get 函数，是不会修改 FontSet 的。
 
-换句话说，如果想要取得 fontconfig 的 font match 结果后的字体，这个程序要改为使用 `objectset`，即：
+这个就只能留着后续研究了。只能暂时说隐式调用不行。
+
+换句话说，如果想要取得应用 charset minus 方法后的字体，这个程序要改为使用 `objectset`，即：
 
     int main(int argc, char **argv) {
       FcFontSet* fs = NULL;
@@ -130,11 +151,9 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
       fs = FcFontList(0, pat, os);
     }
 
-以上对 fc-list.c 和依云的 demo 的分析验证了上面假设中最没有用一部分，即：**真实的在硬盘上的字体文件里这个字符肯定还是存在的**。同时也说明了另一个事情：`FcPatternGetCharset`获取字体 charsets 是严格依赖喂给它的 FontSet，也就是 `FcFontList` 的结果的。
+## fc-match 分析
 
-## fc-match 分析验证
-
-双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)对 fc-match 已经有过一些分析了，比如 FcConfigSubstitute 是最重要的函数，但并不宏观。
+双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)对 fc-match 已经有过一些分析了，比如 FcConfigSubstitute 是最重要的函数。
 
 fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `objectset`。
 
@@ -145,11 +164,7 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
     
     fs = FcFontSetCreate ();
 
-可以看到，它的 FontSet 是在最主要的函数执行过后才创建的，我们可以理解为是最终返回的那个新 FontSet。
-
-再往下是双猫说过的分别针对 sort/all 和什么都不给默认是 match 的处理，主要是调用 `FcFontSort` 和 `FcFontMatch`得到 font_pattern，然后通过 `FcFontSetAdd` 加入到 FontSet。唯一不同的是 `FcFontSort` 后调用了一次 `FcFontRenderPrepare`。
-
-再往下，我们发现 `pat` 被 `FcPatternDestroy`毁掉了！
+再往下是双猫说过的分别针对 sort/all 和默认 match 的处理，主要是调用 `FcFontSort` 和 `FcFontMatch`得到 font_pattern，然后通过 `FcFontSetAdd` 加入到 FontSet。
 
 然后是针对得到的 FontSet 逐个的应用 `FcPatternFilter`：
 
@@ -168,11 +183,11 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
     
 就会返回空了。
 
-以上验证阶段说明了我们前面关于 `ObjectSet` 的论断是正确的，只有显式的给，它才会用。同时也说明了，在 fontconfig 自己这边，charset minus 方法是尊重的。
+以上分析说明了我们前面关于 `ObjectSet` 的论断是正确的，显式的给，它才会用。同时也说明了，在 fontconfig 自己这边，charset minus 方法是部分尊重的。
 
-但是也引入了更多的问题，比如，fc-match 里面没有看到 `FcFontList` 函数，它的 FontSet 完全是根据 `FcConfigSubstitute` 的结果做的。那么系统上的字体是在 FcConfigSubstitute 的哪步加进来的呢？
+但还是没有能够说明 FontSet 里时在时不在的 charset 问题。也引入了更多的问题，比如，fc-match 里面没有看到 `FcFontList` 函数，它的 FontSet 完全是根据 `FcConfigSubstitute` 的结果做的。那么系统上的字体是在 FcConfigSubstitute 的哪步加进来的呢？
 
-我们也看到了加了 `ObjectSet` 去匹配是返回空的，也就是说，我们的 FontSet 里面的字体确实是没有 `charset=0x2122` 这个字符的，charset minus 方法确实是成功的。FontSet 最早肯定是系统上安装的真实字体形成的，那么是哪步把这个 charset 删掉的呢？在缓存里？还是在字体属性里？而且这中间只经历了一次 `FcConfigSubstitute`，是不是可以说 `FcConfigSubstitute` 本身在进行 pattern match 的时候就也应用了 font match 的规则呢？ 
+我们也看到了加了 `ObjectSet` 去匹配是返回空的，也就是说，我们的 FontSet 里面的字体应该是没有 `charset=0x2122` 这个字符的。FontSet 肯定是系统上安装的真实字体形成的，那么是哪步把这个 charset 删掉的呢？在缓存时？还是在字体属性里？而且这中间只经历了一次 `FcConfigSubstitute`，是不是可以说 `FcConfigSubstitute` 本身在进行 pattern match 的时候就也应用了 scan match 和 font match 的规则呢？ 
 
 ## Chromium/Chrome 在 Linux 上查找字体的方式
 

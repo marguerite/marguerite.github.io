@@ -20,7 +20,7 @@ draft: false
 
     config = FcConfigReference (config);
  
-然后针对 FcMatchPattern 这个 kind 先往 pattern *p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
+然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。
 
 ## FcConfigReference
 
@@ -72,23 +72,126 @@ draft: false
 
     if (config && !FcConfigSubstitute (config, font, FcMatchScan))
     
-也就是应用 `<match target="scan">` 规则。而我们的 charset minus 应用的正是 scan 规则。而后面：
+也就是应用 `<match target="scan">` 规则。而我们的 charset minus 应用的正是 scan 规则。
 
-	if (FcDebug() & FC_DBG_SCANV)
-	{
-	    printf ("Final font pattern:\n");
-	    FcPatternPrint (font);
-	}
-	
-也给了我们一个搜索点 `Final font pattern`来确定 `scan` 规则是否应用成功。但是由于没有 `FcCharsetPrint`只有 `FcPatternPrint`，我们很难精确的在输出中看到 charset 的。
+这里要特殊说一下，就是以上流程是在假设没有 `cache` 的情况下才会发生的，如果有 `cache`，那么到了 `FcDirCacheRead` 那步就是读取 `cache` 了。所以上面分析的过程相当于：
 
-至此我们的函数理解阶段就到此为止了。因为我们能够确定：
+     su
+     FC_DEBUG=256 fc-cache -f
+     exit
+     fc-match blabla
 
-**只要传递给 FcConfigSubstitute 中的 config 是 0，那么一定能够得到应用了 charset minus 方法后的字体。**
+至此我们的函数理解阶段就告一段落了。因为我们能够确定：
 
+**只要传递给 FcConfigReference 中的 config 是 0，那么一定能够得到应用了 `<match target="scan">` 后的字体。**
+
+## 验证 FcConfigReference
+
+魔改了一下依云的代码：
+
+    #include<stdio.h>
+    #include<fontconfig/fontconfig.h>
+
+    int main(int argc, char **argv){
+      FcFontSet* fs = FcFontSetCreate();
+      FcPattern* pat;
+      
+      FcChar8* strpat = (FcChar8*)":lang=zh";
+      pat = FcNameParse(strpat);
+
+      FcConfigSubstitute(0, pat, FcMatchPattern);
+      FcDefaultSubstitute(pat);
+
+      FcResult ret;
+      FcFontSet* font_patterns = FcFontSort(0, pat, FcFalse, 0, &ret);
+
+      int j;
+      for (j = 0; j < font_patterns->nfont; j++) {
+        FcPattern* font_pattern = FcFontRenderPrepare(NULL, pat, font_patterns->fonts[j]);
+        if (font_pattern) {
+          FcFontSetAdd(fs, font_pattern);
+        }
+      }
+
+      FcFontSetSortDestroy(font_patterns);
+      FcPatternDestroy(pat);
+
+      FcChar8 *family;
+      FcChar8 *file;
+      FcCharSet* cs;
+      FcChar32 ch;
+      FcUtf8ToUcs4((FcChar8*)"™", &ch, 3);
+      
+      int i;
+      for(i=0; i<fs->nfont; i++){
+        if(FcPatternGetCharSet(fs->fonts[i], FC_CHARSET, 0, &cs) != FcResultMatch){
+          fprintf(stderr, "no match\n");
+          FcPatternPrint(fs->fonts[i]);
+          goto nofont;
+        }
+        if(FcPatternGetString(fs->fonts[i], FC_FAMILY, 1, &family) != FcResultMatch)
+          if(FcPatternGetString(fs->fonts[i], FC_FAMILY, 0, &family) != FcResultMatch)
+            goto nofont;
+          printf("[%d] %s ", i, (char *)family);
+        if(FcPatternGetString(fs->fonts[i], FC_FILE, 0, &file) != FcResultMatch)
+          goto nofont;
+        printf("(%s): ", (char *)file);
+        if(FcCharSetHasChar(cs, ch)){
+          puts("Yes");
+        } else {
+          puts("No");
+        }
+    }
+
+    FcFontSetDestroy(fs);
+
+    return 0;
+
+    nofont:
+       return 1;
+    }
+
+编译运行：
+
+    gcc -o test1 test1.c -lfontconfig
+    ./test1 | grep "Noto Sans CJK SC"
+结果：
+
+    [0] Noto Sans CJK SC (/usr/share/fonts/truetype/NotoSansCJKsc-Regular.otf): Yes
+
+ 居然还在！
+ 
+其实这不奇怪，首先我们只是知道了给 `FcConfigReference` 传 0 会得到应用 `<match target="scan"` 的结果，结果里面是否成功去掉了 charset，我们没有验证。其次，前面我们说 `FcFontList`的时候提到的 config 其实也是传了 0 的，但最后没应用 `objectset` 得到的结果也是还有 `Noto Sans CJK SC` ，这是符合 `FcFontList` 的，因为你并没有精确的要 `:charset=0x2122`，但是后面 `FcPatternGetCharset` 的结果里含有 `charset=0x2122` 这就不对了。因为我们现在已经知道了 FontSet 是应用过 `<match target="scan">` 的，它里面不应该含有这个 charset。而 `FcPatternGetCharset` 又是不会修改喂给它的 FontSet 的：
+ 
+    FcResult
+    FcPatternGetCharSet(const FcPattern *p, const char *object, int id, FcCharSet **c) {
+      FcValue	v;
+      FcResult	r;
+
+      r = FcPatternGet (p, object, id, &v);
+      if (r != FcResultMatch)
+	    return r;
+      if (v.type != FcTypeCharSet)
+        return FcResultTypeMismatch;
+      *c = (FcCharSet *)v.u.c;
+      return FcResultMatch;
+    }
+ 
+第三，也有可能是 `FcDefaultSubstitute`、`FcFontSort`、`FcFontRenderPrepare`这其中一个调整过 charset，把它给恢复了。但不可能。我在调用 `FcFontSort` 的时候 `trim` 选项给的是 `FcFalse`，不会改。`FcDefaultSubstitute` 大家都摸得很透了，就是添加一些默认的 slant、weight 之类的，`FcFontRenderPrepare` 通篇也都在围绕 lang、size 这些做文章，根本就没碰 charset。
+ 
+也就是说：
+
+    if (config && !FcConfigSubstitute (config, font, FcMatchScan))
+    
+这里可能是应用了，但有没有应用成功。那我们就只能魔改这个函数让它吐前后的 charset 来验证了。
+
+## 魔改 FcFileScanFontConfig
+
+暂未完成
+ 
 ## 结论
 
-首先，我们之前一直在说 fontconfig 的 scan 阶段生成的是一个`无序列表`，实际上不对。
+首先，我们之前说 fontconfig 的 scan 阶段生成的是一个`无序列表`，实际上不对。
 
 它的 directory 是严格按照 `config->fontDirs`的顺序来的，而每个文件夹中字体文件的扫描顺序是：
 

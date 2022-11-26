@@ -1,5 +1,5 @@
 ---
-title: "[Solved] btrfs 开机 initramfs 加载时间过长"
+title: "解决 btrfs 开机 initramfs 加载时间过长"
 date: 2012-10-20T00:00:00+08:00
 draft: false
 ---
