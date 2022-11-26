@@ -161,23 +161,7 @@ draft: false
 
  居然还在！
  
-其实这不奇怪，首先我们只是知道了给 `FcConfigReference` 传 0 会得到应用 `<match target="scan"` 的结果，结果里面是否成功去掉了 charset，我们没有验证。其次，前面我们说 `FcFontList`的时候提到的 config 其实也是传了 0 的，但最后没应用 `objectset` 得到的结果也是还有 `Noto Sans CJK SC` ，这是符合 `FcFontList` 的，因为你并没有精确的要 `:charset=0x2122`，但是后面 `FcPatternGetCharset` 的结果里含有 `charset=0x2122` 这就不对了。因为我们现在已经知道了 FontSet 是应用过 `<match target="scan">` 的，它里面不应该含有这个 charset。而 `FcPatternGetCharset` 又是不会修改喂给它的 FontSet 的：
- 
-    FcResult
-    FcPatternGetCharSet(const FcPattern *p, const char *object, int id, FcCharSet **c) {
-      FcValue	v;
-      FcResult	r;
-
-      r = FcPatternGet (p, object, id, &v);
-      if (r != FcResultMatch)
-	    return r;
-      if (v.type != FcTypeCharSet)
-        return FcResultTypeMismatch;
-      *c = (FcCharSet *)v.u.c;
-      return FcResultMatch;
-    }
- 
-第三，也有可能是 `FcDefaultSubstitute`、`FcFontSort`、`FcFontRenderPrepare`这其中一个调整过 charset，把它给恢复了。但不可能。我在调用 `FcFontSort` 的时候 `trim` 选项给的是 `FcFalse`，不会改。`FcDefaultSubstitute` 大家都摸得很透了，就是添加一些默认的 slant、weight 之类的，`FcFontRenderPrepare` 通篇也都在围绕 lang、size 这些做文章，根本就没碰 charset。
+其实这不奇怪，首先我们只是知道了给 `FcConfigReference` 传 0 会得到应用 `<match target="scan"` 的结果，结果里面是否成功去掉了 charset，我们没有验证。其次，前面我们说 `FcFontList`的时候提到的 config 其实也是传了 0 的，但最后没应用 `objectset` 得到的结果也是还有 `Noto Sans CJK SC` ，这是符合 `FcFontList` 的，因为你并没有精确的要 `:charset=0x2122`，但是后面 `FcPatternGetCharset` 的结果里含有 `charset=0x2122` 这就不对了。第三，也有可能是 `FcDefaultSubstitute`、`FcFontSort`、`FcFontRenderPrepare`这其中一个调整过 charset，把它给恢复了。但不可能。我在调用 `FcFontSort` 的时候 `trim` 选项给的是 `FcFalse`，不会改。`FcDefaultSubstitute` 大家都摸得很透了，就是添加一些默认的 slant、weight 之类的，`FcFontRenderPrepare` 通篇也都在围绕 lang、size 这些做文章，根本就没碰 charset。
  
 也就是说：
 
@@ -187,9 +171,69 @@ draft: false
 
 ## 魔改 FcFileScanFontConfig
 
-暂未完成
+我们给 `FcFileScanFontConfig` 函数添加以下代码：
+
+    static FcBool
+    FcFileScanFontConfig (FcFontSet		*set,
+		      const FcChar8	*file,
+		      FcConfig		*config)
+    {
+        int		i;
+        FcBool	ret = FcTrue;
+        int		old_nfont = set->nfont;
+        const FcChar8 *sysroot = FcConfigGetSysRoot (config);
+
+        + FcChar8* family;
+        + FcCharSet* cs;
+        + FcCharSet* cs1;
+        + FcChar32 ch;
+        + FcUtf8ToUcs4((FcChar8*)"™", &ch, 3);
+然后在：
+
+    if (config && !FcConfigSubstitute (config, font, FcMatchScan))
  
-## 结论
+前后分别加上：
+
+    if (FcDebug() & FC_DBG_SCANV)
+    {
+      FcPatternGetString(font, FC_FAMILY, 0, &family);
+      printf ("%s\n", family);
+      printf("before match scan: ");
+      FcPatternGetCharSet(font, FC_CHARSET, 0, &cs);
+      if (FcCharSetHasChar(cs, ch)) {
+        printf("Yes\n");
+      } else {
+        printf("No\n");
+      }
+    }
+很简单吧，就是打印它前后进行 FcCharSetHasChar 的结果。然后编译，运行：
+
+    su
+    FC_DEBUG=256 fc-cache -f > fc-cache.txt
+结果：
+
+    Noto Sans CJK SC
+    before match scan: Yes
+    after match scan: Yes
+    Final font pattern:
+
+结果是应用前应用后都有这个字符。不死心？
+
+    Noto Sans CJK SC
+    before match scan: Yes
+    charset count: 44810
+    after match scan: Yes
+    charset count: 44810
+
+加了 `FcCharSetCount` 的结果。
+
+## 为什么？
+
+到这儿其实已经可以定义为一个 BUG 了。宣称 minus charset 最后却没有减。但我还是有兴趣继续 debug 一下 FcMatchScan 是怎么进行的。
+
+留个悬念吧，其实它不是 bug。详情见下篇分解。
+
+## 初步结论
 
 首先，我们之前说 fontconfig 的 scan 阶段生成的是一个`无序列表`，实际上不对。
 
@@ -204,15 +248,38 @@ draft: false
 
 其次， `scan->pattern->font` 的 match 顺序还是正确的。
 
-再次，通过 FcFontList 带 `objectset` 的方式和 `FcConfigSubstitute`传空 config（第一个参数为 0）的方式都可以获取到应用了 charset minus 方法的字体。
+再次，通过带 `objectset` 的方式可以获取到应用了 charset minus 方法后的字体。`FcConfigSubstitute` 传 0 这种方法暂时不行，不行的原因是 `<match target="scan">` 虽然应用了，但是没有影响到 pattern。
 
-最后，使用以上方法，字体缓存中就是应用了 charset minus 方法的字体，最终返回的 font_pattern 的 charset 里也没有被减掉的字符。但是如果没有使用以上方法，`FcInitLoadOwnConfig` 就会跳转到下一段去，解析它提供的 config，那么比如缓存文件夹就可能会与系统的不同，那它缓存文件怎么来的就不好说了...再换句话说，config 用没用系统的都不好说呢。
+最后，理论上，字体缓存中就是应用了 charset minus 方法的字体（我这边现在不是），最终返回的 font_pattern 的 charset 里也没有被减掉的字符（我这边现在也不是）。但是如果没有使用 `FcConfigSubstitute` 传 0 这种方法，`FcInitLoadOwnConfig` 就会跳转到下一段去，解析它提供的 config，那么比如缓存文件夹就可能会与系统的不同，那它缓存文件怎么来的就不好说了...再换句话说，config 用没用系统的都不好说呢。
 
-## 后续
+## 谈谈 Chromium 的 config
 
-原理部分讲完了。下一篇我们就该继续前面的 Chromium 话题了。因为 Chromium 给 `FcConfigSubstitute` 传的 config 不是 0 而是它自己的：
+原理部分讲完了。我们继续前面的 Chromium 话题。因为 Chromium 给 `FcConfigSubstitute` 传的 config 不是 0 而是它自己的：
 
     FcConfig* config = GetGlobalFontConfig();
-    
 
-敬请期待。
+而这个 GetGlobalFontConfig() 是在 [ui/gfx/linux/fontconfig_util.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/linux/fontconfig_util.cc) 里定义的：
+
+    GlobalFontConfig() {
+    // Without this call, the FontConfig library gets implicitly initialized
+    // on the first call to FontConfig. Since it's not safe to initialize it
+    // concurrently from multiple threads, we explicitly initialize it here
+    // to prevent races when there are multiple renderer's querying the library:
+    // http://crbug.com/404311
+    // Note that future calls to FcInit() are safe no-ops per the FontConfig
+    // interface.
+    FcInit();
+
+    // Increment the reference counter to avoid the config to be deleted while
+    // being used (see http://crbug.com/1004254).
+    fc_config_ = FcConfigGetCurrent();
+    FcConfigReference(fc_config_);
+
+    // Set rescan interval to 0 to disable re-scan. Re-scanning in the
+    // background is a source of thread safety issues.
+    // See in http://crbug.com/1004254.
+    FcBool result = FcConfigSetRescanInterval(fc_config_, 0);
+    DCHECK_EQ(result, FcTrue);
+    }
+
+实际上是调用了 `FcConfigGetCurrent`，最终还是会使用系统上的配置的，跟 0 没什么两样。只是它不再去 rescan 了。也就是说你可能每次改完 fontconfig 配置，恐怕得重启 chromium 并清空缓存而不是重开网页才能看见效果。

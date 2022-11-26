@@ -95,11 +95,11 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
 
 而 `FcFontSetList` 使用 `os` 是在 `if (!FcListAppend (&table, s->fonts[f], os, lang))` (如果没有 os，FcFontSetList 在前面会创建一个空的 os)。这里的 `&table` 是 `FcListHashTable`, 最终是通过 `FcFontSetAdd` 把 table 里的 font 加到 ` ret = FcFontSetCreate();` 这个新建的 FontSet 中并返回这个新建的 ret，作为 FcFontList 返回的 FontSet。
 
-所以这里 `FcListAppend` 的作用是通过 `objectset` 和 `lang` 去判断这个字体可不可以加入到最终的 FontSet。后面再深入的代码我们就不继续看了。下面是结论：
+所以这里 `FcListAppend` 的作用是通过 `objectset` 和 `lang` 去判断这个字体可不可以加入到最终的 FontSet。后面再深入的代码我们就不继续看了（最终也是调用到了 `FcPatternObjectFindElt`，看下面 `fc-match` 的分析）。下面是结论：
 
 **通过 `pattern` 和 `objectset` 一起得到的 FontSet 会得到应用了 charset minus 的结果。**
 
-说人话就是**显式地使用 `:charset=0x2122` 就一定会得到精确的含有某个 charset 的字体，即返回结果去掉了减除该 charset 的字体。**不显式使用 `:charset=0x2122` 返回 `Noto Sans CJK SC` 也符合 `fc-list` 的初衷，你不要 charset 只要 Noto Sans CJK SC 肯定会给你返回它。
+说人话就是**显式地使用 `:charset=0x2122` 就一定会得到精确的含有某个 charset 的字体，即返回结果去掉了减除该 charset 的字体**。不显式使用 `:charset=0x2122` 返回 `Noto Sans CJK SC` 也符合 `fc-list` 的初衷，你不要 charset 只要 Noto Sans CJK SC 肯定会给你返回它。
 
 那么隐式的调用呢？我们来看依云的代码：
 
@@ -135,7 +135,7 @@ FcFontList 会内部调用 `FcFontSetList (config, sets, nsets, p, os);`，这�
 
 同时，`FcPatternGetCharset` 是一个 get 函数，是不会修改 FontSet 的。
 
-这个就只能留着后续研究了。只能暂时说隐式调用不行。
+这个留着后续研究了。暂时只能说隐式调用不行。
 
 换句话说，如果想要取得应用 charset minus 方法后的字体，这个程序要改为使用 `objectset`，即：
 
