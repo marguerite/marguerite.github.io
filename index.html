@@ -127,6 +127,23 @@
 
 <article class="first-entry"> 
   <header class="entry-header">
+    <h2>深入理解 Linux fontconfig 第三部分
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&#34;scan&#34;&gt; 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-11-26 22:02:04 +0800 CST'>November 26, 2022</span></footer>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第三部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>深入理解 Linux fontconfig 第二部分
     </h2>
   </header>
@@ -155,7 +172,7 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit....</p>
 偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
 先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
 但是呢，实际上这种方法在现实中不怎么灵。
-&lt;match target=&#34;scan&#34;&gt; &lt;test name=&#34;family&#34;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&#34;charset&#34; mode=&#34;assign&#34;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset 的操作了，但是在 Chromium 浏览器中测试是这样的：...</p>
+&lt;match target=&#34;scan&#34;&gt; &lt;test name=&#34;family&#34;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&#34;charset&#34; mode=&#34;assign&#34;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-25 12:13:29 +0800 CST'>November 25, 2022</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第一部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/"></a>
@@ -269,20 +286,6 @@ Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章�
   </div>
   <footer class="entry-footer"><span title='2016-12-31 00:00:00 +0800 CST'>December 31, 2016</span></footer>
   <a class="entry-link" aria-label="post link to 30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格" href="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Introducing the brand new nodejs packaging
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn’t mean it’s dead. It’s actually evolving.
-Today the brand-new nodejs-packaging answers all the questions.
-For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:...</p>
-  </div>
-  <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to Introducing the brand new nodejs packaging" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

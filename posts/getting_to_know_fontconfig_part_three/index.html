@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深入理解 Linux fontconfig 第三部分 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="深入理解 Linux fontconfig 第三部分" />
+<meta property="og:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-26T22:02:04+08:00" />
+<meta property="article:modified_time" content="2022-11-26T22:02:04+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解 Linux fontconfig 第三部分"/>
+<meta name="twitter:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "深入理解 Linux fontconfig 第三部分",
+      "item": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解 Linux fontconfig 第三部分",
+  "name": "深入理解 Linux fontconfig 第三部分",
+  "description": "上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 \u0026lt;match target=\u0026quot;scan\u0026quot;\u0026gt; 虽然应用了，但是没有影响最终 FontSet 中 \u0026ldquo;Noto Scan CJK SC\u0026rdquo; 的 charset。\n我们这篇要继续 debug：\nFcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。\n无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。\n通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：\n/* different 'kind' won't be the target of edit */ if (!value[object] \u0026amp;\u0026amp; kind == r-\u0026gt;u.test-\u0026gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。",
+  "keywords": [
+    
+  ],
+  "articleBody": "上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。\n我们这篇要继续 debug：\nFcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。\n无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。\n通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：\n/* different 'kind' won't be the target of edit */ if (!value[object] \u0026\u0026 kind == r-\u003eu.test-\u003ekind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。\n正当我措手无策的时候，无意间看到了下面：\ncase FcOpAssignReplace: /* * Delete all of the values and insert * the new set */ FcConfigPatternDel (p, r-\u003eu.edit-\u003eobject, table); FcConfigPatternAdd (p, r-\u003eu.edit-\u003eobject, l, FcTrue, table); /* * Adjust a pointer into the value list as they no * longer point to anything valid */ value[object] = NULL; break; 这家伙是修改 pattern 的啊！\n语焉不详的文档 大家一定看到过文档中的这段：\nMode With Match Without Match --------------------------------------------------------------------- \"assign\" Replace matching value Replace all values \"assign_replace\" Replace all values Replace all values \"prepend\" Insert before matching Insert at head of list \"prepend_first\" Insert at head of list Insert at head of list \"append\" Append after matching Append at end of list \"append_last\" Append at end of list Append at end of list \"delete\" Delete matching value Delete all values \"delete_all\" Delete all values Delete all values 看起来 assign 和 assign_replace 看起来没差。\n但实际上差多了！\n我把我的代码换成：\nNoto Sans CJK SC charset 0x203c 0x2122 再跑：\nNoto Sans CJK SC before match scan: Yes charset count: 44810 after match scan: Yes charset count: 44809 成功去掉了一个字符！\n于是：\n如果是 ",
+  "wordCount" : "422",
+  "inLanguage": "en",
+  "datePublished": "2022-11-26T22:02:04+08:00",
+  "dateModified": "2022-11-26T22:02:04+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      深入理解 Linux fontconfig 第三部分
+    </h1>
+    <div class="post-meta"><span title='2022-11-26 22:02:04 +0800 CST'>November 26, 2022</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p><a href="https://marguerite.su/posts/getting_to_know_fontconfig_part_two/">上一篇</a>说到，我们 debug 了 <code>FcConfigSubstitute</code> 和 <code>FcConfigReference</code>，最后找到了 <code>FcFileScanFontConfig</code>，一番魔改后发现 <code>&lt;match target=&quot;scan&quot;&gt;</code> 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。</p>
+<p>我们这篇要继续 debug：</p>
+<pre><code>FcConfigSubstitute (config, font, FcMatchScan)
+</code></pre>
+<p><code>FcFileScanFontConfig</code> 中的这段代码。</p>
+<h2 id="无踪无迹的指针">无踪无迹的指针<a hidden class="anchor" aria-hidden="true" href="#无踪无迹的指针">#</a></h2>
+<p>我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 <code>FcConfigSubsitute</code>里找修改指针内容的部分就可以了。所以我们只需要关注应用规则集时候的 <code>case FcRuleEdit</code> 里 <code>case FcOpAssign</code> 的部分就好。</p>
+<p>通过 <code>if (value[object])</code> 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：</p>
+<pre><code>/* different 'kind' won't be the target of edit */
+if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
+  value[object] = vl;
+</code></pre>
+<p>但是剩下的都是 <code>FcConfigAdd</code> 和 <code>FcConfigDel</code> 是修改 <code>config</code> 的，并不直接修改 Font。</p>
+<p>正当我措手无策的时候，无意间看到了下面：</p>
+<pre><code>case FcOpAssignReplace:
+		/*
+		 * Delete all of the values and insert
+		 * the new set
+		 */
+		FcConfigPatternDel (p, r-&gt;u.edit-&gt;object, table);
+		FcConfigPatternAdd (p, r-&gt;u.edit-&gt;object, l, FcTrue, table);
+		/*
+		 * Adjust a pointer into the value list as they no
+		 * longer point to anything valid
+		 */
+		value[object] = NULL;
+		break;
+</code></pre>
+<p>这家伙是修改 <code>pattern</code> 的啊！</p>
+<h2 id="语焉不详的文档">语焉不详的文档<a hidden class="anchor" aria-hidden="true" href="#语焉不详的文档">#</a></h2>
+<p>大家一定看到过文档中的这段：</p>
+<pre><code>  Mode                    With Match              Without Match
+  ---------------------------------------------------------------------
+  &quot;assign&quot;                Replace matching value  Replace all values
+  &quot;assign_replace&quot;        Replace all values      Replace all values
+  &quot;prepend&quot;               Insert before matching  Insert at head of list
+  &quot;prepend_first&quot;         Insert at head of list  Insert at head of list
+  &quot;append&quot;                Append after matching   Append at end of list
+  &quot;append_last&quot;           Append at end of list   Append at end of list
+  &quot;delete&quot;                Delete matching value   Delete all values
+  &quot;delete_all&quot;            Delete all values       Delete all values
+</code></pre>
+<p>看起来 <code>assign</code> 和 <code>assign_replace</code> 看起来没差。</p>
+<p>但实际上差多了！</p>
+<p>我把我的代码换成：</p>
+<pre><code>&lt;match target=&quot;scan&quot;&gt;
+  &lt;test name=&quot;family&quot;&gt; 
+    &lt;string&gt;Noto Sans CJK SC&lt;/string&gt;
+  &lt;/test&gt;
+  &lt;edit name=&quot;charset&quot; mode=&quot;assign_replace&quot;&gt;
+    &lt;minus&gt;
+      &lt;name&gt;charset&lt;/name&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x203c&lt;/int&gt;
+      &lt;/charset&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x2122&lt;/int&gt;
+      &lt;/charset&gt;
+    &lt;/minus&gt;  
+  &lt;/edit&gt; 
+&lt;/match&gt;
+</code></pre>
+<p>再跑：</p>
+<pre><code>Noto Sans CJK SC
+before match scan: Yes
+charset count: 44810
+after match scan: Yes
+charset count: 44809
+</code></pre>
+<p>成功去掉了一个字符！</p>
+<p>于是：</p>
+<p><strong>如果是 <code>&lt;match target=&quot;scan&quot;</code> 这种需要调整 <code>pattern</code> 的，用 <code>assign_replace</code>，如果是只调整 <code>config</code> 就可以的，比如 <code>&lt;match target=&quot;pattern|font&quot;</code>，用 <code>assign</code></strong>。</p>
+<p>另外，在 fontconfig 里，万物皆 <code>pattern</code>，不要被 <code>&lt;match target=&quot;pattern&quot;</code> 迷惑了，实际上它代码中的 pattern：</p>
+<pre><code>struct _FcPattern {
+int		    num;
+int		    size;
+intptr_t	    elts_offset;
+FcRef	    ref;
+};
+</code></pre>
+<p>就是指针的 struct。而对于 <code>FcPatternElt</code> 的注释也说了：</p>
+<pre><code>/*
+* Pattern elts are stuck in a structure connected to the pattern,
+* so they get moved around when the pattern is resized. Hence, the
+* values field must be a pointer/offset instead of just an offset
+*/
+</code></pre>
+<p>这是阅读源代码才得到的金科玉律啊！也就是说，别人说的，Firefox/Chromium 不支持调整 <code>charset</code>，是不对的，只是我们没会用 fontconfig，不要甩锅给 chromium 了！</p>
+<h2 id="为什么只去掉了一个字符">为什么只去掉了一个字符<a hidden class="anchor" aria-hidden="true" href="#为什么只去掉了一个字符">#</a></h2>
+<p>因为网上抄的写法错了，正确的写法是：</p>
+<pre><code>&lt;match target=&quot;scan&quot;&gt;
+  &lt;test name=&quot;family&quot;&gt; 
+    &lt;string&gt;Noto Sans CJK SC&lt;/string&gt;
+  &lt;/test&gt;
+  &lt;edit name=&quot;charset&quot; mode=&quot;assign_replace&quot;&gt;
+    &lt;minus&gt;
+      &lt;name&gt;charset&lt;/name&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x203c&lt;/int&gt;
+        &lt;int&gt;0x2122&lt;/int&gt;
+         &lt;range&gt;
+          &lt;int&gt;0x1f250&lt;/int&gt;
+          &lt;int&gt;0x1f251&lt;/int&gt;
+        &lt;/range&gt;
+      &lt;/charset&gt;
+    &lt;/minus&gt;
+  &lt;/edit&gt; 
+&lt;/match&gt;
+</code></pre>
+<p>只有一个 <code>&lt;charset&gt;&lt;/charset&gt;</code> block。多余的会被丢弃。</p>
+<p>我的问题解决了。下一步就是修改我的代码去了，顺便给大家一个去掉系统上已安装字体中 emoji 字符的 c 文件吧：</p>
+<h2 id="其他我在第一部分抛出问题的答案">其他我在第一部分抛出问题的答案<a hidden class="anchor" aria-hidden="true" href="#其他我在第一部分抛出问题的答案">#</a></h2>
+<p>首先，<code>FcConfigSubstitute</code> 删除 charset leaf，如果你是显式的用，就是在 <code>FcListPatternMatchAny</code>阶段，因为 <code>config</code> 里无论你是 <code>assign</code> 还是 <code>assign_replace</code> 都认的。如果你是隐式的用，那就是在 <code>FcFileScanFontConfig</code> 的时候，但是必须用 <code>assign_replace</code>。</p>
+<p>其次，<code>FcConfigSubstitue</code> 只会做 <code>&lt;match target=&quot;pattern&quot;&gt;</code>，如果你的第一个参数也就是 <code>config</code> 传 0 会做 <code>&lt;match target=&quot;scan&quot;&gt;</code>。这是我验证过的。而 <code>&lt;match target=&quot;font&quot;&gt;</code> 只会在一个地方做：<code>FcFontRenderPrepare</code>（可以搜 <code>FcMatchFont</code> 查到）。另外 Chromium 的 <code> GetFontRenderParamsFromFcPattern</code> 是没有调用 <code>FcFontRenderPrepare</code> 的，它只会取字体默认的 aa，autohint, embedded_bitmap, hinting 和 rgba。所以你们批评它也没错。</p>
+<p>第三，双猫批评的 chromium 只返回一个 Fallback Font 的问题，确实存在。我依稀记得曾经搜到过实现，大概就是一段文字，只用一个 charset coverage 最高的字体显示。</p>
+<p>于是这个系列就结束了。也许下一篇会谈谈 <code>FcFontSort</code>？</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
