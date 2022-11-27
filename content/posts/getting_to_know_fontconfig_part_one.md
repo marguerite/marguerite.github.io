@@ -216,7 +216,7 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
 
 ## Chromium/Chrome 在 Linux 上查找字体的方式
 
-这个是双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)缺少的 Chromium 代码部分。之前 V2EX 上有个 rant [Chrome 把 FreeTyoe/Fontconfig 全集成进自己沙盒以及扣肉满天下简直毒瘤到爆表!](https://www.v2ex.com/t/853093)，说得不完全对，至少在我要 debug 的问题上，我不需要知道 skia 究竟干了什么，我只需要知道 chromium 最终是怎么在 Linux 上查找 Fallback 字体的就可以了。于是，我找到了 [ui/gfx/font_fallback_linux.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/font_fallback_linux.cc)，里面有一个最重要的 `GetFallbackFont` 函数，它有关 fontconfig 部分的代码是这样的：
+这个是双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)缺少的 Chromium 代码部分。之前 V2EX 上有个 rant [Chrome 把 FreeTyoe/Fontconfig 全集成进自己沙盒以及扣肉满天下简直毒瘤到爆表!](https://www.v2ex.com/t/853093)，说得不完全对，至少在我要 debug 的问题上，我不需要知道 [skia 究竟干了什么](https://www.chromium.org/developers/design-documents/rendertext/)，我只需要知道 chromium 最终是怎么在 Linux 上查找 Fallback 字体的就可以了。于是，我找到了 [ui/gfx/font_fallback_linux.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/font_fallback_linux.cc)，里面有一个最重要的 `GetFallbackFont` 函数，它有关 fontconfig 部分的代码是这样的：
 
     FcConfig* config = GetGlobalFontConfig();
     FcConfigSubstitute(config, pattern.get(), FcMatchPattern);

@@ -162,7 +162,7 @@ draft: false
 
 首先我们只是知道了给 `FcConfigReference` 传 0 会得到应用 `<match target="scan"` 的结果，结果里面是否成功去掉了 charset leaf，我们没有验证。
 
-其次，前面我们说 `FcFontList`的时候提到的 config 其实也是传了 0 的，但最后没应用 `objectset` 得到的结果也是还有 `Noto Sans CJK SC` ，这是符合 `FcFontList` 的，因为你并没有精确的要 `:charset=0x2122`，但是后面 `FcPatternGetCharset` 的结果里含有 `charset=0x2122` 这就不对了。
+其次，前面我们说 `FcFontList`的时候提到的 config 其实也是传了 0 的，但最后没应用 `:charset=0x2122` 得到的结果也是还有 `Noto Sans CJK SC` ，这是符合 `FcFontList` 的，因为你并没有精确的要 `:charset=0x2122`，但是后面 `FcPatternGetCharset` 的结果里含有 `charset=0x2122` 这就不对了。
 
 第三，也有可能是 `FcDefaultSubstitute`、`FcFontSort`、`FcFontRenderPrepare`这其中一个调整过 charset，把它给恢复了。但不可能。我在调用 `FcFontSort` 的时候 `trim` 选项给的是 `FcFalse`，不会改。`FcDefaultSubstitute` 大家都摸得很透了，就是添加一些默认的 slant、weight 之类的，`FcFontRenderPrepare` 通篇也都在围绕 lang、size 这些做文章，根本就没碰 charset。
  
