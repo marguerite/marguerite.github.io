@@ -136,7 +136,95 @@ draft: false
 
 只有一个 `<charset></charset>` block。多余的会被丢弃。
 
-我的问题解决了。下一步就是修改我的代码去了，顺便给大家一个去掉系统上已安装字体中 emoji 字符的 c 文件吧（写出来了放不出来，因为 fontconfig 关于 `FcCharSet*`相关方法的 Public 函数里没有 `FcCharSetIterStart` 和 `FcCharSetIterNext`，也没有 `FcNameUnparseCharSet`，没有办法 loop charset 里的 leaf 并打印。 我是魔改了 fontconfig 后写出来的...暂时只能自己用）
+我的问题解决了。下一步就是修改我的代码去了，顺便给大家一个去掉系统上已安装字体中 emoji 字符的 c 文件吧。因为 fontconfig 关于 `FcCharSet*`相关方法的 Public 函数里没有 `FcCharSetIterStart` 和 `FcCharSetIterNext`，没有办法 loop charset 里的 leaf 并打印。 也没有 `FcNameUnparseCharSet`，没有办法直接打印 `charset`。我是魔改了 `fontconfig.h`、`src/fcint.h`写出来的，需要你重新编译 fontconfig。
+
+    #include<stdio.h>
+    #include<fontconfig/fontconfig.h>
+
+    int main(int argc, char **argv){
+      FcFontSet* fs;
+      FcPattern* pat;
+      FcObjectSet* os;
+
+      FcChar8* strpat = (FcChar8*)":lang=und-zsye";
+      pat = FcNameParse(strpat);
+      os = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char*)0);
+
+      fs = FcFontList(0, pat, os);
+
+      FcPatternDestroy(pat);
+      FcObjectSetDestroy(os);
+
+      FcCharSet* cs = FcCharSetCreate();
+      int i;
+      for(i=0; i<fs->nfont; i++){
+        FcCharSet* tmp;
+        if (FcPatternGetCharSet(fs->fonts[i], FC_CHARSET, 0, &tmp) != FcResultMatch) {
+          goto nofont;
+        }
+        cs = FcCharSetUnion(cs, tmp);
+        printf("%d\n", FcCharSetCount(cs));
+      }
+  
+     FcFontSetDestroy(fs);
+  
+     FcPattern* pat1;
+     FcFontSet* fs1;
+     FcObjectSet* os1;
+     
+     if (argc == 1) {
+         printf("you have to specify a font family to subtract!\n);
+         goto nofont;
+     }
+     FcChar8* strpat1 = (FcChar8*)argv[1];
+     pat1 = FcNameParse(strpat1);
+     os1 = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char*)0);
+     fs1 = FcFontList(0, pat1, os1);
+  
+     FcPatternDestroy(pat1);
+     FcObjectSetDestroy(os1);
+  
+     FcCharSet* cs1 = FcCharSetCreate();
+     for(i=0; i<fs1->nfont; i++){
+        if (FcPatternGetCharSet(fs1->fonts[i], FC_CHARSET, 0, &cs1) != FcResultMatch) {
+          goto nofont;
+        }
+     }
+     FcFontSetDestroy(fs1);
+  
+     FcCharSet* cs2 = FcCharSetCreate();
+     cs2 = FcCharSetIntersect(cs1, cs);
+  
+     FcStrBuf buf;
+     FcChar8 init_buf[1024];
+     FcStrBufInit(&buf, init_buf, sizeof(init_buf));
+     
+     if (FcNameUnparseCharSet(&buf, cs) && FcStrBufChar(&buf, '\0')) {
+         printf("%s\n", buf.buf);
+     } else {
+         printf("charset (alloc error).\n");
+     }
+  
+      FcStrBufDestroy(&buf);
+      FcCharSetDestroy(cs);
+      FcCharSetDestroy(cs1);
+      FcCharSetDestroy(cs2);
+      return 0;
+
+    nofont:
+      return 1;
+    }
+
+使用方法：下载 [fc-emoji-subtract.patch](https://gist.github.com/marguerite/e6eaab12010f6e7845d3ca351b253581)：
+
+    git clone https://github.com/freedesktop/fontconfig
+    patch -p1 < ../fc-emoji-subtract.patch
+    
+然后正常编译就可以，之后 `fontconfig/fc-emoji-subtract` 有一个 `fc-emoji-subtract`，用法：
+     
+     $ fc-emoji-subtract "Noto Sans CJK SC"
+     20 23 2a 30-39 a9 ae 203c 2049 2122 2194-2199 24c2 25aa-25ab 25b6 25c0 2600-2603 260e 261d 262f 2640 2642 2660 2663 2665-2666 2668 267b 26a0 26bd-26be 2702 27a1 2934-2935 2b05-2b07 3030 303d 3297 3299 1f170-1f171 1f17e-1f17f 1f18e 1f191-1f19a 1f201-1f202 1f21a 1f22f 1f232-1f23a 1f250-1f251
+你就可以针对这些 `charset` 自己写规则了。
 
 ## 其他我在第一部分抛出问题的答案
 
