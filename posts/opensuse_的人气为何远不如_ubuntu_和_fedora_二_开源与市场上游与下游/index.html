@@ -26,6 +26,7 @@
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/">
 <noscript>
     <style>
         #theme-toggle,
@@ -90,16 +91,16 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游",
       "item": "https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/"
     }
@@ -112,7 +113,7 @@
   "@type": "BlogPosting",
   "headline": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游",
   "name": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游",
-  "description": "本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。\n春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。\n深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。\n我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。\n这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？\n从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。\n再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。",
+  "description": "本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。\n春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。\n深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。\n我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。\n这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？\n从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。\n再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。\n",
   "keywords": [
     
   ],
@@ -152,7 +153,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -174,6 +175,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -188,7 +191,7 @@
     <h1 class="post-title">
       openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游
     </h1>
-    <div class="post-meta"><span title='2012-03-31 00:00:00 +0800 CST'>March 31, 2012</span>
+    <div class="post-meta">&lt;span title=&#39;2012-03-31 00:00:00 &#43;0800 CST&#39;&gt;March 31, 2012&lt;/span&gt;
 
 </div>
   </header> 
@@ -212,15 +215,12 @@
 <p>说了这么多，其实我还是两点： 1。情感上我无比的希望 KDE 好，希望 SUSE 牛起来，但是 SUSE，以及整个基于 KDE 的发行版，其没落是有一定原因的。 2。Linux 发行版更大意义上主要是 geek 写给 geek 们的用品，所以只要开发者仍然存在，每个 Linux 发行版都还会有生命力，伸手党的人气高低并不能决定一个 Linux 发行版的真正实力，开发者的实力才是。所以 SUSE 用户也不必妄自菲薄。</p>
 <p>我的评论： 大家的回答都开始慢慢偏离问题了，不过反正这里不算分。。。</p>
 <blockquote>
-<p>debian 背后没公司，纯 GNU，最老的发行版，RPM 是 redhat 之后推的（历史问题还请纠正，我入 Linux 门很晚的），debian 至少经历过一段真空期，借用营销学的说法，叫垄断，不用它的没别的用。这跟腾讯一样积累的用户是很恐怖的，要不是 ubuntu 的崛起（这里是真的崛起，没有负面意思），和debian自己的坚持，它完全会是最大的发行版，当然现在也不小。debian 和 ubuntu 也是一个可以讨论的故事。debian 坚持 GNU，Ubuntu 一开始就没打算，看它的注册地，地图上完全不存在，一开始就打算钻版权专利的空子了。所以 ubuntu 的一些反馈 debian 无法接受，没有跟着 ubuntu 崛起应该说是必然吧。 deb 确实很好用，但没有外围工具的话，打包还是挺难的，如果你 deb 和 RPM 都会打的话。这不得不说越来越深入了，这又是一个好玩的问题，RPM 是红帽推出来的，定义的对象是企业级部署分发，鼓励照章办事，一条一条添，填错就报错，这导致了 fedora 和 suse 的打包教程和维基甚至都是互通的。deb 呢，则自由一点，虽然它自己作为发行版很严格（推送过包的都知道），纯制度设计上不能说是严谨，应该叫古怪，因为它严的都不是正地方。但它的容错性很高，比如 md5sum，完全容错，你添0都能过。</p>
-</blockquote>
+<p>debian 背后没公司，纯 GNU，最老的发行版，RPM 是 redhat 之后推的（历史问题还请纠正，我入 Linux 门很晚的），debian 至少经历过一段真空期，借用营销学的说法，叫垄断，不用它的没别的用。这跟腾讯一样积累的用户是很恐怖的，要不是 ubuntu 的崛起（这里是真的崛起，没有负面意思），和debian自己的坚持，它完全会是最大的发行版，当然现在也不小。debian 和 ubuntu 也是一个可以讨论的故事。debian 坚持 GNU，Ubuntu 一开始就没打算，看它的注册地，地图上完全不存在，一开始就打算钻版权专利的空子了。所以 ubuntu 的一些反馈 debian 无法接受，没有跟着 ubuntu 崛起应该说是必然吧。 deb 确实很好用，但没有外围工具的话，打包还是挺难的，如果你 deb 和 RPM 都会打的话。这不得不说越来越深入了，这又是一个好玩的问题，RPM 是红帽推出来的，定义的对象是企业级部署分发，鼓励照章办事，一条一条添，填错就报错，这导致了 fedora 和 suse 的打包教程和维基甚至都是互通的。deb 呢，则自由一点，虽然它自己作为发行版很严格（推送过包的都知道），纯制度设计上不能说是严谨，应该叫古怪，因为它严的都不是正地方。但它的容错性很高，比如 md5sum，完全容错，你添0都能过。</p></blockquote>
 <p>工具和包格式这点硬要说，看平，哪家也不高哪家也不低。但 SuSE 搞不过 redhat 这是真的。</p>
 <blockquote>
-<p>得服务器得天下。没讨论空间了楼主的大帽子一扣。事实就是这样的。</p>
-</blockquote>
+<p>得服务器得天下。没讨论空间了楼主的大帽子一扣。事实就是这样的。</p></blockquote>
 <blockquote>
-<p>KDE 没没落。。。大牛都在 freebsd，中小牛才在 linux。。。。在 KDE 的问题，可能确实因发行版而异，可能我认为 SuSE 的流程是对的，就是向发行版提交，发行版搞的出修复就搞，然后把修复提交给上游，搞不出的，开发者提交问题给上游要比用户专业的多，得到的关注度也大的多。</p>
-</blockquote>
+<p>KDE 没没落。。。大牛都在 freebsd，中小牛才在 linux。。。。在 KDE 的问题，可能确实因发行版而异，可能我认为 SuSE 的流程是对的，就是向发行版提交，发行版搞的出修复就搞，然后把修复提交给上游，搞不出的，开发者提交问题给上游要比用户专业的多，得到的关注度也大的多。</p></blockquote>
 <p>KDE 自己又是另一个故事了，他的 bugzilla team 实在是不给力，我自己提交的也是被各种忽略。我和其他的 KDE 使用者开发者的共同吐槽点就是 KDE 网撒的比较大，因为 QT 嘛，开发者总是想一个功能就搞出来，不去回头修 bug 什么的。SuSE 的开发者也继承了，说不定就是他们影响的 KDE。。。但是往 SuSE 提 patch 还是挺快的，rpm 么，你自己都能搞修复。ubuntu 速度快不快不知道。</p>
 <p>不过这里只是你的个人感觉了。国内这边大部分是 ubuntu 开发者，他们真心不怎么 care gnome，纯 KDE 的开发者还是蛮多的，fcitx 的开发者就是官方注册的 KDE 开发者，还有一个在 ikde.org 群里泡着的，fcitx 开发者说比他牛逼一万倍，是开发 koffice 现在改名了。。。国际上呢，KDE 活跃的开发者还是挺多的。Gnome 呢，有个 gimp 开发者到过assign 给我的bugzilla 上哭，说注册的开发者 20多个，实际活跃的就四五个，搞那么大个项目，gnome基础什么的blabla。。。。也是个人感嚼。</p>
 <p>至于 c 和 c++ 之争，发行版和桌面系统这东西，其实看的不是最资深的那些家伙（他们在freebsd其实，中游的两者基本持平），是有没有一个活跃稳定人数众多的普通甚至是菜皮开发者，这点上 KDE 不怎么差的。他们活跃的都搞起社区分裂了（koffice）。。。。</p>
@@ -260,7 +260,7 @@
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

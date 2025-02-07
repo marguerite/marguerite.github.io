@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.107.0"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.143.1"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -20,6 +20,7 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/index.xml">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,11 +71,11 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-  "url": "https://marguerite.github.io",
+  "url": "https://marguerite.github.io/",
   "description": "",
   "thumbnailUrl": "https://marguerite.github.io/favicon.ico",
   "sameAs": [
-      "https://github.com/marguerite", "https://moe.cat/@marguerite"
+      
   ]
 }
 </script>
@@ -95,7 +96,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -117,6 +118,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -124,6 +127,24 @@
     </nav>
 </header>
 <main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>openSUSE 中文社区面临的若干问题
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。
+（一） 中文社区
+Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区，Fedora 肯定是最爱交际的中文社区，openSUSE 肯定是最宅的中文社区。
+首先我们应该没有多少活跃的大学用户。我们的用户据我观察应该是企业用户居多。这种人的优点在于他们都非常强，缺点在于他们都非常懒。如果我能解决自己的问题，而且我只用 openSUSE 挣口粮，那我为什么要帮助你使用 openSUSE？你能想象一群 Intel 员工，SuSE 员工，中兴的软件开发科长做你的成员，然后中文社区的基础设施是一个人生前 22 年没见过立式服务器的女生搭建的么？就像我在 Gtalk 群里怒喷的一样：你们呀，什么都会，就是不帮我，对吧。
+其次我们一直是一个单核心的社区。我不是说开发，是说社区建设。开发牛人多了去了，我这种 CPP 指针数组都不会的肯定排不上号。苏哲时代（SuSE 9），我在上初中，但提 SuSE 9 老人都知道，几乎就是：Linux 是 SuSE 9 与硬件通信的工具。Thruth 时代，我在上大学，「用 SuSE 就是用 Thruth」，这也不是我说的。现在是缝缝补补吃老本的玛格丽特时代。我不会开发啊，只能根据长老们灌顶得到的经验盲修 bug，修好了，说明我逻辑和交际比较强。我一般是，看到 bug，用人类逻辑而不是机器逻辑去猜，不能开机？好，systemd，然后去找 Lennart; btrfs？去找 John; GNOME？Vincent/DimStar; Build Service？Adrian/Coolo; 输入法坏了？翁学天出列; Bash 支援？花花; Python？以前是 Hicro Kee 现在是 Felix Yan。懂了吧，openSUSE 的社区管理对我来说就是打牌，我就是拿着满手不情不愿看你是女生帮帮你的大王，用户出什么我都出大王，用户出大王？好，是用户你的不对，我不赢钱白跟你玩牌，你怎么能出大王赢我呢？
+但我给自己的定位是 Coordinator，中文翻译为办公室主任。我希望 openSUSE 有几个强有力的男性领导，各管一摊，有推广的，有集会的，有开发的，有答疑的，有翻译的，有维基的…然后我就每天上线发 task 定 deadline 随手卖个萌就好。但是没有。于是手比较贱（处女座就是你骂我一句我下套也要还回去，不然今天就不完美了我睡不安稳），慢慢就都抓自己手上了。一个单核心的社区是没有活力和前途的。商业上是该给那个核心上巨额保险。但开源事业不行，我要钱干嘛？我就要东西。你能跑到保险公司去说哦如果玛格丽特不用 openSUSE 了你赔我一个能妥妥的骑住微软的 openSUSE 吗？
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-21 00:00:00 &#43;0800 CST&#39;&gt;March 21, 2013&lt;/span&gt;</footer>
+  <a class="entry-link" aria-label="post link to openSUSE 中文社区面临的若干问题" href="https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/"></a>
+</article>
 
 <article class="post-entry"> 
   <header class="entry-header">
@@ -135,9 +156,10 @@
 这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
 你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
 rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
-另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。...</p>
+另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-03-19 00:00:00 +0800 CST'>March 19, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-19 00:00:00 &#43;0800 CST&#39;&gt;March 19, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to OpenShift 搭建 rawdog 实现部落格聚合" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/"></a>
 </article>
 
@@ -157,9 +179,10 @@ Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amaz
 Openshift 折腾 xmpptalk
 但实际上这篇文章很水。反正看过就知道啦，到处都是「凑合」。实际上你看它也根本架设不起来（好多致命细节都没说）。
 当时我就是在这种情况下开始折腾的。
-首先我开了 Do it yourself 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…...</p>
+首先我开了 Do it yourself 应用，然后进去编译，结果很悲剧，红帽给的内存太小，mongodb 编译不成功; 后来我使用 Build Service 模拟了一个 openshift 环境（一个 x86_64 的 RHEL），然后编译编译，我犯懒了…
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-03-17 00:00:00 +0800 CST'>March 17, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-17 00:00:00 &#43;0800 CST&#39;&gt;March 17, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openshift 搭建和 IRC 频道互通的 Gtalk 群聊" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/"></a>
 </article>
 
@@ -181,9 +204,9 @@ git clone https://github.com/owncloud/core 这是核心组件。
 git clone https://github.com/owncloud/apps 这是带 News 的 apps。
 git clone https://github.com/owncloud/themes 这是新的 responsive 主题。
 git clone https://github.com/owncloud/3rdparty 这是一些第三方的比较好用的 apps。当然如果不用也可以不装（我装了也没发现有太大用）。
-cd apps git clone https://github....</p>
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-03-15 00:00:00 +0800 CST'>March 15, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-15 00:00:00 &#43;0800 CST&#39;&gt;March 15, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openshift 安装 owncloud 取代 Google Reader" href="https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/"></a>
 </article>
 
@@ -201,9 +224,10 @@ cd apps git clone https://github....</p>
 水晶笔（似乎是 SUSE 标的中性笔杆）：
 马克杯（去年我收到一个，图也是去年的）：
 Novell 杯具
-数量： 手包：6/8 个 水晶笔：7/9 个 马克杯：1 只 公仔：0/1 只 领取人： hillwood，重庆道桥，公仔一只 douglarek，英特尔北京，手包一只，笔一只 一些说明： 公仔是可遇不可求的，因为这是 SuSE 中国的营销道具，至少需要提前一年预定（hillwood 是补去年的货，他也不参与今年的礼品赠送），稀缺到了什么程度呢，全日本就两只（SUSE JP 持有），全台湾据我所知个人持有的只有 swyear 一只。...</p>
+数量： 手包：6/8 个 水晶笔：7/9 个 马克杯：1 只 公仔：0/1 只 领取人： hillwood，重庆道桥，公仔一只 douglarek，英特尔北京，手包一只，笔一只 一些说明： 公仔是可遇不可求的，因为这是 SuSE 中国的营销道具，至少需要提前一年预定（hillwood 是补去年的货，他也不参与今年的礼品赠送），稀缺到了什么程度呢，全日本就两只（SUSE JP 持有），全台湾据我所知个人持有的只有 swyear 一只。
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-03-08 00:00:00 +0800 CST'>March 8, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-08 00:00:00 &#43;0800 CST&#39;&gt;March 8, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to SUSE 新年飨礼" href="https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/"></a>
 </article>
 
@@ -216,9 +240,10 @@ Novell 杯具
     <p>这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。
 Youku：
 Download:
-http://115.com/u/26338483</p>
+http://115.com/u/26338483
+</p>
   </div>
-  <footer class="entry-footer"><span title='2013-03-05 00:00:00 +0800 CST'>March 5, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-03-05 00:00:00 &#43;0800 CST&#39;&gt;March 5, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openSUSE 下的 Fcitx 输入法" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/"></a>
 </article>
 
@@ -231,9 +256,10 @@ http://115.com/u/26338483</p>
     <p>自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
 “战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！
 查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
-Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。...</p>
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-02-24 00:00:00 &#43;0800 CST&#39;&gt;February 24, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openSUSE Linux 战渣浪详解教程" href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/"></a>
 </article>
 
@@ -251,9 +277,10 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
 当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
 另外关于围棋程序比较好的网站是：Sensei’s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
 gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
-qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp –quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。...</p>
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp –quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-02-24 00:00:00 &#43;0800 CST&#39;&gt;February 24, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openSUSE 下玩围棋" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/"></a>
 </article>
 
@@ -271,9 +298,11 @@ qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个�
 安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
 申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
 git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
-提交一次，留意命令行中的信息，会说数据库的 IP。...</p>
+提交一次，留意命令行中的信息，会说数据库的 IP。
+然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2013-02-18 00:00:00 +0800 CST'>February 18, 2013</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2013-02-18 00:00:00 &#43;0800 CST&#39;&gt;February 18, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openshift 搭建 wordpress 教程" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"></a>
 </article>
 
@@ -289,26 +318,11 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 但是要想学好 Ruby on Rails，其实应该是「鸡蛋灌饼」的关系，就是 Ruby &amp; Rails，两手都要硬，毕竟所有的东西都是用 Ruby 写，要是没有系统学习过 Ruby 可能登不了大雅之堂。但 Rails 不熟悉啥都当 C&#43;&#43; 写那用它开发就没意思了。
 科学的解释是这样的，Ruby 是屌丝松本行弘有感于白富美们漂亮的胸不大，胸大的腿不长，腿长的说话声音不好听，声音好听的长相又不是 S 级而自主研发的一个女神，同时兼顾了其他屌丝的需求（几乎所有的内置方法都可以由类在运行时重定义，眼前的加不是加，你说的 &lt; 是什么 &lt;，什么的）。gem 类似于芭比娃娃的衣橱（类似 perl 的 CPAN，python 的 PYPI，带平台的分发格式）。Rails 是其中一个 gem，一个网络框架。于是 Ruby on Rails 就有点像，Wordpress on PHP 的意思，然后你就是在 WordPress 上开发主题。。。
 不要怪我吐槽它啊。。。less is more：()少做多。还有：Ruby 是让程序员「快乐」的一门语言。。。。您再想想？
-开发环境 教材：Ruby on Rails Tutorial 3rd editon（好象是新浪爱问上下载的）...</p>
+开发环境 教材：Ruby on Rails Tutorial 3rd editon（好象是新浪爱问上下载的）
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2012-11-11 00:00:00 +0800 CST'>November 11, 2012</span></footer>
+  <footer class="entry-footer">&lt;span title=&#39;2012-11-11 00:00:00 &#43;0800 CST&#39;&gt;November 11, 2012&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to Ruby on Rails 学习笔记－安装和 Hello World" href="https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>当梦想照进现实  记 Ubuntu Tweak 的烂尾
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
-大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：
-针对超级大牛：SuSE/RedHat -&gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&gt; Canonical -&gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&gt; forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &lt;-&gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
-其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
-主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
@@ -322,7 +336,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

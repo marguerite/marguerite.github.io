@@ -23,6 +23,7 @@
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/">
 <noscript>
     <style>
         #theme-toggle,
@@ -81,16 +82,16 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "解决 btrfs 开机 initramfs 加载时间过长",
       "item": "https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/"
     }
@@ -103,7 +104,7 @@
   "@type": "BlogPosting",
   "headline": "解决 btrfs 开机 initramfs 加载时间过长",
   "name": "解决 btrfs 开机 initramfs 加载时间过长",
-  "description": "这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。\n最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）\n这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。\n中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。",
+  "description": "这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。\n最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）\n这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的记录，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。\n中间很曲折，BinLi 无法复现，后来有个用户说这 bug 他也有，重装改成 ext4 好了。可是我用 Linux 是木有重装机这个概念的。因为垃圾我能清理掉（Windows 完全清不掉！），Linux 又稳定，我自己是打包者也没有「/usr 污染」，于是这台电脑上攒了好多的资料。比如 300GB 的电影。。。\n",
   "keywords": [
     
   ],
@@ -143,7 +144,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -165,6 +166,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -179,7 +182,7 @@
     <h1 class="post-title">
       解决 btrfs 开机 initramfs 加载时间过长
     </h1>
-    <div class="post-meta"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span>
+    <div class="post-meta">&lt;span title=&#39;2012-10-20 00:00:00 &#43;0800 CST&#39;&gt;October 20, 2012&lt;/span&gt;
 
 </div>
   </header> 
@@ -225,7 +228,7 @@ UUID=559dec06-4fd0-47c1-97b8-cc4fa6153fa0 /home btrfs defaults,space_cache,comme
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

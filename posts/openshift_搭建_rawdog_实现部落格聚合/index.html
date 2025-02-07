@@ -8,8 +8,10 @@
 <title>OpenShift 搭建 rawdog 实现部落格聚合 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
-这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
-你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。
+准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。
+rawdog 架设
 rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
 另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。">
 <meta name="author" content="">
@@ -24,6 +26,7 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/">
 <noscript>
     <style>
         #theme-toggle,
@@ -62,8 +65,10 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
     </style>
 </noscript><meta property="og:title" content="OpenShift 搭建 rawdog 实现部落格聚合" />
 <meta property="og:description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
-这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
-你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。
+准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。
+rawdog 架设
 rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
 另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。" />
 <meta property="og:type" content="article" />
@@ -74,8 +79,10 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="OpenShift 搭建 rawdog 实现部落格聚合"/>
 <meta name="twitter:description" content="因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了
-这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备
-你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设
+这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。
+准备
+你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。
+rawdog 架设
 rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache &#43; python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。
 另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。"/>
 
@@ -84,16 +91,16 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "OpenShift 搭建 rawdog 实现部落格聚合",
       "item": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/"
     }
@@ -106,7 +113,7 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
   "@type": "BlogPosting",
   "headline": "OpenShift 搭建 rawdog 实现部落格聚合",
   "name": "OpenShift 搭建 rawdog 实现部落格聚合",
-  "description": "因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了\n这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备\n你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设\nrawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。\n另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。",
+  "description": "因为 Planet openSUSE 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：community.suse.org.cn Update: 挂了\n这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 Felix Yan 帮写的，所以在前面感谢一下 co-worker。 准备\n你要去开一个新 Application，类型是 Python 2.7 Community Cartridge，然后要新添加一个 Cron 1.4 Cartridge。其它的 openshift 必要知识我假设你已经了解了，不了解的话请去看我之前的文章。 rawdog 架设\nrawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一个 python 程序，它只能获取 feed，并输出 HTML，至于怎么让 HTML 能被用户在互联网上看到，这就是 HTTP Server 需要做的事情了。而 openshift python 默认的 HTTP Server 就是 Apache + python wsgi。如果你用 VPS 还可以使用如 Apache，Nginx，Lighttpd 等配置 FastCGI 什么的。HTTP Server 这块我不懂，所以只能拿人家写好的 Server 出来讲。但是一定要记住，只配置好 rawdog 你才成功了一半。\n另外这里我用的也不是原装的，是三转之后的 rawdog，就是被 Planet openSUSE 改了一次，我自己又改了一次的。代码在 susews-planet。\n",
   "keywords": [
     
   ],
@@ -146,7 +153,7 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -168,6 +175,8 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -182,7 +191,7 @@ rawdog 是 KDE 社区开发的部落格聚合程序。简单说，这就是一�
     <h1 class="post-title">
       OpenShift 搭建 rawdog 实现部落格聚合
     </h1>
-    <div class="post-meta"><span title='2013-03-19 00:00:00 +0800 CST'>March 19, 2013</span>
+    <div class="post-meta">&lt;span title=&#39;2013-03-19 00:00:00 &#43;0800 CST&#39;&gt;March 19, 2013&lt;/span&gt;
 
 </div>
   </header> 
@@ -334,7 +343,7 @@ git push
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

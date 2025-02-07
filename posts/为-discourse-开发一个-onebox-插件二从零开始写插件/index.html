@@ -9,7 +9,22 @@
 <meta name="keywords" content="">
 <meta name="description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
 我们先准备一个脚手架 openbuildservice_onebox.rb
-module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+module Onebox
+  module Engine
+    class OpenBuildServiceOnebox
+      include Engine
+      include LayoutSupport
+      include HTML
+      always_https
+
+      matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$})
+
+      private
+
+    end
+  end
+end
+我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
 但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
@@ -23,6 +38,7 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
 <noscript>
     <style>
         #theme-toggle,
@@ -62,7 +78,22 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 </noscript><meta property="og:title" content="为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine" />
 <meta property="og:description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
 我们先准备一个脚手架 openbuildservice_onebox.rb
-module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+module Onebox
+  module Engine
+    class OpenBuildServiceOnebox
+      include Engine
+      include LayoutSupport
+      include HTML
+      always_https
+
+      matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$})
+
+      private
+
+    end
+  end
+end
+我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
 但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/" /><meta property="article:section" content="posts" />
@@ -73,7 +104,22 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 <meta name="twitter:title" content="为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine"/>
 <meta name="twitter:description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
 我们先准备一个脚手架 openbuildservice_onebox.rb
-module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+module Onebox
+  module Engine
+    class OpenBuildServiceOnebox
+      include Engine
+      include LayoutSupport
+      include HTML
+      always_https
+
+      matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$})
+
+      private
+
+    end
+  end
+end
+我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
 但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！"/>
 
 
@@ -81,16 +127,16 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
       "item": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"
     }
@@ -103,7 +149,7 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
   "@type": "BlogPosting",
   "headline": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
   "name": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
-  "description": "上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。\n我们先准备一个脚手架 openbuildservice_onebox.rb\nmodule Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。\n但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！",
+  "description": "上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。\n我们先准备一个脚手架 openbuildservice_onebox.rb\nmodule Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。\n但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！\n",
   "keywords": [
     
   ],
@@ -143,7 +189,7 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -165,6 +211,8 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -179,7 +227,7 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
     <h1 class="post-title">
       为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine
     </h1>
-    <div class="post-meta"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span>
+    <div class="post-meta">&lt;span title=&#39;2020-11-28 16:07:00 &#43;0800 CST&#39;&gt;November 28, 2020&lt;/span&gt;
 
 </div>
   </header> 
@@ -416,7 +464,7 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

@@ -8,9 +8,25 @@
 <title>openSUSE Linux 战渣浪详解教程 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
-“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！
-查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
-Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。">
+“战渣浪” 原理
+
+Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。
+平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定）
+非 flv 封装格式的视频会被二次压缩
+视频非 AVC 编码、音频非 AAC 编码会被二次压缩
+二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。
+
+来战！
+查看平均码率
+FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;:
+Metadata:
+creation_time   : 2012-06-06 12:52:18
+Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s
+Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default)
+Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
+
+MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
@@ -23,6 +39,7 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/">
 <noscript>
     <style>
         #theme-toggle,
@@ -61,9 +78,25 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
     </style>
 </noscript><meta property="og:title" content="openSUSE Linux 战渣浪详解教程" />
 <meta property="og:description" content="自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
-“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！
-查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
-Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。" />
+“战渣浪” 原理
+
+Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。
+平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定）
+非 flv 封装格式的视频会被二次压缩
+视频非 AVC 编码、音频非 AAC 编码会被二次压缩
+二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。
+
+来战！
+查看平均码率
+FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;:
+Metadata:
+creation_time   : 2012-06-06 12:52:18
+Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s
+Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default)
+Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
+
+MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2013-02-24T00:00:00+08:00" />
@@ -72,25 +105,41 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="openSUSE Linux 战渣浪详解教程"/>
 <meta name="twitter:description" content="自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。
-“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！
-查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
-Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;: Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。"/>
+“战渣浪” 原理
+
+Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。
+平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定）
+非 flv 封装格式的视频会被二次压缩
+视频非 AVC 编码、音频非 AAC 编码会被二次压缩
+二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。
+
+来战！
+查看平均码率
+FFMpeg 查看码率的方法是 ffmpeg -i 视频文件
+Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv&#39;:
+Metadata:
+creation_time   : 2012-06-06 12:52:18
+Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s
+Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default)
+Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
+
+MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。"/>
 
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "openSUSE Linux 战渣浪详解教程",
       "item": "https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/"
     }
@@ -103,7 +152,7 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
   "@type": "BlogPosting",
   "headline": "openSUSE Linux 战渣浪详解教程",
   "name": "openSUSE Linux 战渣浪详解教程",
-  "description": "自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。\n“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！\n查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件\nInput #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv': Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。",
+  "description": "自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。\n“战渣浪” 原理 Av Fun 和哔哩哔哩的视频都是外链到渣浪、土豆、优酷这些视频站的。 平均码率大于 1047KB/s 的视频会被二次压缩（我没写错，我也不懂为什么会有这个奇葩的设定） 非 flv 封装格式的视频会被二次压缩 视频非 AVC 编码、音频非 AAC 编码会被二次压缩 二次压缩首先会掉帧，其次会过审。你投原创自然没问题也不需要战，我只看影视区的。 来战！\n查看平均码率 FFMpeg 查看码率的方法是 ffmpeg -i 视频文件\nInput #0, matroska,webm, from '谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3.1024X576.x264-五零字幕组.mkv': Metadata: creation_time : 2012-06-06 12:52:18 Duration: 00:33:28.38, start: 0.000000, bitrate: 1585 kb/s Stream #0:0: Video: h264 (Main), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 47.95 tbc (default) Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default) MPlayer 查看码率的方法是 mplayer -vo null -ao null -identify -frames 0。其中最重要的是 -identify 选项，意思是去识别视频信息。-frames 0 表示不播放，-vo null -ao null 表示使用 null 驱动（也就是不使用视音频驱动，这样你就能通过 ssh 在服务器上识别视频信息了）。\n",
   "keywords": [
     
   ],
@@ -143,7 +192,7 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -165,6 +214,8 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -179,7 +230,7 @@ Input #0, matroska,webm, from &#39;谎言满屋.House.of.Lies.S01E01.Chi_Eng.AC3
     <h1 class="post-title">
       openSUSE Linux 战渣浪详解教程
     </h1>
-    <div class="post-meta"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span>
+    <div class="post-meta">&lt;span title=&#39;2013-02-24 00:00:00 &#43;0800 CST&#39;&gt;February 24, 2013&lt;/span&gt;
 
 </div>
   </header> 
@@ -303,13 +354,11 @@ ID_CHAPTERS=0
 <p>（写教程时我压这片是渲染好字幕的，所以只能凭借去年 10 月研究的感觉来写）</p>
 <p>因为比较重要所以要单独来讲。定理一，看我口型：</p>
 <blockquote>
-<p>表把字幕留到视频变成 FLV 了才想着去加！</p>
-</blockquote>
+<p>表把字幕留到视频变成 FLV 了才想着去加！</p></blockquote>
 <p>这是新手最容易犯的错误（因为觉得字幕不重要），也是尸山血海的错误。因为 Linux 下给 FLV 加字幕，在不把你之前的工作推倒把 FLV 转换掉的情况下，只有一种方法，使用 audemux 硬渲染 SSA 字幕（也很难在 Google 搜到）。由于 SSA 是一种非常罕见的字幕格式，基本宣告着您掉进参数/命令行的大坑里爬不出来了！</p>
 <p>定理二:</p>
 <blockquote>
-<p>表以为可以把字幕以轨道 2 的形式封装到 MKV/MP4！</p>
-</blockquote>
+<p>表以为可以把字幕以轨道 2 的形式封装到 MKV/MP4！</p></blockquote>
 <p>如果你搜索 Linux 嵌入字幕，那你百分百会使用这种方法！这最后会让你整个人都囧掉，因为 MKV/MP4 再转 FLV 的时候自动把字幕轨道丢掉了。因为 FLV 这个封装格式就！没！有！字！幕！轨！道！</p>
 <p>背景知识：嵌入是在封装格式支持字幕轨道的情况下，把 aas/srt 外挂到该轨道中，又叫软字幕，这种字幕可以轻松的提取出来; 渲染是把 aas/srt 转换为 vodsub 图片格式，然后使用过滤器写入到视频轨道的原视频中去，或外挂 vodsub（因为 vodsub 是图片不是文字嘛，所以就可以像娜姐那样加很多特效）。又叫硬字幕。根据不同的渲染方式，有时候根本提取不出来。</p>
 <p>大体比较流行的字幕格式有两种，ass 和 srt。其中比较好的是 ass，转换方法也简单：</p>
@@ -366,7 +415,7 @@ ID_CHAPTERS=0
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

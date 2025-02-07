@@ -11,7 +11,21 @@
 偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
 先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
 但是呢，实际上这种方法在现实中不怎么灵。
-&lt;match target=&quot;scan&quot;&gt; &lt;test name=&quot;family&quot;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：">
+&lt;match target=&quot;scan&quot;&gt;
+  &lt;test name=&quot;family&quot;&gt;
+    &lt;string&gt;Noto Sans CJK SC&lt;/string&gt;
+  &lt;/test&gt;
+  &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt;
+    &lt;minus&gt;
+      &lt;name&gt;charset&lt;/name&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x2122&lt;/int&gt;
+      &lt;/charset&gt;
+    &lt;/minus&gt;
+  &lt;/edit&gt;
+&lt;/match&gt;
+
+大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
@@ -24,6 +38,7 @@
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/">
 <noscript>
     <style>
         #theme-toggle,
@@ -65,7 +80,21 @@
 偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
 先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
 但是呢，实际上这种方法在现实中不怎么灵。
-&lt;match target=&quot;scan&quot;&gt; &lt;test name=&quot;family&quot;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：" />
+&lt;match target=&quot;scan&quot;&gt;
+  &lt;test name=&quot;family&quot;&gt;
+    &lt;string&gt;Noto Sans CJK SC&lt;/string&gt;
+  &lt;/test&gt;
+  &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt;
+    &lt;minus&gt;
+      &lt;name&gt;charset&lt;/name&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x2122&lt;/int&gt;
+      &lt;/charset&gt;
+    &lt;/minus&gt;
+  &lt;/edit&gt;
+&lt;/match&gt;
+
+大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-11-25T12:13:29+08:00" />
@@ -77,23 +106,37 @@
 偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。
 先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。
 但是呢，实际上这种方法在现实中不怎么灵。
-&lt;match target=&quot;scan&quot;&gt; &lt;test name=&quot;family&quot;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的："/>
+&lt;match target=&quot;scan&quot;&gt;
+  &lt;test name=&quot;family&quot;&gt;
+    &lt;string&gt;Noto Sans CJK SC&lt;/string&gt;
+  &lt;/test&gt;
+  &lt;edit name=&quot;charset&quot; mode=&quot;assign&quot;&gt;
+    &lt;minus&gt;
+      &lt;name&gt;charset&lt;/name&gt;
+      &lt;charset&gt;
+        &lt;int&gt;0x2122&lt;/int&gt;
+      &lt;/charset&gt;
+    &lt;/minus&gt;
+  &lt;/edit&gt;
+&lt;/match&gt;
+
+大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的："/>
 
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "深入理解 Linux fontconfig 第一部分",
       "item": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/"
     }
@@ -106,7 +149,7 @@
   "@type": "BlogPosting",
   "headline": "深入理解 Linux fontconfig 第一部分",
   "name": "深入理解 Linux fontconfig 第一部分",
-  "description": "这篇文章是之前两篇关于 fontconfig 文章的后续，前文见第一篇 fontconfig 几个常见的坑，第二篇 Color Emoji in openSUSE。\n偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。\n先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。\n但是呢，实际上这种方法在现实中不怎么灵。\n\u0026lt;match target=\u0026quot;scan\u0026quot;\u0026gt; \u0026lt;test name=\u0026quot;family\u0026quot;\u0026gt; \u0026lt;string\u0026gt;Noto Sans CJK SC\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;edit name=\u0026quot;charset\u0026quot; mode=\u0026quot;assign\u0026quot;\u0026gt; \u0026lt;minus\u0026gt; \u0026lt;name\u0026gt;charset\u0026lt;/name\u0026gt; \u0026lt;charset\u0026gt; \u0026lt;int\u0026gt;0x2122\u0026lt;/int\u0026gt; \u0026lt;/charset\u0026gt; \u0026lt;/minus\u0026gt; \u0026lt;/edit\u0026gt; \u0026lt;/match\u0026gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：",
+  "description": "这篇文章是之前两篇关于 fontconfig 文章的后续，前文见第一篇 fontconfig 几个常见的坑，第二篇 Color Emoji in openSUSE。\n偶然在网上看到 Alynx Zhou 的Fontconfig 和 Noto Color Emoji 和抗锯齿里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。\n先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：marguerite/fonts-config。后来我又重写了 openSUSE 的 fonts-config, 在 marguerite/fonts-config-ng。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。\n但是呢，实际上这种方法在现实中不怎么灵。\n\u0026lt;match target=\u0026quot;scan\u0026quot;\u0026gt; \u0026lt;test name=\u0026quot;family\u0026quot;\u0026gt; \u0026lt;string\u0026gt;Noto Sans CJK SC\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;edit name=\u0026quot;charset\u0026quot; mode=\u0026quot;assign\u0026quot;\u0026gt; \u0026lt;minus\u0026gt; \u0026lt;name\u0026gt;charset\u0026lt;/name\u0026gt; \u0026lt;charset\u0026gt; \u0026lt;int\u0026gt;0x2122\u0026lt;/int\u0026gt; \u0026lt;/charset\u0026gt; \u0026lt;/minus\u0026gt; \u0026lt;/edit\u0026gt; \u0026lt;/match\u0026gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：\n",
   "keywords": [
     
   ],
@@ -146,7 +189,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -168,6 +211,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -182,7 +227,7 @@
     <h1 class="post-title">
       深入理解 Linux fontconfig 第一部分
     </h1>
-    <div class="post-meta"><span title='2022-11-25 12:13:29 +0800 CST'>November 25, 2022</span>
+    <div class="post-meta">&lt;span title=&#39;2022-11-25 12:13:29 &#43;0800 CST&#39;&gt;November 25, 2022&lt;/span&gt;
 
 </div>
   </header> 
@@ -405,7 +450,7 @@ if (fonts) {
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

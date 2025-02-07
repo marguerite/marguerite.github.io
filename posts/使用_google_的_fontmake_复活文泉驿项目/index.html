@@ -22,6 +22,7 @@
 <link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/">
 <noscript>
     <style>
         #theme-toggle,
@@ -78,16 +79,16 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://marguerite.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "使用 google 的 fontmake 复活文泉驿项目",
       "item": "https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/"
     }
@@ -100,7 +101,7 @@
   "@type": "BlogPosting",
   "headline": "使用 google 的 fontmake 复活文泉驿项目",
   "name": "使用 google 的 fontmake 复活文泉驿项目",
-  "description": "最早是 openSUSE 中文论坛上的一个帖子疑似文泉驿字体BUG把我带入字体的坑的，以前我只是停留在玩 fontconfig 的阶段。为了解决这个BUG，我简单的学习了一下 fontforge，发现带草字头和竹字头的字形简直是太多了，绝对不能手改，于是萌生了编程化地解决这个BUG的想法。接着无意中就把文泉驿的 ttc 转成了 ufo3 格式，并且在 README.md 中发愿要使用 googlefonts 的 fontmake 工具来编译文泉驿。\n其实当初没有想那么多的，转换成 ufo3 格式并使用 fontmake 来编译文泉驿有什么好处呢？首先文泉驿作为一个中古字体（只能说比什么 UMing 之类的要新一点），它一直以来不是那么开源的。我理解的开源要有源代码，作为普通用户我很难去把 ttc 当成是源代码的（当然对于会 fontforge 的人来说 ttc 就约等于源代码），我理解的源代码就是能作为文本打开的。wenq.org 曾经是有一个在线编辑器的，用户们可以众筹在线编辑字形，FangQ 会在后台把用户编辑的字形搜集起来去做新的 ttc。随着时间，这套机制已经是废弃了的，也就可以说我们无法再获取到它的源代码了。把文泉驿转存成 ufo3 格式，它的每一个字形都是文本化的 glif 格式，相当于复现了源代码。有了源代码一切都好办了，未来我们还可以再制作在线编辑器，让文泉驿原来的模式继续下去。其次使用 fontmake 来编译文泉驿，相当于让文泉驿与所有现代字体比如 Noto Sans CJK 又站在了同一起跑线上。最近几年字体制作发展的很快，前几年我在 github 上是很少能看见字体项目的，但自从 Adobe 和 Google 在 github 上开源了他们的一些字体工具后呢，现在各种拼接字体大行其道了，比如更纱黑体这种，甚至偶尔还会给我推送一些做原创字体的项目。这些曾经都是与文泉驿无缘的，正如我所说的，大多数人不认为 ttc 是源代码，所以没法利用文泉驿。但现在好了，我可以用 fontmake 编译文泉驿，就表示说 fontbakery 我也可以用，ttfautohint 我也可以用，换句话说，如果我的 ufo3 格式通过了 fontbakery 的 adobefonts 或 googlefonts 的系列检查，且不论字形美丑，至少在字体质量上当年手搓出来的文泉驿是可以进化到 Noto Sans CJK 的水平的。\n大多数工作是两年前做的，当时我写了一个 ufo3 的解析库，修复了草字头和竹字头的问题，并且使用 fontforge 再次生成了 ttf 字体。后来去打包 fontmake 的时候遇到了 skia-pathops 的编译问题，项目就停滞了，甚至草字头和竹字头的问题最终也没有反馈回发行版中。",
+  "description": "最早是 openSUSE 中文论坛上的一个帖子疑似文泉驿字体BUG把我带入字体的坑的，以前我只是停留在玩 fontconfig 的阶段。为了解决这个BUG，我简单的学习了一下 fontforge，发现带草字头和竹字头的字形简直是太多了，绝对不能手改，于是萌生了编程化地解决这个BUG的想法。接着无意中就把文泉驿的 ttc 转成了 ufo3 格式，并且在 README.md 中发愿要使用 googlefonts 的 fontmake 工具来编译文泉驿。\n其实当初没有想那么多的，转换成 ufo3 格式并使用 fontmake 来编译文泉驿有什么好处呢？首先文泉驿作为一个中古字体（只能说比什么 UMing 之类的要新一点），它一直以来不是那么开源的。我理解的开源要有源代码，作为普通用户我很难去把 ttc 当成是源代码的（当然对于会 fontforge 的人来说 ttc 就约等于源代码），我理解的源代码就是能作为文本打开的。wenq.org 曾经是有一个在线编辑器的，用户们可以众筹在线编辑字形，FangQ 会在后台把用户编辑的字形搜集起来去做新的 ttc。随着时间，这套机制已经是废弃了的，也就可以说我们无法再获取到它的源代码了。把文泉驿转存成 ufo3 格式，它的每一个字形都是文本化的 glif 格式，相当于复现了源代码。有了源代码一切都好办了，未来我们还可以再制作在线编辑器，让文泉驿原来的模式继续下去。其次使用 fontmake 来编译文泉驿，相当于让文泉驿与所有现代字体比如 Noto Sans CJK 又站在了同一起跑线上。最近几年字体制作发展的很快，前几年我在 github 上是很少能看见字体项目的，但自从 Adobe 和 Google 在 github 上开源了他们的一些字体工具后呢，现在各种拼接字体大行其道了，比如更纱黑体这种，甚至偶尔还会给我推送一些做原创字体的项目。这些曾经都是与文泉驿无缘的，正如我所说的，大多数人不认为 ttc 是源代码，所以没法利用文泉驿。但现在好了，我可以用 fontmake 编译文泉驿，就表示说 fontbakery 我也可以用，ttfautohint 我也可以用，换句话说，如果我的 ufo3 格式通过了 fontbakery 的 adobefonts 或 googlefonts 的系列检查，且不论字形美丑，至少在字体质量上当年手搓出来的文泉驿是可以进化到 Noto Sans CJK 的水平的。\n大多数工作是两年前做的，当时我写了一个 ufo3 的解析库，修复了草字头和竹字头的问题，并且使用 fontforge 再次生成了 ttf 字体。后来去打包 fontmake 的时候遇到了 skia-pathops 的编译问题，项目就停滞了，甚至草字头和竹字头的问题最终也没有反馈回发行版中。\n",
   "keywords": [
     
   ],
@@ -140,7 +141,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -162,6 +163,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -176,7 +179,7 @@
     <h1 class="post-title">
       使用 google 的 fontmake 复活文泉驿项目
     </h1>
-    <div class="post-meta"><span title='2022-11-23 20:01:29 +0800 CST'>November 23, 2022</span>
+    <div class="post-meta">&lt;span title=&#39;2022-11-23 20:01:29 &#43;0800 CST&#39;&gt;November 23, 2022&lt;/span&gt;
 
 </div>
   </header> 
@@ -279,7 +282,7 @@ except self.Error:
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://marguerite.github.io">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
