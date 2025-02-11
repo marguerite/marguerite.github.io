@@ -12,7 +12,7 @@ draft: false
 			   FcPattern   *p_pat,
 			   FcMatchKind kind)
     {
-这不过第二个 p_pat 是 0。
+只不过第二个 p_pat 是 0。
 
 整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在[这里](https://github.com/freedesktop/fontconfig/blob/master/src/fccfg.c)。
 
@@ -224,7 +224,7 @@ draft: false
 
 ## 为什么？
 
-到这儿其实已经可以定义为一个 BUG 了。宣称 minus charset 最后却没有减。但我还是有兴趣继续 debug 一下 FcMatchScan 是怎么进行的。
+到这儿感觉已经可以定义为一个 BUG 了。宣称 minus charset 最后却没有减。但我还是有兴趣继续 debug 一下 FcMatchScan 是怎么进行的。
 
 留个悬念吧，其实它不是 bug。详情见下篇分解。
 

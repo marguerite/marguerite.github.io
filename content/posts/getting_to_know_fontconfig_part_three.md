@@ -230,6 +230,6 @@ draft: false
 
 首先，`FcConfigSubstitute` 删除 charset leaf，如果你是显式的用，就是在 `FcListPatternMatchAny`阶段，因为 `config` 里无论你是 `assign` 还是 `assign_replace` 都认的。如果你是隐式的用，那就是在 `FcFileScanFontConfig` 的时候，但是必须用 `assign_replace`。
 
-其次，`FcConfigSubstitue` 只会做 `<match target="pattern">`，如果你的第一个参数也就是 `config` 传 0 会做 `<match target="scan">`。这是我验证过的。而 `<match target="font">` 只会在一个地方做：`FcFontRenderPrepare`（可以搜 `FcMatchFont` 查到）。另外 Chromium 的 ` GetFontRenderParamsFromFcPattern` 是没有调用 `FcFontRenderPrepare` 的，它只会取字体默认的 aa，autohint, embedded_bitmap, hinting 和 rgba。所以你们批评它也没错。
+其次，`FcConfigSubstitue` 只会做 `<match target="pattern">`，如果你的第一个参数也就是 `config` 传 0 会做 `<match target="scan">`。这是我验证过的。而 `<match target="font">` 只会在一个地方做：`FcFontRenderPrepare`（可以搜 `FcMatchFont` 查到）。另外 Chromium 的 ` GetFontRenderParamsFromFcPattern` 是没有调用 `FcFontRenderPrepare` 的，它只会取字体默认的 aa，autohint, embedded_bitmap, hinting 和 rgba。~~所以你们批评它也没错。~~ **不做是对的，直接用缓存，把做 scan 的权力交给你自己**
 
 下一篇，会谈谈双猫说的 Chromium 只返回一个 Fallback 字体的问题。敬请期待。

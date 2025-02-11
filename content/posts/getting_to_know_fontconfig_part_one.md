@@ -49,7 +49,7 @@ draft: false
 
 当然了，fontconfig 毕竟不是 fontforge 这样的字体编辑程序，真实的在硬盘上的字体文件里这个字符肯定还是存在的。也许是 fontconfig 在缓存 binary data 的时候就去掉了这个 charset leaf，也许只是在字体属性中去掉了。
 
-但很可惜，这个假设通过我的 debug 发现它，**对也不对**。对的地方是在 fontconfig 自己的 utilities 比如 fc-match, fc-list 里，它是对的。错的地方是在别的程序里，调用方式的不同导致这个工作流**可能**被掐头去尾取中间了。也就是说别的程序可能只是使用了 fontconfig 的 pattern match 阶段，得到字体就万事大吉了。前面的 scan match、后面的 font match 可能根本就没有用（这个存疑，目前还没有 debug 到这里）。
+我通过 debug 发现这个假设，**对~~也不对~~**。对的地方是在 fontconfig 自己的 utilities 比如 fc-match, fc-list 里，它是对的。~~错的地方是在别的程序里，调用方式的不同导致这个工作流**可能**被掐头去尾取中间了。也就是说别的程序可能只是使用了 fontconfig 的 pattern match 阶段，得到字体就万事大吉了。前面的 scan match、后面的 font match 可能根本就没有用。~~**使用 fontconfig 的程序只要 FcConfigReference() 进行空白初始化，而不是 FcConfigReference(own_config) 传自有 config ，都会成功。即使程序实现自己的初始化函数（比如 Chromium），最终也会调用 FcConfigReference()  进行空白初始化。（因为没人会重新实现一份实质空白的 config）**
 
 ## 薛定谔的 FontSet
 
@@ -175,18 +175,7 @@ FcObjectFromName 取不到值。这里的 `os->objects[o]` 就是 `:charset=0x21
 
 同时，`FcPatternGetCharset` 是一个 get 函数，是不会修改 FontSet 的。
 
-这个留着后续研究了。暂时只能说隐式调用不行。
-
-换句话说，如果想要取得应用 charset minus 方法后的字体，这个程序要改为使用 `:charset=0x2122`，即：
-
-    int main(int argc, char **argv) {
-      FcFontSet* fs = NULL;
-      FcPattern* pat = NULL;
-      FcObjectSet* os = NULL;
- 
-      FcChar8* strpat = (FcChar8*)":lang=zh charset=0x2122";
-      pat = FcNameParse(strpat);
-    }
+~~这个留着后续研究了。暂时只能说隐式调用不行~~ **行，方法在后续**。
 
 ## fc-match 分析
 
@@ -216,7 +205,9 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
 
 ## Chromium/Chrome 在 Linux 上查找字体的方式
 
-这个是双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)缺少的 Chromium 代码部分。之前 V2EX 上有个 rant [Chrome 把 FreeTyoe/Fontconfig 全集成进自己沙盒以及扣肉满天下简直毒瘤到爆表!](https://www.v2ex.com/t/853093)，说得不完全对，至少在我要 debug 的问题上，我不需要知道 [skia 究竟干了什么](https://www.chromium.org/developers/design-documents/rendertext/)，我只需要知道 chromium 最终是怎么在 Linux 上查找 Fallback 字体的就可以了。于是，我找到了 [ui/gfx/font_fallback_linux.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/font_fallback_linux.cc)，里面有一个最重要的 `GetFallbackFont` 函数，它有关 fontconfig 部分的代码是这样的：
+~~这个是双猫的[Linux fontconfig 的字体匹配机制](https://catcat.cc/post/2020-10-31/)缺少的 Chromium 代码部分。之前 V2EX 上有个 rant [Chrome 把 FreeTyoe/Fontconfig 全集成进自己沙盒以及扣肉满天下简直毒瘤到爆表!](https://www.v2ex.com/t/853093)，说得不完全对，至少在我要 debug 的问题上，我不需要知道 skia 究竟干了什么，我只需要知道 chromium 最终是怎么在 Linux 上查找 Fallback 字体的就可以了。于是，我找到了 [ui/gfx/font_fallback_linux.cc](https://github.com/chromium/chromium/blob/main/ui/gfx/font_fallback_linux.cc)，里面有一个最重要的 `GetFallbackFont` 函数，它有关 fontconfig 部分的代码是这样的：~~
+
+**找错了位置，找到 UI 字体的 Fallback 去了，而不是 blink 引擎处理网页中文字的字体 Fallback 逻辑。但为了引出第二篇要分析的 FcConfigSubstitute，姑且保留。另外，3年后才发现，太需要知道 skia 究竟干了什么了...原谅我当年的无知...**
 
     FcConfig* config = GetGlobalFontConfig();
     FcConfigSubstitute(config, pattern.get(), FcMatchPattern);
@@ -257,5 +248,3 @@ fc-match.c 一开始还是跟 fc-list.c 一样的，常规解析 `pattern` 和 `
 按照我们前面的分析，如果 `FcConfigSubstitute` 得到的这个 FontSet 里是进行过 charset minus 的，那么 `FcPatternGetCharSet` 是 100% 尊重的，就不会出现之前的用 `Noto Sans CJK SC` 显示 ™ 符号的情况。
 
 看来我们要继续分析 `FcConfigSubstitute` 的实现了。
-
-未完待续。
