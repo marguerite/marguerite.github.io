@@ -130,6 +130,22 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>fontconfig 几个常见的坑
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2020-11-04 00:00:00 &#43;0800 CST&#39;&gt;November 4, 2020&lt;/span&gt;</footer>
+  <a class="entry-link" aria-label="post link to fontconfig 几个常见的坑" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格
     </h2>
   </header>
@@ -312,29 +328,6 @@ wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解�
   </div>
   <footer class="entry-footer">&lt;span title=&#39;2013-03-26 00:00:00 &#43;0800 CST&#39;&gt;March 26, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openSUSE 特殊国情有关的 FAQ" href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>培育开源 NGO 的一些思考
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
-大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
-首先提到 openSUSE，大家想到的应该是：
-华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。 一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
-宣传不到位 沉默的大多数 这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
-宣传不到位 宣传不到位的常见原因有以下几种：
-投入不够 政策错 没有细分用户 投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
-金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。
-为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？
-很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。
-政策错 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？
-...</p>
-  </div>
-  <footer class="entry-footer">&lt;span title=&#39;2013-03-23 00:00:00 &#43;0800 CST&#39;&gt;March 23, 2013&lt;/span&gt;</footer>
-  <a class="entry-link" aria-label="post link to 培育开源 NGO 的一些思考" href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

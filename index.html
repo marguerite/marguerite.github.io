@@ -130,6 +130,24 @@
 
 <article class="first-entry"> 
   <header class="entry-header">
+    <h2>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
+UI 字体的渲染 官方文档：RenderText and Chrome UI text drawing
+Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：
+它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。
+这里面就是我非常熟悉的 fontconfig 了，核心代码：
+FallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result); } 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2025-02-10 00:00:00 &#43;0800 CST&#39;&gt;February 10, 2025&lt;/span&gt;</footer>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之四：Chromium 字体查询机制" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>openSUSE 下制作 fcitx5-pinyin 的拼音词库
     </h2>
   </header>
@@ -282,22 +300,6 @@ def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_
   </div>
   <footer class="entry-footer">&lt;span title=&#39;2020-11-04 00:00:00 &#43;0800 CST&#39;&gt;November 4, 2020&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to Color Emoji in openSUSE" href="https://marguerite.github.io/posts/color_emoji_in_opensuse/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>fontconfig 几个常见的坑
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
-后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
-第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
-&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）
-...</p>
-  </div>
-  <footer class="entry-footer">&lt;span title=&#39;2020-11-04 00:00:00 &#43;0800 CST&#39;&gt;November 4, 2020&lt;/span&gt;</footer>
-  <a class="entry-link" aria-label="post link to fontconfig 几个常见的坑" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

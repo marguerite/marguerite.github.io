@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
+<meta name="keywords" content="">
+<meta name="description" content="很多人包括我，都是从这个官方说明入坑的：Blink&rsquo;s Text Stack。
+Chromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 &ldquo;font-size: 11 pt; font-family: sans-serif&rdquo; 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。
+初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：
+const FontData* FontFallbackList::GetFontData(const FontDescription&amp; font_description)
+
+主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 font: 14pt &#39;Open Sans&#39; sans-serif 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 font_fallback_linux.cc。
+我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。">
+<meta name="author" content="">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3_fontconfig_%E4%B9%8B%E5%9B%9B_linux_%E4%B8%8B_chromium_%E4%B8%AD%E7%BD%91%E9%A1%B5%E5%AD%97%E4%BD%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%9C%BA%E5%88%B6/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3_fontconfig_%E4%B9%8B%E5%9B%9B_linux_%E4%B8%8B_chromium_%E4%B8%AD%E7%BD%91%E9%A1%B5%E5%AD%97%E4%BD%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%9C%BA%E5%88%B6/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制" />
+<meta property="og:description" content="很多人包括我，都是从这个官方说明入坑的：Blink&rsquo;s Text Stack。
+Chromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 &ldquo;font-size: 11 pt; font-family: sans-serif&rdquo; 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。
+初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：
+const FontData* FontFallbackList::GetFontData(const FontDescription&amp; font_description)
+
+主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 font: 14pt &#39;Open Sans&#39; sans-serif 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 font_fallback_linux.cc。
+我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marguerite.github.io/posts/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3_fontconfig_%E4%B9%8B%E5%9B%9B_linux_%E4%B8%8B_chromium_%E4%B8%AD%E7%BD%91%E9%A1%B5%E5%AD%97%E4%BD%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%9C%BA%E5%88%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2025-02-10T00:00:00+08:00" />
+<meta property="article:modified_time" content="2025-02-10T00:00:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制"/>
+<meta name="twitter:description" content="很多人包括我，都是从这个官方说明入坑的：Blink&rsquo;s Text Stack。
+Chromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 &ldquo;font-size: 11 pt; font-family: sans-serif&rdquo; 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。
+初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：
+const FontData* FontFallbackList::GetFontData(const FontDescription&amp; font_description)
+
+主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 font: 14pt &#39;Open Sans&#39; sans-serif 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 font_fallback_linux.cc。
+我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制",
+      "item": "https://marguerite.github.io/posts/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3_fontconfig_%E4%B9%8B%E5%9B%9B_linux_%E4%B8%8B_chromium_%E4%B8%AD%E7%BD%91%E9%A1%B5%E5%AD%97%E4%BD%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%9C%BA%E5%88%B6/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制",
+  "name": "深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制",
+  "description": "很多人包括我，都是从这个官方说明入坑的：Blink\u0026rsquo;s Text Stack。\nChromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 \u0026ldquo;font-size: 11 pt; font-family: sans-serif\u0026rdquo; 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。\n初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：\nconst FontData* FontFallbackList::GetFontData(const FontDescription\u0026amp; font_description) 主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 font: 14pt 'Open Sans' sans-serif 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 font_fallback_linux.cc。\n我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "很多人包括我，都是从这个官方说明入坑的：Blink’s Text Stack。\nChromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 “font-size: 11 pt; font-family: sans-serif” 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。\n初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：\nconst FontData* FontFallbackList::GetFontData(const FontDescription\u0026 font_description) 主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 font: 14pt 'Open Sans' sans-serif 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 font_fallback_linux.cc。\n我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。\n官方说明到这里就非常突兀地开始介绍 Text Shaping 了，就是把一段文字，按照 Unicode 做切分（Segmentation），然后用 Primary Font 去覆盖尽可能多的 Unicode, 剩下的用 Secondary Font 覆盖，一直到最后所有的文字都有字体显示。这里面最容易混淆的有一句话就是说，如果 css 中列明的字体都没有覆盖这个 Unicode, 会调用 FallbackFontForCharacter 来显示这个 Unicode, 即字体查询这时不再受限制于 css 中列明的字体，系统字体也会参与进来，即使没有明确的写在 css 里。因为有一个 FallbackFontForCharacter，所以就有人理解为 Chromium 做 Fallback 是单个字蹦的，这是不对的。\n这时应该参照另一个官方文档：RenderText and Chrome UI text drawing。\n里面说了 Linux 下的 Chromium 是用 harfbuzz 做渲染的，所以最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：\n它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终也是回到 font_fallback_linux.cc。\n这里面就是我非常熟悉的 fontconfig 了，核心代码：\nFallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, \u0026result); } 核心是 FcFontSort-\u003eFcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-\u003eFcCompareValueList 生成。\n对我来说其实 FcFontSort 不重要，我只需要知道 Chromium 使用了 FcConfigSubstitute 即可，它还是尊重 fontconfig 的。\n另外第二轮用 GetFallbackFont(Primary font) 跑的时候，确实只会返回一个字体，但那也是先通过 FcFontSort 取结果，然后比较 charset 找到一个 coverage 最高的。\n至于最早的那个 FallbackFontForCharacter，只见于 Blink 的 FontCache，而且这个功能只有 services/font 在用。根据 services 的定义，这不是 Chromium 的核心功能，更像是插件开发，所以就没继续研究。\n而且我觉得，Text Shaping 先为每一个 Dom 元素生成 FontFallbackList，Skia 渲染的时候再 GetFontData, 到了这步的时候，有一两个遗漏的逐个 character 的取，好像也没什么毛病。就是不知道是不是这个顺序，后续有时间再研究。\n其他 我还发现了 Chromium 是如何处理文本中的 Emoji 的，它会将与 Emoji 相关的 Unicode 作为单独的一次渲染处理。然后 FontCache 查找的时候，发现 Emoji 会优先在 und-zsye 这个 locale 里找字体。\n它的 emoji 判断代码感觉也比较巧妙：\nbool IsEmojiRelatedCodepoint(UChar32 codepoint) { return u_hasBinaryProperty(codepoint, UCHAR_EMOJI) || u_hasBinaryProperty(codepoint, UCHAR_EMOJI_PRESENTATION) || u_hasBinaryProperty(codepoint, UCHAR_REGIONAL_INDICATOR); } 现在我的 fonts-config-ng 是先找 emoij 字体，再扫描它有什么 charset，如果用这个方法，应该可以减少一轮扫描。\n",
+  "wordCount" : "294",
+  "inLanguage": "en",
+  "datePublished": "2025-02-10T00:00:00+08:00",
+  "dateModified": "2025-02-10T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3_fontconfig_%E4%B9%8B%E5%9B%9B_linux_%E4%B8%8B_chromium_%E4%B8%AD%E7%BD%91%E9%A1%B5%E5%AD%97%E4%BD%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%9C%BA%E5%88%B6/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      深入理解 Fontconfig 之四：Linux 下 Chromium 中网页字体的查询机制
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2025-02-10 00:00:00 &#43;0800 CST&#39;&gt;February 10, 2025&lt;/span&gt;
+
+</div>
+  </header> 
+  <div class="post-content"><p>很多人包括我，都是从这个官方说明入坑的：<a href="https://chromium.googlesource.com/chromium/src/+/HEAD/third_party/blink/renderer/platform/fonts/README.md">Blink&rsquo;s Text Stack</a>。</p>
+<p>Chromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 &ldquo;font-size: 11 pt; font-family: sans-serif&rdquo; 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。</p>
+<p>初始化 FontFallbackList 的时候会把 CssFontSelector 喂给它, 而 FontFallbackList 最重要的函数是：</p>
+<pre><code>const FontData* FontFallbackList::GetFontData(const FontDescription&amp; font_description)
+</code></pre>
+<p>主要是把 FontDescription 解析成真正的字体：先查找 FontCache, 缓存分为网页字体的缓存和系统字体的缓存（这就是 CssFontSelector 的作用，它是二合一的选择器，而 FontSelector 只是系统字体的选择器）; 如果缓存没有，针对 <code>font: 14pt 'Open Sans' sans-serif</code> 这样的 FontDescription 中的每个 font-family, 调用 ReportFontLookupByUniqueOrFamilyName。以上每一个 family name 都没有找到，会有一步 GetLastResortFallbackFont。那两个名字特别长的函数中间会转好几步，最后归根到底在 <a href="https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/font_fallback_linux.cc">font_fallback_linux.cc</a>。</p>
+<p>我 2020 年第一遍看的时候是卡在 CssFontSelector 喂给 FontFallbackList 做初始化的时候，发现那个构造函数没有 Body。后来反应过来，没有 Body 无所谓啊，因为前面讲的一直是怎么从 css 到 Font/FontDescription，Font 又怎么到 FontFallbackList, 给 FontFallbackList 喂 FontDescription 就实质 populate FontFallbackList 了。</p>
+<p>官方说明到这里就非常突兀地开始介绍 Text Shaping 了，就是把一段文字，按照 Unicode 做切分（Segmentation），然后用 Primary Font 去覆盖尽可能多的 Unicode, 剩下的用 Secondary Font 覆盖，一直到最后所有的文字都有字体显示。这里面最容易混淆的有一句话就是说，<code>如果 css 中列明的字体都没有覆盖这个 Unicode, 会调用 FallbackFontForCharacter 来显示这个 Unicode</code>, 即字体查询这时不再受限制于 css 中列明的字体，系统字体也会参与进来，即使没有明确的写在 css 里。因为有一个 <code>FallbackFontForCharacter</code>，所以就有人理解为 Chromium 做 Fallback 是单个字蹦的，这是不对的。</p>
+<p>这时应该参照另一个官方文档：<a href="https://www.chromium.org/developers/design-documents/rendertext/">RenderText and Chrome UI text drawing</a>。</p>
+<p>里面说了 Linux 下的 Chromium 是用 harfbuzz 做渲染的，所以最重要的函数都在 <a href="https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/render_text_harfbuzz.cc">render_text_harfbuzz.cc</a> 里面，其中 <code>RenderTextHarfbuzz::ShapeRuns</code> 是最重要的：</p>
+<p>它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终也是回到 <a href="https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/font_fallback_linux.cc">font_fallback_linux.cc</a>。</p>
+<p>这里面就是我非常熟悉的 fontconfig 了，核心代码：</p>
+<pre><code>FallbackFontList fallback_fonts;
+FcPattern* pattern = FcPatternCreate();
+FcPatternAddString(pattern, FC_FAMILY,
+                 reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str()));
+
+FcConfig* config = GetGlobalFontConfig();
+
+if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
+  FcDefaultSubstitute(pattern);
+  FcResult result;
+  FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result);
+}
+</code></pre>
+<p>核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。</p>
+<p>对我来说其实 FcFontSort 不重要，我只需要知道 Chromium 使用了 FcConfigSubstitute 即可，它还是尊重 fontconfig 的。</p>
+<p>另外第二轮用 GetFallbackFont(Primary font) 跑的时候，确实只会返回一个字体，但那也是先通过 FcFontSort 取结果，然后比较 charset 找到一个 coverage 最高的。</p>
+<p>至于最早的那个 <code>FallbackFontForCharacter</code>，只见于 Blink 的 FontCache，而且这个功能只有 services/font 在用。根据 services 的定义，这不是 Chromium 的核心功能，更像是插件开发，所以就没继续研究。</p>
+<p>而且我觉得，Text Shaping 先为每一个 Dom 元素生成 FontFallbackList，Skia 渲染的时候再 GetFontData, 到了这步的时候，有一两个遗漏的逐个 character 的取，好像也没什么毛病。就是不知道是不是这个顺序，后续有时间再研究。</p>
+<h3 id="其他">其他<a hidden class="anchor" aria-hidden="true" href="#其他">#</a></h3>
+<p>我还发现了 Chromium 是如何处理文本中的 Emoji 的，它会将与 Emoji 相关的 Unicode 作为单独的一次渲染处理。然后 FontCache 查找的时候，发现 Emoji 会优先在 und-zsye 这个 locale 里找字体。</p>
+<p>它的 emoji 判断代码感觉也比较巧妙：</p>
+<pre><code>bool IsEmojiRelatedCodepoint(UChar32 codepoint) {
+  return u_hasBinaryProperty(codepoint, UCHAR_EMOJI) ||
+     u_hasBinaryProperty(codepoint, UCHAR_EMOJI_PRESENTATION) ||
+     u_hasBinaryProperty(codepoint, UCHAR_REGIONAL_INDICATOR);
+}
+</code></pre>
+<p>现在我的 fonts-config-ng 是先找 emoij 字体，再扫描它有什么 charset，如果用这个方法，应该可以减少一轮扫描。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        label="blog"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

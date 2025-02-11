@@ -6,7 +6,35 @@
     <description>Recent content in Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Feb 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制</title>
+      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</link>
+      <pubDate>Mon, 10 Feb 2025 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</guid>
+      <description>&lt;p&gt;要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。&lt;/p&gt;
+&lt;h2 id=&#34;ui-字体的渲染&#34;&gt;UI 字体的渲染&lt;/h2&gt;
+&lt;p&gt;官方文档：&lt;a href=&#34;https://www.chromium.org/developers/design-documents/rendertext/&#34;&gt;RenderText and Chrome UI text drawing&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 &lt;a href=&#34;https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/render_text_harfbuzz.cc&#34;&gt;render_text_harfbuzz.cc&lt;/a&gt; 里面，其中 &lt;code&gt;RenderTextHarfbuzz::ShapeRuns&lt;/code&gt; 是最重要的：&lt;/p&gt;
+&lt;p&gt;它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 &lt;a href=&#34;https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/font_fallback_linux.cc&#34;&gt;font_fallback_linux.cc&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这里面就是我非常熟悉的 fontconfig 了，核心代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FallbackFontList fallback_fonts;
+FcPattern* pattern = FcPatternCreate();
+FcPatternAddString(pattern, FC_FAMILY,
+                 reinterpret_cast&amp;lt;const FcChar8*&amp;gt;(font_family.c_str()));
+
+FcConfig* config = GetGlobalFontConfig();
+
+if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
+  FcDefaultSubstitute(pattern);
+  FcResult result;
+  FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;amp;result);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;核心是 FcFontSort-&amp;gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&amp;gt;FcCompareValueList 生成。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>openSUSE 下制作 fcitx5-pinyin 的拼音词库</title>
       <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</link>
