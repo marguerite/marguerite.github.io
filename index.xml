@@ -120,7 +120,7 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
 		   FcMatchKind kind)
 {
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;这不过第二个 p_pat 是 0。&lt;/p&gt;
+&lt;p&gt;只不过第二个 p_pat 是 0。&lt;/p&gt;
 &lt;p&gt;整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在&lt;a href=&#34;https://github.com/freedesktop/fontconfig/blob/master/src/fccfg.c&#34;&gt;这里&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;它先是获取了 config：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;config = FcConfigReference (config);

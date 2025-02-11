@@ -189,7 +189,7 @@ FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段
   <div class="entry-content">
     <p>这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。
 前面说到了 FcConfigSubstitute这个函数，它实际封装了：
-FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。
+FcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 只不过第二个 p_pat 是 0。
 整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
 它先是获取了 config：
 config = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。

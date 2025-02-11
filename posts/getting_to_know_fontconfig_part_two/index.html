@@ -15,7 +15,7 @@ FcConfigSubstituteWithPat (FcConfig    *config,
 		   FcMatchKind kind)
 {
 
-这不过第二个 p_pat 是 0。
+只不过第二个 p_pat 是 0。
 整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
 它先是获取了 config：
 config = FcConfigReference (config);
@@ -87,7 +87,7 @@ FcConfigSubstituteWithPat (FcConfig    *config,
 		   FcMatchKind kind)
 {
 
-这不过第二个 p_pat 是 0。
+只不过第二个 p_pat 是 0。
 整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
 它先是获取了 config：
 config = FcConfigReference (config);
@@ -116,7 +116,7 @@ FcConfigSubstituteWithPat (FcConfig    *config,
 		   FcMatchKind kind)
 {
 
-这不过第二个 p_pat 是 0。
+只不过第二个 p_pat 是 0。
 整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。
 它先是获取了 config：
 config = FcConfigReference (config);
@@ -158,11 +158,11 @@ config = FcInitLoadConfigAndFonts ();
   "@type": "BlogPosting",
   "headline": "深入理解 Linux fontconfig 第二部分",
   "name": "深入理解 Linux fontconfig 第二部分",
-  "description": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：\n",
+  "description": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 只不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：\n",
   "keywords": [
     
   ],
-  "articleBody": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 这不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：\nFcConfig * FcInitLoadOwnConfigAndFonts (FcConfig *config) { config = FcInitLoadOwnConfig (config); if (!config) return 0; if (!FcConfigBuildFonts (config)) { FcConfigDestroy (config); return 0; } return config; } 它首先是使用 FcInitLoadOwnConfig 去加载默认 config，然后看看默认 config 能否 FcConfigBuildFonts，如果能就返回。\nFcInitLoadOwnConfig 这个函数非常大，但是由于前面传过来的是 NULL, 理解起来反而更简单。它其实就是生成了一份默认的什么都没有但是能相应各种请求的 FcConfig，内容就是这样：\nFC_DEFAULT_FONTS fonts \" FC_CACHEDIR \" fontconfig \" CONFIGDIR \" fontconfig/conf.d fontconfig/fonts.conf 重要的反而是 FcConfigBuildFonts。而后者里面最重要的函数是 FcConfigAddDirList 。接着最重要的是 FcDirCacheRead-\u003eFcDirCacheScan-\u003eFcDirScanConfig-\u003e FcFileScanConfig -\u003e FcFileScanFontConfig。\nFcFileScanFontConfig 这个函数是一个非常重要的底层函数，因为它有：\nif (!FcFreeTypeQueryAll (file, -1, NULL, NULL, set)) 去真正的扫描字体文件，并且对扫描出的 FontSet 逐个有：\nif (config \u0026\u0026 !FcConfigSubstitute (config, font, FcMatchScan)) 也就是应用 规则。而我们的 charset minus 应用的正是 scan 规则。\n这里要特殊说一下，就是以上流程是在假设没有 cache 的情况下才会发生的，如果有 cache，那么到了 FcDirCacheRead 那步就是读取 cache 了。所以上面分析的过程相当于：\nfc-cache \u0026\u0026 fc-match blabla 至此我们的函数理解阶段就告一段落了。因为我们能够确定：\n只要传递给 FcConfigReference 中的 config 是 0，那么一定能够得到应用了 后的字体。\n验证 FcConfigReference 魔改了一下依云的代码：\n#include #include int main(int argc, char **argv){ FcFontSet* fs = FcFontSetCreate(); FcPattern* pat; FcChar8* strpat = (FcChar8*)\":lang=zh\"; pat = FcNameParse(strpat); FcConfigSubstitute(0, pat, FcMatchPattern); FcDefaultSubstitute(pat); FcResult ret; FcFontSet* font_patterns = FcFontSort(0, pat, FcFalse, 0, \u0026ret); int j; for (j = 0; j \u003c font_patterns-\u003enfont; j++) { FcPattern* font_pattern = FcFontRenderPrepare(NULL, pat, font_patterns-\u003efonts[j]); if (font_pattern) { FcFontSetAdd(fs, font_pattern); } } FcFontSetSortDestroy(font_patterns); FcPatternDestroy(pat); FcChar8 *family; FcChar8 *file; FcCharSet* cs; FcChar32 ch; FcUtf8ToUcs4((FcChar8*)\"™\", \u0026ch, 3); int i; for(i=0; infont; i++){ if(FcPatternGetCharSet(fs-\u003efonts[i], FC_CHARSET, 0, \u0026cs) != FcResultMatch){ fprintf(stderr, \"no match\\n\"); FcPatternPrint(fs-\u003efonts[i]); goto nofont; } if(FcPatternGetString(fs-\u003efonts[i], FC_FAMILY, 1, \u0026family) != FcResultMatch) if(FcPatternGetString(fs-\u003efonts[i], FC_FAMILY, 0, \u0026family) != FcResultMatch) goto nofont; printf(\"[%d] %s \", i, (char *)family); if(FcPatternGetString(fs-\u003efonts[i], FC_FILE, 0, \u0026file) != FcResultMatch) goto nofont; printf(\"(%s): \", (char *)file); if(FcCharSetHasChar(cs, ch)){ puts(\"Yes\"); } else { puts(\"No\"); } } FcFontSetDestroy(fs); return 0; nofont: return 1; } 编译运行：\ngcc -o test1 test1.c -lfontconfig ./test1 | grep \"Noto Sans CJK SC\" 结果：\n[0] Noto Sans CJK SC (/usr/share/fonts/truetype/NotoSansCJKsc-Regular.otf): Yes 居然还在！\n其实这不奇怪：\n首先我们只是知道了给 FcConfigReference 传 0 会得到应用 ",
+  "articleBody": "这是深入理解 Linux fontconfig 系列的第二部分，第一部分请移步。\n前面说到了 FcConfigSubstitute这个函数，它实际封装了：\nFcConfigSubstituteWithPat (FcConfig *config, FcPattern *p, FcPattern *p_pat, FcMatchKind kind) { 只不过第二个 p_pat 是 0。\n整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在这里。\n它先是获取了 config：\nconfig = FcConfigReference (config); 然后针对 FcMatchPattern 这个 kind 先往 pattern p 里加入了 lang 和 prgname 元素。接着就是针对从 config 里取到的某个 kind 的 RuleSet 挨个应用到 pattern。\nFcConfigReference 实际上只有给它传 0 才会做一大堆初始化，不然就会使用你自己的 config。前面说过 Chromium 的 config 就是它自己做的：\nFcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在内都是直接传 0 让它做初始化的。初始化最重要的函数是：\nconfig = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：\nFcConfig * FcInitLoadOwnConfigAndFonts (FcConfig *config) { config = FcInitLoadOwnConfig (config); if (!config) return 0; if (!FcConfigBuildFonts (config)) { FcConfigDestroy (config); return 0; } return config; } 它首先是使用 FcInitLoadOwnConfig 去加载默认 config，然后看看默认 config 能否 FcConfigBuildFonts，如果能就返回。\nFcInitLoadOwnConfig 这个函数非常大，但是由于前面传过来的是 NULL, 理解起来反而更简单。它其实就是生成了一份默认的什么都没有但是能相应各种请求的 FcConfig，内容就是这样：\nFC_DEFAULT_FONTS fonts \" FC_CACHEDIR \" fontconfig \" CONFIGDIR \" fontconfig/conf.d fontconfig/fonts.conf 重要的反而是 FcConfigBuildFonts。而后者里面最重要的函数是 FcConfigAddDirList 。接着最重要的是 FcDirCacheRead-\u003eFcDirCacheScan-\u003eFcDirScanConfig-\u003e FcFileScanConfig -\u003e FcFileScanFontConfig。\nFcFileScanFontConfig 这个函数是一个非常重要的底层函数，因为它有：\nif (!FcFreeTypeQueryAll (file, -1, NULL, NULL, set)) 去真正的扫描字体文件，并且对扫描出的 FontSet 逐个有：\nif (config \u0026\u0026 !FcConfigSubstitute (config, font, FcMatchScan)) 也就是应用 规则。而我们的 charset minus 应用的正是 scan 规则。\n这里要特殊说一下，就是以上流程是在假设没有 cache 的情况下才会发生的，如果有 cache，那么到了 FcDirCacheRead 那步就是读取 cache 了。所以上面分析的过程相当于：\nfc-cache \u0026\u0026 fc-match blabla 至此我们的函数理解阶段就告一段落了。因为我们能够确定：\n只要传递给 FcConfigReference 中的 config 是 0，那么一定能够得到应用了 后的字体。\n验证 FcConfigReference 魔改了一下依云的代码：\n#include #include int main(int argc, char **argv){ FcFontSet* fs = FcFontSetCreate(); FcPattern* pat; FcChar8* strpat = (FcChar8*)\":lang=zh\"; pat = FcNameParse(strpat); FcConfigSubstitute(0, pat, FcMatchPattern); FcDefaultSubstitute(pat); FcResult ret; FcFontSet* font_patterns = FcFontSort(0, pat, FcFalse, 0, \u0026ret); int j; for (j = 0; j \u003c font_patterns-\u003enfont; j++) { FcPattern* font_pattern = FcFontRenderPrepare(NULL, pat, font_patterns-\u003efonts[j]); if (font_pattern) { FcFontSetAdd(fs, font_pattern); } } FcFontSetSortDestroy(font_patterns); FcPatternDestroy(pat); FcChar8 *family; FcChar8 *file; FcCharSet* cs; FcChar32 ch; FcUtf8ToUcs4((FcChar8*)\"™\", \u0026ch, 3); int i; for(i=0; infont; i++){ if(FcPatternGetCharSet(fs-\u003efonts[i], FC_CHARSET, 0, \u0026cs) != FcResultMatch){ fprintf(stderr, \"no match\\n\"); FcPatternPrint(fs-\u003efonts[i]); goto nofont; } if(FcPatternGetString(fs-\u003efonts[i], FC_FAMILY, 1, \u0026family) != FcResultMatch) if(FcPatternGetString(fs-\u003efonts[i], FC_FAMILY, 0, \u0026family) != FcResultMatch) goto nofont; printf(\"[%d] %s \", i, (char *)family); if(FcPatternGetString(fs-\u003efonts[i], FC_FILE, 0, \u0026file) != FcResultMatch) goto nofont; printf(\"(%s): \", (char *)file); if(FcCharSetHasChar(cs, ch)){ puts(\"Yes\"); } else { puts(\"No\"); } } FcFontSetDestroy(fs); return 0; nofont: return 1; } 编译运行：\ngcc -o test1 test1.c -lfontconfig ./test1 | grep \"Noto Sans CJK SC\" 结果：\n[0] Noto Sans CJK SC (/usr/share/fonts/truetype/NotoSansCJKsc-Regular.otf): Yes 居然还在！\n其实这不奇怪：\n首先我们只是知道了给 FcConfigReference 传 0 会得到应用 ",
   "wordCount" : "760",
   "inLanguage": "en",
   "datePublished": "2022-11-25T19:17:09+08:00",
@@ -248,7 +248,7 @@ config = FcInitLoadConfigAndFonts ();
 		   FcMatchKind kind)
 {
 </code></pre>
-<p>这不过第二个 p_pat 是 0。</p>
+<p>只不过第二个 p_pat 是 0。</p>
 <p>整个 FcConfigSubstituteWithPat 函数比较长，就不全贴出来了。具体在<a href="https://github.com/freedesktop/fontconfig/blob/master/src/fccfg.c">这里</a>。</p>
 <p>它先是获取了 config：</p>
 <pre><code>config = FcConfigReference (config);
@@ -428,7 +428,7 @@ after match scan: Yes
 charset count: 44810
 </code></pre>
 <h2 id="为什么">为什么？<a hidden class="anchor" aria-hidden="true" href="#为什么">#</a></h2>
-<p>到这儿其实已经可以定义为一个 BUG 了。宣称 minus charset 最后却没有减。但我还是有兴趣继续 debug 一下 FcMatchScan 是怎么进行的。</p>
+<p>到这儿感觉已经可以定义为一个 BUG 了。宣称 minus charset 最后却没有减。但我还是有兴趣继续 debug 一下 FcMatchScan 是怎么进行的。</p>
 <p>留个悬念吧，其实它不是 bug。详情见下篇分解。</p>
 <h2 id="初步结论">初步结论<a hidden class="anchor" aria-hidden="true" href="#初步结论">#</a></h2>
 <p>首先，我们之前说 fontconfig 的 scan 阶段生成的是一个<code>无序列表</code>，实际上不对。</p>
