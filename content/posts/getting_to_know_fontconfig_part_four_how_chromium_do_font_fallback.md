@@ -47,9 +47,11 @@ FontFallbackList 最重要的函数是：
 
 	const FontData* FontFallbackList::GetFontData(const FontDescription& font_description)
 
-它会 loop font_description.Family() 返回的 FontFamily, 后者是一个 iter，其实就是把 css 中的 font-family 逐个返回。要系统字体的代码是 `FontCache::Get().GetFontData()。如果 font_description 中给定的 family 都处理完都不合格，会先调用用户偏好设置的字体，最后是 `GetLastResortFallbackFont`。
+它会 loop font_description.Family() 返回的 FontFamily, 后者是一个 iter，其实就是把 css 中的 font-family 逐个返回。要系统字体的代码是 `FontCache::Get().GetFontData()`。如果 font_description 中给定的 family 都处理完都不合格，会先调用用户偏好设置的字体，最后是 `GetLastResortFallbackFont`。
 
-FontCache 下的 `GetFontData(font_description, font_family)` 会调用 `FontPlatformDataCache::GetOrCreateFontPlatformData()`，最终到 [font_cache_skia.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc) 中的 `FontCache::CreateFontPlatformData`->`FontPlatformData::CreateSkFont`， 剩下就是 Skia 的事情了。Skia 在 Linux 上是用 fontconfig  的：[SkFontMgr_fontconfig.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontMgr_fontconfig.cpp)，它的 `onMatchFamily` 主要是这么搞的：
+FontCache 下的 `GetFontData(font_description, font_family)` 会调用 `FontPlatformDataCache::GetOrCreateFontPlatformData()`，最终到 [font_cache_skia.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc) 中的 `FontCache::CreateFontPlatformData`->`FontPlatformData::CreateSkFont`。
+
+Skia 在 Linux 上是用 fontconfig  的：[SkFontMgr_fontconfig.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontMgr_fontconfig.cpp)，它的 `onMatchFamily` 主要是这么搞的：
 
         SkAutoFcPattern pattern;
         FcPatternAddString(pattern, FC_FAMILY, (const FcChar8*)familyName);
@@ -57,6 +59,8 @@ FontCache 下的 `GetFontData(font_description, font_family)` 会调用 `FontPla
         FcDefaultSubstitute(pattern);
         
 根据我们在前几篇文章中的分析，这个结构处理 'sans-serif'，甚至我们切掉部分 charset 的 font 都是没问题的。
+
+另外 Skia 还有一个 [SkFontConfigInterface_direct.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontConfigInterface_direct.cpp) 也可能更加重要。别的地方没有 fontconfig 了，Skia 只要用，就只能这么用。
 
 FontFallbacklist  是针对每个 family 调用 FontCache::GetFontData，即便是最终到了 'sans-serif'，也有 Skia 兜底。
 
@@ -84,7 +88,7 @@ FontFallbackIter 关键函数是  `FallbackPriorityFont`、`UniqueSystemFontForH
 
 现在我的 fonts-config-ng 是先找 emoij 字体，再扫描它有什么 charset，如果用这个方法，应该可以减少一轮扫描。
 
-知道了原理，你可能也想去测试一些想法，个人建议不要使用 Chromium 去测，可以考虑编译一下只包含了 Blink 引擎的 [Content Shell](https://www.chromium.org/blink/getting-started-with-blink-debugging/)。
+知道了原理，你可能也想去测试一些想法，我建议不要直接使用 Chromium 去测，可以考虑编译一下只包含了 Blink 引擎的 [Content Shell](https://www.chromium.org/blink/getting-started-with-blink-debugging/)。
 
 
 
