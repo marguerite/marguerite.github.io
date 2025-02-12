@@ -3,10 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://marguerite.github.io/</loc>
-    <lastmod>2025-02-10T00:00:00+08:00</lastmod>
+    <lastmod>2025-02-12T00:00:00+08:00</lastmod>
   </url><url>
     <loc>https://marguerite.github.io/posts/</loc>
-    <lastmod>2025-02-10T00:00:00+08:00</lastmod>
+    <lastmod>2025-02-12T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</loc>
+    <lastmod>2025-02-12T00:00:00+08:00</lastmod>
   </url><url>
     <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</loc>
     <lastmod>2025-02-10T00:00:00+08:00</lastmod>

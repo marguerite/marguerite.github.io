@@ -130,6 +130,24 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>Color Emoji in openSUSE
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
+为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
+我们先来回忆一下之前的说法：
+除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
+据我摸索的经验，字体的匹配分为三种场景
+第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2020-11-04 00:00:00 &#43;0800 CST&#39;&gt;November 4, 2020&lt;/span&gt;</footer>
+  <a class="entry-link" aria-label="post link to Color Emoji in openSUSE" href="https://marguerite.github.io/posts/color_emoji_in_opensuse/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>fontconfig 几个常见的坑
     </h2>
   </header>
@@ -305,29 +323,6 @@ wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解�
   </div>
   <footer class="entry-footer">&lt;span title=&#39;2013-10-12 00:00:00 &#43;0800 CST&#39;&gt;October 12, 2013&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>openSUSE 特殊国情有关的 FAQ
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>引子 —— 能解决的是技术，不能解决的是人心。
-为什么我们开发者要用 Gtalk 和 IRC？ 跟 Google 没一毛钱关系。我们需要一个全球性的网络，因为我们面对的不只是用户，还有其它国家地区的开发者。就 openSUSE 来说，我没有理由去要求台湾地区的开发者用 QQ，也没有理由去要求他们的用户在官方论坛转简体。我们需要开放而成熟的技术，以便于进行二次开发。二次开发就是「修复」一些原本没有「坏」的东西来满足自己的需要，非开放而不能为。Gtalk 后面的 XMPP 协议坏了吗？没有，但是我需要与 IRC #opensuse-cn 互通的机器人、需要群组机器人、需要网页的聊天记录，于是我「修复」了它。现在我们有了 ~~talk@suse.ws，有了 https://talk-marguerite.rhcloud.com。~~Update: Gtalk 群组地址变更为 talk@suse.org.cn。（IRC/Gtalk/QQ 群三网合一），聊天记录地址变更为 https://forum.suse.org.cn/log.html
-而 IRC 就像你们的 QQ 一样，我一样不爱用。我至今不会它的指令，也不会每天挂着。但是有需要我还是会去，就像开会要去会议室一样。你可以不参加会议，你可以选择不去会议室听自己非常想听的东西，但你不能要求别人围着你的桌子开会。
-为什么我们要用论坛？ 我们需要一个 default to open 的地方，能够存档我们回复过的东西，避免重复工作。
-我们需要一个延时的地方。避免你滴滴滴滴吵到我们的工作和生活。
-我们需要一个多人的氛围。
-为什么我们要用维基、文档甚至 manpage？ 我们需要一个说明书性质的东西。
-说明书一个人是写不完的，在所有人都有权利去写的情况下，说维基、文档不全实际上是在骂你自己，不全？你干嘛了？
-为什么我们不用 QQ 群？ Update：1. 勇敢地像现实低头 2. Gentoo 社区的 microcai 博士开发了搞定 QQ 的 avbot， Fcitx 社区的 csslayer 翁学天博士友善帮助在自己的服务器运行它，Ubuntu 社区的 shellexy 大神帮助推荐了印度阿三的人肉验证码识别服务 3. 我的一些个人思想转变。于是支持了。但是，QQ/贴吧永远只会是你 Linux 生涯的一个暂住之地，如果你非要永久居留，那你是体会不到 Linux 社区的魅力的。我们为你点亮了一盏灯，而不是帮你推倒窝棚鸟枪换炮，真正的风景在 openSUSE 中文论坛
-它不是 default to open 的。
-它是实时的。
-...</p>
-  </div>
-  <footer class="entry-footer">&lt;span title=&#39;2013-03-26 00:00:00 &#43;0800 CST&#39;&gt;March 26, 2013&lt;/span&gt;</footer>
-  <a class="entry-link" aria-label="post link to openSUSE 特殊国情有关的 FAQ" href="https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

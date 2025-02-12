@@ -136,6 +136,26 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇文章我们提到了 content_shell 可以用来调试 blink 引擎，今天我们就来编译一份 content_shell 并魔改它用来调试网页字体查询。
+编译 content_shell 主要参考了 Checking out and building Chromium on Linux
+Chromium 的源代码是使用它自己的 depot_tools 编译的，我们先下载一份，比如解压到了 ~/Dev/depot_tools
+然后这份 depot_tools 我们需要修改一个地方，添加代理，来应对网络环境，编辑 cipd 的这个地方：
+if hash curl 2&gt; /dev/null ; then curl -x socks5h://localhost:65533 &#34;${URL}&#34; -s --show-error -f --retry 3 --retry-delay 5 -A &#34;${USER_AGENT}&#34; -L -o &#34;${CIPD_CLIENT_TMP}&#34; 然后就可以使用 fetch 去获取代码了。
+具体编译我使用了以下脚本：
+set_environment.sh:
+#!/bin/sh export PATH=$PATH:~/Dev/depot_tools export http_proxy=http://127.0.0.1:8128 export https_proxy=http://127.0.0.1:8128 export socks_proxy=socks5://127.0.0.1:65533 export all_proxy=http://127.0.0.1:8128 export NO_AUTH_BOTO_CONFIG=~/.boto prepare_build.sh:
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2025-02-12 00:00:00 &#43;0800 CST&#39;&gt;February 12, 2025&lt;/span&gt;</footer>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制
     </h2>
   </header>
@@ -288,24 +308,6 @@ def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_
   </div>
   <footer class="entry-footer">&lt;span title=&#39;2020-11-28 14:59:00 &#43;0800 CST&#39;&gt;November 28, 2020&lt;/span&gt;</footer>
   <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Color Emoji in openSUSE
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。
-为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。
-我们先来回忆一下之前的说法：
-除了比如 Unicode Full Emoji List 这种专门用于测试 emoji 显示的 URL，大部分我们常见的网页在 css 里是不写 emoji 字体的。
-据我摸索的经验，字体的匹配分为三种场景
-第一种是直接去匹配这个字体，fc-match “Noto Color Emoji” 这样，也就是 css 的 font-family 里直接写了这个字体。
-...</p>
-  </div>
-  <footer class="entry-footer">&lt;span title=&#39;2020-11-04 00:00:00 &#43;0800 CST&#39;&gt;November 4, 2020&lt;/span&gt;</footer>
-  <a class="entry-link" aria-label="post link to Color Emoji in openSUSE" href="https://marguerite.github.io/posts/color_emoji_in_opensuse/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

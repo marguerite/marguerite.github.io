@@ -6,7 +6,35 @@
     <description>Recent content on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 10 Feb 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 12 Feb 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://marguerite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境</title>
+      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</link>
+      <pubDate>Wed, 12 Feb 2025 00:00:00 +0800</pubDate>
+      
+      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</guid>
+      <description>&lt;p&gt;上一篇文章我们提到了 content_shell 可以用来调试 blink 引擎，今天我们就来编译一份 content_shell 并魔改它用来调试网页字体查询。&lt;/p&gt;
+&lt;h2 id=&#34;编译-content_shell&#34;&gt;编译 content_shell&lt;/h2&gt;
+&lt;p&gt;主要参考了 &lt;a href=&#34;https://chromium.googlesource.com/chromium/src/+/main/docs/linux/build_instructions.md&#34;&gt;Checking out and building Chromium on Linux&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Chromium 的源代码是使用它自己的 depot_tools 编译的，我们先下载一份，比如解压到了 ~/Dev/depot_tools&lt;/p&gt;
+&lt;p&gt;然后这份 depot_tools 我们需要修改一个地方，添加代理，来应对网络环境，编辑 cipd 的这个地方：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if hash curl 2&amp;gt; /dev/null ; then 
+  curl -x socks5h://localhost:65533 &amp;quot;${URL}&amp;quot; -s --show-error -f --retry 3 --retry-delay 5 -A &amp;quot;${USER_AGENT}&amp;quot; -L -o &amp;quot;${CIPD_CLIENT_TMP}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后就可以使用 fetch 去获取代码了。&lt;/p&gt;
+&lt;p&gt;具体编译我使用了以下脚本：&lt;/p&gt;
+&lt;p&gt;set_environment.sh:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+export PATH=$PATH:~/Dev/depot_tools
+export http_proxy=http://127.0.0.1:8128
+export https_proxy=http://127.0.0.1:8128
+export socks_proxy=socks5://127.0.0.1:65533
+export all_proxy=http://127.0.0.1:8128
+export NO_AUTH_BOTO_CONFIG=~/.boto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;prepare_build.sh:&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制</title>
       <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</link>
