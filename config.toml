@@ -5,9 +5,3 @@ theme = "papermod"
 [params]
 comments = true
 enableEmoji = true
-[[params.socialIcons]]
-name = "github"
-url = "https://github.com/marguerite"
-[[params.socialIcons]]
-name = "mastodon"
-url = "https://moe.cat/@marguerite"
