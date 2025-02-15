@@ -49,7 +49,7 @@ FontFallbackList 最重要的函数是：
 
 它会 loop font_description.Family() 返回的 FontFamily, 后者是一个 iter，其实就是把 css 中的 font-family 逐个返回。要系统字体的代码是 `FontCache::Get().GetFontData()`。如果 font_description 中给定的 family 都处理完都不合格，会先调用用户偏好设置的字体，最后是 `GetLastResortFallbackFont`。
 
-FontCache 下的 `GetFontData(font_description, font_family)` 会调用 `FontPlatformDataCache::GetOrCreateFontPlatformData()`，最终到 [font_cache_skia.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc) 中的 `FontCache::CreateFontPlatformData`->`FontPlatformData::CreateSkFont`。
+FontCache 下的 `GetFontData(font_description, font_family)` 会调用 `FontPlatformDataCache::GetOrCreateFontPlatformData()`，最终到 [font_cache_skia.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc) 中的 `FontCache::CreateFontPlatformData`->`FontCache::CreateTypeface`。
 
 Skia 在 Linux 上是用 fontconfig  的：[SkFontMgr_fontconfig.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontMgr_fontconfig.cpp)，它的 `onMatchFamily` 主要是这么搞的：
 
@@ -60,9 +60,9 @@ Skia 在 Linux 上是用 fontconfig  的：[SkFontMgr_fontconfig.cpp](https://so
         
 根据我们在前几篇文章中的分析，这个结构处理 'sans-serif'，甚至我们切掉部分 charset 的 font 都是没问题的。
 
-另外 Skia 还有一个 [SkFontConfigInterface_direct.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontConfigInterface_direct.cpp) 也可能更加重要。别的地方没有 fontconfig 了，Skia 只要用，就只能这么用。
+另外 Skia 还有一个 [SkFontConfigInterface_direct.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontConfigInterface_direct.cpp) , blink 调用的其实是这个。
 
-FontFallbacklist  是针对每个 family 调用 FontCache::GetFontData，即便是最终到了 'sans-serif'，也有 Skia 兜底。
+FontFallbacklist  是针对每个 family 调用 FontCache::GetFontData，~~即便是最终到了 'sans-serif'，也有 Skia 兜底~~（后面发现 Skia 不会给 sans-serif 兜底，而是给 sans 兜底）。
 
 知道了 FontFallbackList 的数据是怎么来的，还需要知道它是怎么用的，才可以不盯着 FallbackForChar 不放。这需要我们再去研究一下 Blink 是怎么切文本的，如果它把每个文本都切成 char, 那 per char 的 fallback 就没有问题。
 
@@ -78,7 +78,7 @@ FontFallbackIter 关键函数是  `FallbackPriorityFont`、`UniqueSystemFontForH
 
 ## 其他
 
-我还发现了 Chromium 是如何处理文本中的 Emoji 的，它在切词的时候发现文本中有 Emoji 会调整 FontFallbackPriority，从 kText 调整为 kEmojiText 这样，但是调整了后续却没做什么。然后 FontCache 查找的时候，发现 Emoji 会优先在 und-zsye 这个 locale 里找字体。
+我还发现了 Chromium 是如何处理文本中的 Emoji 的，它在切词的时候发现文本中有 Emoji 会调整 FontFallbackPriority，从 kText 调整为 kEmojiText 这样，然后 FontCache 查找的时候，发现 Emoji 会优先在 und-zsye 这个 locale 里找字体。
 
 它的 emoji 判断代码感觉也比较巧妙：
 

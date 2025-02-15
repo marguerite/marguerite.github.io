@@ -63,6 +63,7 @@ content_shell_build.sh:
 然后 content_shell 要启用 logging（因为 chromium 就自己的 Log 机制，所以纯 cpp 的 printf 没输出）：
 
 content_shell_wrapper.sh:
+
     #!/bin/sh
     ./src/out/Debug/content_shell --no-sandbox --enable-logging=stderr --vmodule="\*/fonts/\*=4, \*/css/\*=0" --v=-3 > log.txt 2>&1 $1
 
@@ -168,6 +169,13 @@ content_shell_wrapper.sh:
     [INFO:font_cache_skia.cc(350)] [FontCache::CreateFontPlatformData] text_rendering "Auto"
     [INFO:font_cache_skia.cc(361)] [FontCache::CreateFontPlatformData] font_platform_data.FontFamilyName() "Noto Sans CJK SC"
     [INFO:font_fallback_list.cc(295)] [FontFallbackList::FontDataAt] Got result
+
+这里面与 fontconfig 能够联系上的是 `SkFontMgr::RefDefault()`，这是 chromium 自己的[实现](https://source.chromium.org/chromium/chromium/src/+/main:skia/ext/font_utils.cc)：
+
+      sk_sp<SkFontConfigInterface> fci(SkFontConfigInterface::RefGlobal());
+      return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
+      
+最终是到 [SkFontConfigInterface_direct.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontConfigInterface_direct.cpp)
 
 ## 字体匹配阶段
 
