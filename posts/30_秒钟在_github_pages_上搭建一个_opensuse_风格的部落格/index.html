@@ -25,9 +25,7 @@ git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都�
 完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -53,7 +51,7 @@ git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都�
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -72,30 +70,23 @@ git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都�
         }
 
     </style>
-</noscript><meta property="og:title" content="30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格" />
-<meta property="og:description" content="之前的 Ghost 管理密码丢了 :-(
-昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。
-不过这个坑就不一定哪天来填啦。
-考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的，
-博客要么丢文章要么丢评论。还是用 github 来做博客好了。
-Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。
-它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。
-但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格">
+  <meta property="og:description" content="之前的 Ghost 管理密码丢了 :-(
+昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。 不过这个坑就不一定哪天来填啦。
+考虑到我博客更新的速度和访问量，我觉得还是不要把它放在论坛服务器上了。毕竟 Ghost 是用 nodejs 的，一直跑着太占资源；搬服务器就要迁移，我这种懒人，迁完论坛就不管的， 博客要么丢文章要么丢评论。还是用 github 来做博客好了。
+Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章，用 git 管理，这几个对我来说都不是很难，毕竟我是一个 Ruby 程序猿。Github 自己的文档基本无用，因为文档跟用户之间少了点东西。 它只告诉了我 Github Page 其实就是一个静态网页生成器加 HTTP 服务器，你喂 Markdown 格式的文章给它，它在 yourname.github.io 上显示出来。这用来建立一个单页面是足够的。 但是它并没有说你想做一个博客应该怎么办。因为其实那是 Jekyll 这个静态网页生成器的事情。你需要给它写模板。
 所以我参考了 Smashing Magazine 上面的 Build A Blog With Jekyll And Github Pages，找了一个现成的 Jekyll Now 模板。自己简单改了下。风格参考了 Grover Chou 的部落格。我觉得他那个 openSUSE Leap 风格的主题很好看，于是就抄过来了。配色和样式是抄的我们 openSUSE 中文论坛。点我预览。
 要是有想要用我这套主题建博客的，建立过程很简单：
-
-去 github 上面 fork 我的 marguerite.github.io，然后点 Settings，把仓库名改成 yourname.github.io。
-git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都改成你的。
-把 _posts 下面我的文章删掉，用 Markdown 写你自己的，格式是 YYYY-MM-DD-TITLE.md。支持中文标题。
-
-完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2016-12-31T00:00:00+08:00" />
-<meta property="article:modified_time" content="2016-12-31T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格"/>
+去 github 上面 fork 我的 marguerite.github.io，然后点 Settings，把仓库名改成 yourname.github.io。 git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都改成你的。 把 _posts 下面我的文章删掉，用 Markdown 写你自己的，格式是 YYYY-MM-DD-TITLE.md。支持中文标题。 完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2016-12-31T00:00:00+08:00">
+    <meta property="article:modified_time" content="2016-12-31T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格">
 <meta name="twitter:description" content="之前的 Ghost 管理密码丢了 :-(
 昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。
 不过这个坑就不一定哪天来填啦。
@@ -111,7 +102,7 @@ Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章�
 git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都改成你的。
 把 _posts 下面我的文章删掉，用 Markdown 写你自己的，格式是 YYYY-MM-DD-TITLE.md。支持中文标题。
 
-完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。"/>
+完成这三步，只需 30 秒，你就有了一个 openSUSE 中文论坛风格的个人博客啦。">
 
 
 <script type="application/ld+json">
@@ -202,8 +193,6 @@ git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都�
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -215,10 +204,10 @@ git clone 你的 fork 到本地，编辑一下 _config.yml，把我的信息都�
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2016-12-31 00:00:00 &#43;0800 CST&#39;&gt;December 31, 2016&lt;/span&gt;
+    <div class="post-meta"><span title='2016-12-31 00:00:00 +0800 CST'>December 31, 2016</span>
 
 </div>
   </header> 
@@ -318,19 +307,13 @@ end
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

@@ -22,9 +22,7 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -50,7 +48,7 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -69,27 +67,22 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
         }
 
     </style>
-</noscript><meta property="og:title" content="深入理解 Linux fontconfig 第三部分" />
-<meta property="og:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="深入理解 Linux fontconfig 第三部分">
+  <meta property="og:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&#34;scan&#34;&gt; 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。
 我们这篇要继续 debug：
-FcConfigSubstitute (config, font, FcMatchScan)
-
-FcFileScanFontConfig 中的这段代码。
-无踪无迹的指针
-我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
 通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
-/* different &#39;kind&#39; won&#39;t be the target of edit */
-if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
-  value[object] = vl;
-
-但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-11-26T22:02:04+08:00" />
-<meta property="article:modified_time" content="2022-11-26T22:02:04+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="深入理解 Linux fontconfig 第三部分"/>
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-11-26T22:02:04+08:00">
+    <meta property="article:modified_time" content="2022-11-26T22:02:04+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Linux fontconfig 第三部分">
 <meta name="twitter:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
 我们这篇要继续 debug：
 FcConfigSubstitute (config, font, FcMatchScan)
@@ -102,7 +95,7 @@ FcFileScanFontConfig 中的这段代码。
 if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
   value[object] = vl;
 
-但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。"/>
+但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
 
 
 <script type="application/ld+json">
@@ -193,8 +186,6 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -206,10 +197,10 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       深入理解 Linux fontconfig 第三部分
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2022-11-26 22:02:04 &#43;0800 CST&#39;&gt;November 26, 2022&lt;/span&gt;
+    <div class="post-meta"><span title='2022-11-26 22:02:04 +0800 CST'>November 26, 2022</span>
 
 </div>
   </header> 
@@ -421,19 +412,13 @@ patch -p1 &lt; ../fc-emoji-subtract.patch
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

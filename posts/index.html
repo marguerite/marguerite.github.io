@@ -10,7 +10,7 @@
 <meta name="description" content="Posts - Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -37,7 +37,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -56,14 +56,14 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Posts" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://marguerite.github.io/posts/" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Posts"/>
-<meta name="twitter:description" content=""/>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="Posts">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Posts">
+<meta name="twitter:description" content="">
 
 
 <script type="application/ld+json">
@@ -119,8 +119,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -136,7 +134,7 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境
+    <h2 class="entry-hint-parent">深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境
     </h2>
   </header>
   <div class="entry-content">
@@ -150,13 +148,13 @@ set_environment.sh:
 #!/bin/sh export PATH=$PATH:~/Dev/depot_tools export http_proxy=http://127.0.0.1:8128 export https_proxy=http://127.0.0.1:8128 export socks_proxy=socks5://127.0.0.1:65533 export all_proxy=http://127.0.0.1:8128 export NO_AUTH_BOTO_CONFIG=~/.boto prepare_build.sh:
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2025-02-12 00:00:00 &#43;0800 CST&#39;&gt;February 12, 2025&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2025-02-12 00:00:00 +0800 CST'>February 12, 2025</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制
+    <h2 class="entry-hint-parent">深入理解 Linux Fontconfig 之四：Chromium 字体查询机制
     </h2>
   </header>
   <div class="entry-content">
@@ -168,13 +166,13 @@ Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在
 FallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result); } 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2025-02-10 00:00:00 &#43;0800 CST&#39;&gt;February 10, 2025&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2025-02-10 00:00:00 +0800 CST'>February 10, 2025</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之四：Chromium 字体查询机制" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>openSUSE 下制作 fcitx5-pinyin 的拼音词库
+    <h2 class="entry-hint-parent">openSUSE 下制作 fcitx5-pinyin 的拼音词库
     </h2>
   </header>
   <div class="entry-content">
@@ -185,13 +183,13 @@ fcitx5 的 libime 提供了 libime-pinyindict 工具用来把文本转为词库�
 #!/usr/bin/env python3 import xlrd import jieba import sys &#39;&#39;&#39; 输出 Excel 中的中文公司名和法人名 &#39;&#39;&#39; def get_chinese_words_from_excel(f): book = xlrd.open_workbook(f) sheet = book.sheet_by_index(0) res = [] for i in range(sheet.nrows): # 9 开头的是公司 if not sheet.cell_value(i, 0).startswith(&#39;9&#39;): continue for j in range(sheet.ncols): if j not in (1, 2): continue if len(sheet.cell_value(i, j).strip()) &gt; 0: print(sheet.cell_value(i, j).strip()) seg_list = jieba.cut(sheet.cell_value(i, j).strip()) for s in seg_list: if s not in res: print(s) res.append(s) return res if len(sys.argv) &gt; 1: get_chinese_words_from_excel(sys.argv[1]) 这样就得到了：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2025-02-07 00:00:00 &#43;0800 CST&#39;&gt;February 7, 2025&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2025-02-07 00:00:00 +0800 CST'>February 7, 2025</span></footer>
   <a class="entry-link" aria-label="post link to openSUSE 下制作 fcitx5-pinyin 的拼音词库" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>深入理解 Linux fontconfig 第三部分
+    <h2 class="entry-hint-parent">深入理解 Linux fontconfig 第三部分
     </h2>
   </header>
   <div class="entry-content">
@@ -203,13 +201,13 @@ FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段
 /* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-11-26 22:02:04 &#43;0800 CST&#39;&gt;November 26, 2022&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2022-11-26 22:02:04 +0800 CST'>November 26, 2022</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第三部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>深入理解 Linux fontconfig 第二部分
+    <h2 class="entry-hint-parent">深入理解 Linux fontconfig 第二部分
     </h2>
   </header>
   <div class="entry-content">
@@ -224,13 +222,13 @@ FcConfig* config = GetGlobalFontConfig(); 实际上包括 fontconfig 自己在�
 config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了 FcInitLoadOwnConfigAndFonts(NULL) 。这个函数长这样：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-11-25 19:17:09 &#43;0800 CST&#39;&gt;November 25, 2022&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2022-11-25 19:17:09 +0800 CST'>November 25, 2022</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第二部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>深入理解 Linux fontconfig 第一部分
+    <h2 class="entry-hint-parent">深入理解 Linux fontconfig 第一部分
     </h2>
   </header>
   <div class="entry-content">
@@ -241,13 +239,13 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了
 &lt;match target=&#34;scan&#34;&gt; &lt;test name=&#34;family&#34;&gt; &lt;string&gt;Noto Sans CJK SC&lt;/string&gt; &lt;/test&gt; &lt;edit name=&#34;charset&#34; mode=&#34;assign&#34;&gt; &lt;minus&gt; &lt;name&gt;charset&lt;/name&gt; &lt;charset&gt; &lt;int&gt;0x2122&lt;/int&gt; &lt;/charset&gt; &lt;/minus&gt; &lt;/edit&gt; &lt;/match&gt; 大家可以看到我在 81_emoji_blacklist_glyphs.conf 里面已经有从 Noto Sans CJK SC 字体减除 0x2122（™）这个 charset leaf 的操作了，但是在 Chromium 浏览器中测试是这样的：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-11-25 12:13:29 &#43;0800 CST&#39;&gt;November 25, 2022&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2022-11-25 12:13:29 +0800 CST'>November 25, 2022</span></footer>
   <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第一部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>使用 google 的 fontmake 复活文泉驿项目
+    <h2 class="entry-hint-parent">使用 google 的 fontmake 复活文泉驿项目
     </h2>
   </header>
   <div class="entry-content">
@@ -256,13 +254,13 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了
 大多数工作是两年前做的，当时我写了一个 ufo3 的解析库，修复了草字头和竹字头的问题，并且使用 fontforge 再次生成了 ttf 字体。后来去打包 fontmake 的时候遇到了 skia-pathops 的编译问题，项目就停滞了，甚至草字头和竹字头的问题最终也没有反馈回发行版中。
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-11-23 20:01:29 &#43;0800 CST&#39;&gt;November 23, 2022&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2022-11-23 20:01:29 +0800 CST'>November 23, 2022</span></footer>
   <a class="entry-link" aria-label="post link to 使用 google 的 fontmake 复活文泉驿项目" href="https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖
+    <h2 class="entry-hint-parent">为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖
     </h2>
   </header>
   <div class="entry-content">
@@ -273,13 +271,13 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 &lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt; 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2020-11-28 16:07:00 &#43;0800 CST&#39;&gt;November 28, 2020&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span></footer>
   <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine
+    <h2 class="entry-hint-parent">为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine
     </h2>
   </header>
   <div class="entry-content">
@@ -289,13 +287,13 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2020-11-28 16:07:00 &#43;0800 CST&#39;&gt;November 28, 2020&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span></footer>
   <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem
+    <h2 class="entry-hint-parent">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem
     </h2>
   </header>
   <div class="entry-content">
@@ -306,7 +304,7 @@ Ruby 作为一门脚本语言，所有对象的方法都可以被重写。学名
 def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_urls &lt;&lt; url if opts[:invalidate_oneboxes] Oneboxer.invalidate(url) InlineOneboxer.invalidate(url) end onebox = Oneboxer.cached_onebox(url) @found_oneboxes = true if onebox.present? onebox end cooked = result.to_html if result.changed? cooked end 可以看到 discourse 自己还有一个 Oneboxer 的 wrapper，这里使用了 Oneboxer.apply 和 Oneboxer.cache_onebox 函数。接下来我们接着看 lib/oneboxer.rb：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2020-11-28 14:59:00 &#43;0800 CST&#39;&gt;November 28, 2020&lt;/span&gt;</footer>
+  <footer class="entry-footer"><span title='2020-11-28 14:59:00 +0800 CST'>November 28, 2020</span></footer>
   <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/"></a>
 </article>
 <footer class="page-footer">
@@ -318,7 +316,8 @@ def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

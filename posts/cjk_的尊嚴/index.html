@@ -24,9 +24,7 @@
 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -52,7 +50,7 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -71,29 +69,28 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
         }
 
     </style>
-</noscript><meta property="og:title" content="CJK 的尊嚴" />
-<meta property="og:description" content="好吧，這名字起的有點義和團的 feeling？
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="CJK 的尊嚴">
+  <meta property="og:description" content="好吧，這名字起的有點義和團的 feeling？
 民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
 首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
 其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。
 這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。
-起
-5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
+起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
 答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。
-承
-但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G&#43;，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
+承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G&#43;，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
 主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。
 由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
 也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）
-轉
-openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2012-05-13T00:00:00+08:00" />
-<meta property="article:modified_time" content="2012-05-13T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CJK 的尊嚴"/>
+轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-05-13T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-05-13T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CJK 的尊嚴">
 <meta name="twitter:description" content="好吧，這名字起的有點義和團的 feeling？
 民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
 首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
@@ -108,7 +105,7 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
 由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
 也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）
 轉
-openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。"/>
+openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
 
 
 <script type="application/ld+json">
@@ -199,8 +196,6 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -212,10 +207,10 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       CJK 的尊嚴
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2012-05-13 00:00:00 &#43;0800 CST&#39;&gt;May 13, 2012&lt;/span&gt;
+    <div class="post-meta"><span title='2012-05-13 00:00:00 +0800 CST'>May 13, 2012</span>
 
 </div>
   </header> 
@@ -335,19 +330,13 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

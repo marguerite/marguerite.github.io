@@ -25,9 +25,7 @@
 重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -53,7 +51,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -72,12 +70,13 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="CJK 的尊嚴（三）聖戰" />
-<meta property="og:description" content="前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="CJK 的尊嚴（三）聖戰">
+  <meta property="og:description" content="前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
 前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。
 但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。
-標題的含義
-我們其實一直都很沒有尊嚴。請不要民族主義衝頭反駁。下面是一些普通用戶不知道的開發細節，解釋了爲什麼。這是爭論的基礎。不要對它爭論，因爲你真的不懂。你可以要求更多的例子和細節，但請不要就此爭論。沒有結果。
+標題的含義 我們其實一直都很沒有尊嚴。請不要民族主義衝頭反駁。下面是一些普通用戶不知道的開發細節，解釋了爲什麼。這是爭論的基礎。不要對它爭論，因爲你真的不懂。你可以要求更多的例子和細節，但請不要就此爭論。沒有結果。
 中文在開源界一直處於「二流」的位置。這是 GNOME 開發者說的。
 爲什麼想必不用說了。他們自以爲是核心的開發者。我們做的是敲邊鼓。所以他們不懂我們的語言不重要。我們會用他們的語言來發。這就給他們自大的誤解說，他們很大。其實很多工作是我們做的。包括核心。GNOME 上游的 Network Manager 誰維護的？中國人。
 大到什麼程度呢？大到他們可以自以爲能夠決定我們的事。一次兩次叫做沒有考慮到，總是這樣那就叫不在意。
@@ -88,14 +87,14 @@
 這還僅僅是設計，還不包括實現。知道前面 X11 做了一件什麼事嗎？加了有史以來最大的一個 patch，一萬多行代碼。幹了什麼事情呢？報道這個消息的 Phoronix 都無奈了，什麼特性都沒加，把那些渣實現改掉了。不知道同學們是怎麼看的，我當時的想法是，幸虧我不懂代碼，不然我這個潔癖知道系統上用了一萬多行的渣代碼，我會瘋掉的。
 所以爲什麼不在做事情的時候都負責任一點呢！？以前做的不好，至少現在起，我們做好它，之前的錯誤，想要加特性的人幹不了，總會有牛人能幹的。當然，牛人肯幹，GNOME 收不收還是兩說。GNOME 被紅帽和西施社區背後的公司影響很深，就好比這次如果只是幾個輸入法開發者去鬧的話，沒結果的。他們是因爲西施的 CJK 決定放棄 IBus 了。所以才停掉的。
 所以有人說我「挾西施以令 GNOME」也好，說我自以爲是 Hero 也好，不重要的，因爲這就是事實。被輸入法開發者承認並尊重的事實。就像小企鵝輸入法作者說的「I’d be happy」。因爲他們之前也鬧過，Lauchpad/Unity/GNOME/KDE/GTK/…，他們的郵件打印出來嚇死你。結果呢？兩手空空。實力不對等的爭吵，都是撒嬌。不管你是小企鵝，還是 IBus，又或是你能想像得到的任何中文開發面向中文用戶的東西。不要以爲你有十四億人口就可以是老大了，在人家眼裏，你叫少數族裔。「CJK 不可放棄」，那是憐憫，霸道的時候還沒到。強推，又怎樣？又能怎樣？你們這些自以爲是大爺吵來吵去的傢伙們，最後不也都捏着鼻子認了？
-重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2012-05-15T00:00:00+08:00" />
-<meta property="article:modified_time" content="2012-05-15T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CJK 的尊嚴（三）聖戰"/>
+重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-05-15T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-05-15T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CJK 的尊嚴（三）聖戰">
 <meta name="twitter:description" content="前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。
 前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。
 但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。
@@ -111,7 +110,7 @@
 這還僅僅是設計，還不包括實現。知道前面 X11 做了一件什麼事嗎？加了有史以來最大的一個 patch，一萬多行代碼。幹了什麼事情呢？報道這個消息的 Phoronix 都無奈了，什麼特性都沒加，把那些渣實現改掉了。不知道同學們是怎麼看的，我當時的想法是，幸虧我不懂代碼，不然我這個潔癖知道系統上用了一萬多行的渣代碼，我會瘋掉的。
 所以爲什麼不在做事情的時候都負責任一點呢！？以前做的不好，至少現在起，我們做好它，之前的錯誤，想要加特性的人幹不了，總會有牛人能幹的。當然，牛人肯幹，GNOME 收不收還是兩說。GNOME 被紅帽和西施社區背後的公司影響很深，就好比這次如果只是幾個輸入法開發者去鬧的話，沒結果的。他們是因爲西施的 CJK 決定放棄 IBus 了。所以才停掉的。
 所以有人說我「挾西施以令 GNOME」也好，說我自以爲是 Hero 也好，不重要的，因爲這就是事實。被輸入法開發者承認並尊重的事實。就像小企鵝輸入法作者說的「I’d be happy」。因爲他們之前也鬧過，Lauchpad/Unity/GNOME/KDE/GTK/…，他們的郵件打印出來嚇死你。結果呢？兩手空空。實力不對等的爭吵，都是撒嬌。不管你是小企鵝，還是 IBus，又或是你能想像得到的任何中文開發面向中文用戶的東西。不要以爲你有十四億人口就可以是老大了，在人家眼裏，你叫少數族裔。「CJK 不可放棄」，那是憐憫，霸道的時候還沒到。強推，又怎樣？又能怎樣？你們這些自以爲是大爺吵來吵去的傢伙們，最後不也都捏着鼻子認了？
-重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。"/>
+重要的是人。任何發行版、社區裏都要有溝通國際社區和本地社區的人。前面那文彙報了我是 openSUSE Member 的事情，詳情是怎樣的呢？我等了三個月，西施董事會的 mrdocs 一封 Approving Marguerite Su，半個小時之後，Member 標誌就掛上去了。你們以爲默認輸入法真的是我說的那麼簡單的？你知道要是你不是 M17N 的維護者你最長的提交會等多久嗎？七個月。你知道你不和 Packman 管理員是私交，Packman 編譯平臺的帳號下來要多久嗎？兩年。還批發個鬼的帳號。">
 
 
 <script type="application/ld+json">
@@ -202,8 +201,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -215,10 +212,10 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       CJK 的尊嚴（三）聖戰
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2012-05-15 00:00:00 &#43;0800 CST&#39;&gt;May 15, 2012&lt;/span&gt;
+    <div class="post-meta"><span title='2012-05-15 00:00:00 +0800 CST'>May 15, 2012</span>
 
 </div>
   </header> 
@@ -367,19 +364,13 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

@@ -22,9 +22,7 @@
 套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -50,7 +48,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -69,8 +67,10 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="CJK 的尊嚴（三）塵埃" />
-<meta property="og:description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="CJK 的尊嚴（三）塵埃">
+  <meta property="og:description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
 虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
 它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
 但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
@@ -82,14 +82,14 @@
 這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
 @csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
 「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2012-05-16T00:00:00+08:00" />
-<meta property="article:modified_time" content="2012-05-16T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CJK 的尊嚴（三）塵埃"/>
+套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-05-16T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-05-16T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CJK 的尊嚴（三）塵埃">
 <meta name="twitter:description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
 虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
 它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
@@ -102,7 +102,7 @@
 這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
 @csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
 「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。"/>
+套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
 
 
 <script type="application/ld+json">
@@ -193,8 +193,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -206,10 +204,10 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       CJK 的尊嚴（三）塵埃
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2012-05-16 00:00:00 &#43;0800 CST&#39;&gt;May 16, 2012&lt;/span&gt;
+    <div class="post-meta"><span title='2012-05-16 00:00:00 +0800 CST'>May 16, 2012</span>
 
 </div>
   </header> 
@@ -322,19 +320,13 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

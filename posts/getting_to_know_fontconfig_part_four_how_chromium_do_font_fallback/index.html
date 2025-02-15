@@ -29,9 +29,7 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -57,7 +55,7 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -76,34 +74,22 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
         }
 
     </style>
-</noscript><meta property="og:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制" />
-<meta property="og:description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
-UI 字体的渲染
-官方文档：RenderText and Chrome UI text drawing
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制">
+  <meta property="og:description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
+UI 字体的渲染 官方文档：RenderText and Chrome UI text drawing
 Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：
 它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。
 这里面就是我非常熟悉的 fontconfig 了，核心代码：
-FallbackFontList fallback_fonts;
-FcPattern* pattern = FcPatternCreate();
-FcPatternAddString(pattern, FC_FAMILY,
-                 reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str()));
-
-FcConfig* config = GetGlobalFontConfig();
-
-if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
-  FcDefaultSubstitute(pattern);
-  FcResult result;
-  FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result);
-}
-
-核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2025-02-10T00:00:00+08:00" />
-<meta property="article:modified_time" content="2025-02-10T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制"/>
+FallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result); } 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-10T00:00:00+08:00">
+    <meta property="article:modified_time" content="2025-02-10T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制">
 <meta name="twitter:description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
 UI 字体的渲染
 官方文档：RenderText and Chrome UI text drawing
@@ -123,7 +109,7 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
   FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result);
 }
 
-核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。"/>
+核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
 
 
 <script type="application/ld+json">
@@ -214,8 +200,6 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -227,10 +211,10 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       深入理解 Linux Fontconfig 之四：Chromium 字体查询机制
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2025-02-10 00:00:00 &#43;0800 CST&#39;&gt;February 10, 2025&lt;/span&gt;
+    <div class="post-meta"><span title='2025-02-10 00:00:00 +0800 CST'>February 10, 2025</span>
 
 </div>
   </header> 
@@ -298,19 +282,13 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

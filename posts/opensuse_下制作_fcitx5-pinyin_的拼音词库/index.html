@@ -51,9 +51,7 @@ if len(sys.argv) &gt; 1:
 这样就得到了：">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -79,7 +77,7 @@ if len(sys.argv) &gt; 1:
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -98,56 +96,21 @@ if len(sys.argv) &gt; 1:
         }
 
     </style>
-</noscript><meta property="og:title" content="openSUSE 下制作 fcitx5-pinyin 的拼音词库" />
-<meta property="og:description" content="年前换了 am5 平台，把 Windows 7 搞坏了（B650m 主板没有 PS/2，amd 又没有 Win7 下的 USB 驱动），只能在 openSUSE 处理一些工作上的事情。我面临的问题是：输入一些奇奇怪怪的国内公司名字的时候，搜狗输入法NG版本（基于 CPIS），记忆比较快，但是它有几个硬伤解决不了，比如候选词面板上的数字上屏，有时候会跳，输入3上的是第5个字; 比如使用输入法切换到英文输入模式就切换不回来了;比如一些基本的汉字打不出来，比如覆盖的覆字。而 fcitx5 呢，记忆又太慢，我不得不一次次的去敲比如“鑫永俪”。于是我想到了一个办法，就是把我常用的公司名字制作成拼音词库。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="openSUSE 下制作 fcitx5-pinyin 的拼音词库">
+  <meta property="og:description" content="年前换了 am5 平台，把 Windows 7 搞坏了（B650m 主板没有 PS/2，amd 又没有 Win7 下的 USB 驱动），只能在 openSUSE 处理一些工作上的事情。我面临的问题是：输入一些奇奇怪怪的国内公司名字的时候，搜狗输入法NG版本（基于 CPIS），记忆比较快，但是它有几个硬伤解决不了，比如候选词面板上的数字上屏，有时候会跳，输入3上的是第5个字; 比如使用输入法切换到英文输入模式就切换不回来了;比如一些基本的汉字打不出来，比如覆盖的覆字。而 fcitx5 呢，记忆又太慢，我不得不一次次的去敲比如“鑫永俪”。于是我想到了一个办法，就是把我常用的公司名字制作成拼音词库。
 fcitx5 的 libime 提供了 libime-pinyindict 工具用来把文本转为词库，要求的文本格式是这样的：
-鑫永俪	xin&#39;yong&#39;li	0
-
-于是我需要的就是把 excel 格式的客户名单分词，再标注拼音就可以了（词频默认是 0）。我的客户名单是这样的：
-91110000MA0UXXXXXX 北京市鑫永俪金融服务有限责任公司 李华梅 13800138000
-
-所以先需要一段 python 脚本去处理 excel
-#!/usr/bin/env python3
-
-import xlrd
-import jieba
-import sys
-
-&#39;&#39;&#39; 输出 Excel 中的中文公司名和法人名 &#39;&#39;&#39;
-def get_chinese_words_from_excel(f):
-	book = xlrd.open_workbook(f)
-	sheet = book.sheet_by_index(0)
-	res = []
-	
-	for i in range(sheet.nrows):
-	    # 9 开头的是公司
-		if not sheet.cell_value(i, 0).startswith(&#39;9&#39;):
-			continue
-			
-		for j in range(sheet.ncols):
-			if j not in (1, 2):
-				continue
-			if len(sheet.cell_value(i, j).strip()) &gt; 0:
-			    print(sheet.cell_value(i, j).strip())
-				seg_list = jieba.cut(sheet.cell_value(i, j).strip())
-				for s in seg_list:
-					if s not in res:
-					    print(s)
-						res.append(s)
-						
-   return res
-   
-if len(sys.argv) &gt; 1:
-	get_chinese_words_from_excel(sys.argv[1])
-
-这样就得到了：" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2025-02-07T00:00:00+08:00" />
-<meta property="article:modified_time" content="2025-02-07T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="openSUSE 下制作 fcitx5-pinyin 的拼音词库"/>
+鑫永俪	xin&#39;yong&#39;li	0 于是我需要的就是把 excel 格式的客户名单分词，再标注拼音就可以了（词频默认是 0）。我的客户名单是这样的：
+91110000MA0UXXXXXX 北京市鑫永俪金融服务有限责任公司 李华梅 13800138000 所以先需要一段 python 脚本去处理 excel
+#!/usr/bin/env python3 import xlrd import jieba import sys &#39;&#39;&#39; 输出 Excel 中的中文公司名和法人名 &#39;&#39;&#39; def get_chinese_words_from_excel(f): book = xlrd.open_workbook(f) sheet = book.sheet_by_index(0) res = [] for i in range(sheet.nrows): # 9 开头的是公司 if not sheet.cell_value(i, 0).startswith(&#39;9&#39;): continue for j in range(sheet.ncols): if j not in (1, 2): continue if len(sheet.cell_value(i, j).strip()) &gt; 0: print(sheet.cell_value(i, j).strip()) seg_list = jieba.cut(sheet.cell_value(i, j).strip()) for s in seg_list: if s not in res: print(s) res.append(s) return res if len(sys.argv) &gt; 1: get_chinese_words_from_excel(sys.argv[1]) 这样就得到了：">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-07T00:00:00+08:00">
+    <meta property="article:modified_time" content="2025-02-07T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openSUSE 下制作 fcitx5-pinyin 的拼音词库">
 <meta name="twitter:description" content="年前换了 am5 平台，把 Windows 7 搞坏了（B650m 主板没有 PS/2，amd 又没有 Win7 下的 USB 驱动），只能在 openSUSE 处理一些工作上的事情。我面临的问题是：输入一些奇奇怪怪的国内公司名字的时候，搜狗输入法NG版本（基于 CPIS），记忆比较快，但是它有几个硬伤解决不了，比如候选词面板上的数字上屏，有时候会跳，输入3上的是第5个字; 比如使用输入法切换到英文输入模式就切换不回来了;比如一些基本的汉字打不出来，比如覆盖的覆字。而 fcitx5 呢，记忆又太慢，我不得不一次次的去敲比如“鑫永俪”。于是我想到了一个办法，就是把我常用的公司名字制作成拼音词库。
 fcitx5 的 libime 提供了 libime-pinyindict 工具用来把文本转为词库，要求的文本格式是这样的：
 鑫永俪	xin&#39;yong&#39;li	0
@@ -189,7 +152,7 @@ def get_chinese_words_from_excel(f):
 if len(sys.argv) &gt; 1:
 	get_chinese_words_from_excel(sys.argv[1])
 
-这样就得到了："/>
+这样就得到了：">
 
 
 <script type="application/ld+json">
@@ -280,8 +243,6 @@ if len(sys.argv) &gt; 1:
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -293,10 +254,10 @@ if len(sys.argv) &gt; 1:
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       openSUSE 下制作 fcitx5-pinyin 的拼音词库
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2025-02-07 00:00:00 &#43;0800 CST&#39;&gt;February 7, 2025&lt;/span&gt;
+    <div class="post-meta"><span title='2025-02-07 00:00:00 +0800 CST'>February 7, 2025</span>
 
 </div>
   </header> 
@@ -400,19 +361,13 @@ cp -r company.dict ~/.local/share/fcitx5/pinyin/dictionaries
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

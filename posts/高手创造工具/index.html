@@ -15,9 +15,7 @@
 而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -43,7 +41,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -62,26 +60,28 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="高手创造工具" />
-<meta property="og:description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="高手创造工具">
+  <meta property="og:description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
 金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
 我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
 这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
 现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
-而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2016-01-12T00:00:00+08:00" />
-<meta property="article:modified_time" content="2016-01-12T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="高手创造工具"/>
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2016-01-12T00:00:00+08:00">
+    <meta property="article:modified_time" content="2016-01-12T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高手创造工具">
 <meta name="twitter:description" content="今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。
 金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300&#43; 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。
 我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。
 这一年我掉到了 nodejs 和 go 这两个我到现在依然不会写的语言的大坑里去了。npm 有 200&#43; 个依赖，导致我其它包的维护几乎就是停滞了。
 现在来看还是要上帝的归上帝，凯撒的归凯撒。论坛我不去，他们几个管的也挺好的，phoenixlzx 也没伸手要钱; 有些软件包不是我打的，比如 bcloud，大家也用上了;Leap 发布我没组织，用户一样也不少。有些空白总是能够填补的。openSUSE 是一个社区，能成长起来一批有自治意识、能够且有能力自主奉献的人就是对开源的贡献了。
-而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。"/>
+而我自己的打包工作，我学了一些 ruby。元旦把之前实验性的 github.com/marguerite/golang-packaging 形成生产力了。这个项目简单说就是用 ruby 实现了一些 rpm macros。可以让你不需要真正懂 golang 的编译环境是怎么构建的、环境变量是怎么设置的，甚至连最后的 rpm 文件列表（%file）都不用你来写。你都不需要知道 openSUSE 的 golang 软件包安装到什么路径就能做出包，大大降低了打包需要了解的背景知识（当然这些知识还是记录在了 wiki 上面），只需要根据错误提示写固定格式的编译依赖（运行依赖 Requires 和 Provides 是自动处理的。甚至 Requires 都只是为了以后 golang 支持 shared linking 做的准备）。">
 
 
 <script type="application/ld+json">
@@ -172,8 +172,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -185,10 +183,10 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       高手创造工具
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2016-01-12 00:00:00 &#43;0800 CST&#39;&gt;January 12, 2016&lt;/span&gt;
+    <div class="post-meta"><span title='2016-01-12 00:00:00 +0800 CST'>January 12, 2016</span>
 
 </div>
   </header> 
@@ -208,19 +206,13 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

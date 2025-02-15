@@ -27,9 +27,7 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -55,7 +53,7 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -74,8 +72,10 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
         }
 
     </style>
-</noscript><meta property="og:title" content="关于 Deepin 用户开发者大会的浅见" />
-<meta property="og:description" content="这篇文章是唱反调的，可能会不舒服的可以离席了。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="关于 Deepin 用户开发者大会的浅见">
+  <meta property="og:description" content="这篇文章是唱反调的，可能会不舒服的可以离席了。
 最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
 先说两点：
 (1) 某些 Deepin 的粉丝可能会觉得我吃不到葡萄说葡萄酸。
@@ -92,14 +92,14 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
 我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
 首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
-先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2014-07-11T00:00:00+08:00" />
-<meta property="article:modified_time" content="2014-07-11T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="关于 Deepin 用户开发者大会的浅见"/>
+先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2014-07-11T00:00:00+08:00">
+    <meta property="article:modified_time" content="2014-07-11T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于 Deepin 用户开发者大会的浅见">
 <meta name="twitter:description" content="这篇文章是唱反调的，可能会不舒服的可以离席了。
 最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。
 先说两点：
@@ -117,7 +117,7 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 默认搭载 Crossover，哈，这不是我黑的，Qian Hong 还有点面子的嘛，再说你在中国做发行版都不搭载商业/免费软件，未免逼格太高。
 我要黑的是，似乎 Deepin 要入 Mono 这个坑？（微博上是这么感觉的）
 首先说明，我个人对于任何铺平 Windows 到 Linux 之路的举动都是支持的，但我更认为这种事情应该由「使用者教育」比如建设 Wiki 和社区来实现，而不是由技术手段去抹平差异来实现，因为之所以有差异就证明抹不平。这不是「我饿了，于是吃饭」的逻辑，而是「我饿了，吃了米饭，又去吃馒头」，不可能有米饭味儿的馒头，那是饭团。
-先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。"/>
+先介绍下什么是 Mono，它是在 Linux 上搞 .NET 开发的一个东西，是 SUSE 创建的，后来觉得这个脑洞太大，把整个 mono 团队都开革了。">
 
 
 <script type="application/ld+json">
@@ -208,8 +208,6 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -221,10 +219,10 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       关于 Deepin 用户开发者大会的浅见
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2014-07-11 00:00:00 &#43;0800 CST&#39;&gt;July 11, 2014&lt;/span&gt;
+    <div class="post-meta"><span title='2014-07-11 00:00:00 +0800 CST'>July 11, 2014</span>
 
 </div>
   </header> 
@@ -275,19 +273,13 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

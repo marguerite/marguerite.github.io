@@ -23,9 +23,7 @@
 吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -51,7 +49,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -70,8 +68,10 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="开源软件的使用者算不算是吸血者" />
-<meta property="og:description" content="这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="开源软件的使用者算不算是吸血者">
+  <meta property="og:description" content="这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
 回答： 我觉得你应该修改问题。使用者，是个很中性好笼统的词。下定义就是这样，你定义的越笼统，越中性，越细节，越带感情色彩和主观因素。使用者分种类的，玩游戏不也有人民币玩家、金币农民、苦逼青少年、称霸服务器的搬砖工嘛。你可能会用“傻逼”也很笼统来反驳我，但下定义虽然可以衍生但不是词语组合，组合就一定会带上该词或字原来的某种属性; 吸血者，是个很负面好恐怖的词。一个中性是不是负面，答案永远是否定的。所以，不算。就跟你说，这个杯子是不是犯二，回答的人会想，what the xxxx？
 不过考虑到您的思维路径可能是，看到我对于发行版是否吸血的解答，认为普通用户只使用不作为是不是也是吸血？下面就讨论下这个。
 先来定义吸血。吸血是拿了别人的东西用完还回去却不尊重别人规定的使用范围（比如借别人洗脸的盆子洗脚）或者干脆就不还或少还（比如借钱不还或少还），或者不征求同意直接偷（比如吸血蝙蝠），总体来说，就是不讲究的透支或挪用了别人的资源来做自己的事或谋求自己和别人之间的某种超然地位（商业间谍知己知彼百战不殆）。这个意义上说，吸血的实例很多，但因为大部分行为有了它自己的定义，所以明确说XX吸血反而比较少见。比如，拿着爸妈养老的钱去炒股，就是在吸爸妈的血，因为爸妈可以自己吃药看病甚至是炒股啊; 借了作家没有人知道的小说看，然后写上自己名字发表了，就是在吸作家的血，因为他可以自己来啊，他借你只是让你看的啊; 房地产开发商赖着银行钱不还去押地搞开发，就是在吸银行的血，因为银行可以自己押啊; 比如贪官挪用公款享乐就是吸了公民的血，因为公民可以自己享乐啊。但四种行为都有了自己的定义，第一个叫啃老，第二个叫冒名，第三个叫骗贷，第四个叫贪腐。如果没有这些定义，那他们都是吸血。
@@ -84,14 +84,14 @@
 下面正儿八经的回答问题。
 开源软件的使用者算不算是吸血者？
 用户跟开发者的立场不一样，虽然看似满足我的吸血定义，因为开发者贡献肯定最大，用户贡献比不过，又不像商业软件那样付费，因此算是“少还”的类型，应该算，但问题是这是在开源啊，开发者就没在乎你还不还啊，你只是受到你自己的良心审判啊。良心多的，就 buy me a beer（老外要捐款经常用的句子，酒吧用语，请我一杯啤酒），良心少的，就博客写篇文，朋友问就说下等等。做早做晚，做多做少，这不是问题，不构成开源事业中吸血的要件，问题是，做与不做。就是个 bool 值的开关状态而已。如果不做任何事，只是使用，不反馈，碰到问题就不用了，不宣传推广（不是一个软件有缺陷就可以不推广，不然木马病毒产业链和社会主义初级阶段早就没了），那你必然在吸血，吸开源事业的血（因为你就是一路过打酱油的，完全就没有参与啊，使用是开源最大的支持，这句话的原型是一个开源项目发布它的软件，拉人气的。。。鼓励你用不到但也去用，那已经是参与了啊。一般我们讨论问题指的是用户自主选择，所以我很少讨论预装的事儿，人人有 ie 有几个真用的。。）。直到有一天，你做出了这样的事，比如朋友问你随口说了一句，那么之前吸的血就原地满血满状态了，因为你已经还回去了。对用户的要求和对开发者的不一样，作为一个开发者你不能说我把我的补丁的前两行注释反馈给上游，或者我有三个补丁反馈两个意思意思尽尽人事就完了，搞笑么。虽然大多数人都这样做，但不代表就是对的，全中国人都用盗版，不代表盗版本身就对的（穷是国家的问题，用盗版是你的问题）。
-吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2012-04-04T00:00:00+08:00" />
-<meta property="article:modified_time" content="2012-04-04T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="开源软件的使用者算不算是吸血者"/>
+吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-04-04T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-04-04T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="开源软件的使用者算不算是吸血者">
 <meta name="twitter:description" content="这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。
 回答： 我觉得你应该修改问题。使用者，是个很中性好笼统的词。下定义就是这样，你定义的越笼统，越中性，越细节，越带感情色彩和主观因素。使用者分种类的，玩游戏不也有人民币玩家、金币农民、苦逼青少年、称霸服务器的搬砖工嘛。你可能会用“傻逼”也很笼统来反驳我，但下定义虽然可以衍生但不是词语组合，组合就一定会带上该词或字原来的某种属性; 吸血者，是个很负面好恐怖的词。一个中性是不是负面，答案永远是否定的。所以，不算。就跟你说，这个杯子是不是犯二，回答的人会想，what the xxxx？
 不过考虑到您的思维路径可能是，看到我对于发行版是否吸血的解答，认为普通用户只使用不作为是不是也是吸血？下面就讨论下这个。
@@ -105,7 +105,7 @@
 下面正儿八经的回答问题。
 开源软件的使用者算不算是吸血者？
 用户跟开发者的立场不一样，虽然看似满足我的吸血定义，因为开发者贡献肯定最大，用户贡献比不过，又不像商业软件那样付费，因此算是“少还”的类型，应该算，但问题是这是在开源啊，开发者就没在乎你还不还啊，你只是受到你自己的良心审判啊。良心多的，就 buy me a beer（老外要捐款经常用的句子，酒吧用语，请我一杯啤酒），良心少的，就博客写篇文，朋友问就说下等等。做早做晚，做多做少，这不是问题，不构成开源事业中吸血的要件，问题是，做与不做。就是个 bool 值的开关状态而已。如果不做任何事，只是使用，不反馈，碰到问题就不用了，不宣传推广（不是一个软件有缺陷就可以不推广，不然木马病毒产业链和社会主义初级阶段早就没了），那你必然在吸血，吸开源事业的血（因为你就是一路过打酱油的，完全就没有参与啊，使用是开源最大的支持，这句话的原型是一个开源项目发布它的软件，拉人气的。。。鼓励你用不到但也去用，那已经是参与了啊。一般我们讨论问题指的是用户自主选择，所以我很少讨论预装的事儿，人人有 ie 有几个真用的。。）。直到有一天，你做出了这样的事，比如朋友问你随口说了一句，那么之前吸的血就原地满血满状态了，因为你已经还回去了。对用户的要求和对开发者的不一样，作为一个开发者你不能说我把我的补丁的前两行注释反馈给上游，或者我有三个补丁反馈两个意思意思尽尽人事就完了，搞笑么。虽然大多数人都这样做，但不代表就是对的，全中国人都用盗版，不代表盗版本身就对的（穷是国家的问题，用盗版是你的问题）。
-吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。"/>
+吸血是人类普遍行为，有正义的也有非正义的，但正义就是道德范围了，比如开源在一些人眼里看来就是在吸商业的血么（实际不是，开源是从零开始构造的，没有取商业一分一毫，我不用你的东西造起房子，你不能骂我拆你家院墙上的砖。反而是你用我盖房子的混凝土加固你家院墙（商业用开源），却不告诉我朋友你打混凝土水泥放少了可能抗不过地震啊（不反馈），更像是吸血，虽然我给你混凝土的时候并没有要你还），是正义的吸血（当然，厂商眼里是非正义的，只是暂时它对你还有用，所以搁置争议共同开发），但这个正义的吸血，讨论起来确实没有什么意义，就跟为共产主义事业奋斗终身一样，你不到终身的时候说这个都是虚的，口号。">
 
 
 <script type="application/ld+json">
@@ -196,8 +196,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -209,10 +207,10 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       开源软件的使用者算不算是吸血者
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2012-04-04 00:00:00 &#43;0800 CST&#39;&gt;April 4, 2012&lt;/span&gt;
+    <div class="post-meta"><span title='2012-04-04 00:00:00 +0800 CST'>April 4, 2012</span>
 
 </div>
   </header> 
@@ -237,19 +235,13 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

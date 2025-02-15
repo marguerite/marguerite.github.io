@@ -16,9 +16,7 @@
 再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。">
 <meta name="author" content="">
 <link rel="canonical" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://marguerite.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
@@ -44,7 +42,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -63,28 +61,30 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游" />
-<meta property="og:description" content="本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游">
+  <meta property="og:description" content="本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
 春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。
 深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。
 我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。
 这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？
 从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。
-再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2012-03-31T00:00:00+08:00" />
-<meta property="article:modified_time" content="2012-03-31T00:00:00+08:00" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游"/>
+再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-03-31T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-03-31T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游">
 <meta name="twitter:description" content="本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。
 春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。
 深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。
 我的回复： 续： 看到春雷的观点，我觉得勉强算是一个补充吧。 我也想了一下，如果你有能力开发，而不去开发或收购，直接使用，这叫吸血。比如迅雷，它有能力做出正常的上传，但偏偏不这么干，所以说它吸血。Ubuntu 不是的，全球的角度说，他的开发者是处在 Linux 核心圈子的边缘的，确实搞出像老牌发行版那么多是强求，所以这只能说利用。这是很中性的评价。但还有一方面它做出的东西很少向上游反馈，反而时而会去更改上游的基础来实现特殊化，这就是偏负面的评价了。比如很基础的图像处理库 libtiff，tiff 官方发布的所有正式版本中，是编译不出 libtiff.so.4.3.4 这个文件的，3系的最高版本是 .so.3.9.6，4系开始就是 .so.5.x.x，ubuntu 宣称自己使用的是 3.9.5 版，实际这个版本编译出来的应该是 so.3.9.5，这就造成了使用 ubuntu 做开发平台做出的软件，在其他发行版上用会麻烦一点，这个麻烦不是其他发行版找的，是 ubuntu 给的。再比如说 freedesktop 是 linux 界“桌面图标”标准的制定者，准上游，但 ubuntu 的 .desktop 拿到其他发行版就是会编译报错，为什么呢？ unity 添加了设置条目，然后不向 freedesktop 回馈，不回馈就永远成不了标准，其他发行版永远没法支持，就永远突出了 ubuntu 的易用性。
 这是我在帮助 wps 官方打包的时候发现的一个小例子，不尊重上游，而不向上游反馈这个就不用说了，大家都有感觉到，比如用 ubuntu 的人总觉得是比其他发行版舒服一点，比如显示，比如交互设计，不可能所有人都拥有同样的主观感受，至少第一批用的人是没有领头人去影响他们的，那么就是肯定有私货啦，但是 Linux 的范围是不存在私货这个概念的，那就是它至少在某种层面上背离了开源，即使没有背离开源，也一定背离了分享，是的，你可以自己去找，但为什么别人搞出来的东西在上游可以找到，你的字体设置就一定要下个 iso 挖呢？
 从市场的角度看，规避不是自己公司的东西而去强调自己的核心产品，这很正常。因此Ubuntu确实算不上是吸血。只能说它有违 Linux 精神。它试图用一种增加独特性的圈地运动来让自己变成 Linux 的标杆，反而拉大了 Linux 发行版之间的边界。
-再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。"/>
+再下面我就不同意所谓的市场分工了，所谓分工，是专业分工，行业分工，和同一公司不同部门之间的分工以及同一集团不同公司的分工。微软卖软件，因特尔卖硬件，他们的利益捆绑确实促成了两者的繁荣，但是在市场的角度两者是不同的利基市场，利益不冲突。市场分工大家都说，但实际是不存在的，同一市场是没法分工的，只能在不触及彼此核心利益的基础上合作。你不能说江民搞病毒引擎，金山搞外部封装，然后两者弄好各自卖。何况金山的封装技术还没有给江民用。你可能把病毒库这一公共资源当成市场本身了。再好比新浪微博可以和网易微博合作开发一个新的游戏平台，但是你让它们互换帐号资料试试？ 除非新浪想把自己的核心价值观推入网易，就像 google open id 登陆一样，要说是为了提升网易竞争力，这就牵强了。linux 世界若不涉及背后的公司，则大有不同，我们讨论的 ubuntu 吸血不吸血应该是集中在这里，技术层面上的问题，我的发行版弄出来的东西，你的也可以用还送货上门，你的却不给我用，或者说自己去拿，这样说这人不讲究一点不过分。唯一能比拟的部分应该是发行版基础，比如 SuSE 的 YaST，arch 的 abs，gentoo 的 emerge，你可以任意的用，但是你一旦用了就打上了我的标签了，而 ubuntu 这些地方却又没什么能深说的，它用的是 debian 的 apt-get，在别人家厨房炒自己的菜，最近出来的 software center，底层不太懂，应该也没有使用新的能标记发行版的技术，而它又卖商业软件，都不算是发行版基础的范畴了，而是市场，unity 应该算一个，但ubuntu 又有 kbuntu。。算是发行版基础的应该是 opensuse 的 build service，fedora 的 koji，和 suse 正在筹备的开源软件中心。而涉及公司又会回归到上面的情况。">
 
 
 <script type="application/ld+json">
@@ -175,8 +175,6 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -188,10 +186,10 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游
     </h1>
-    <div class="post-meta">&lt;span title=&#39;2012-03-31 00:00:00 &#43;0800 CST&#39;&gt;March 31, 2012&lt;/span&gt;
+    <div class="post-meta"><span title='2012-03-31 00:00:00 +0800 CST'>March 31, 2012</span>
 
 </div>
   </header> 
@@ -248,19 +246,13 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        label="blog"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span>
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
