@@ -68,6 +68,8 @@ FontFallbacklist  是针对每个 family 调用 FontCache::GetFontData，即便�
 
 关键函数在 [harfbuzz_shaper.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc) 的  `HarfBuzzShaper::ShapeSegment`。它会建立一个 FontFallbackIterator 然后一直把 reshape_queue 跑干净。跑 Iter 的时候，会区分带 hint_list 的 runs 或 hint_list 为空的 runs。而是不是需要 hint_list 是由 FontFallbackIter 的 fallback_stage 处于哪一阶段决定的，segmented 和 kFontGroupFonts 需要提供提示字。
 
+FontFallbackIter 在创建的时候会创建空白的 FontFallbackList，即 EnsureFontFallbacklist()。
+
 FontFallbackIter 关键函数是  `FallbackPriorityFont`、`UniqueSystemFontForHintList`和`FontCache::GetLastResortFallbackFont`，顺序执行这三个函数。前两者都会调用 FallbackFontForChar，原因是 segmented 其实是一句话，但提示词只给了一个字，这个字就能决定这段话的 Unicode。中文是单独 segmented 的，如何 segment 在 [script_run_iterator.cc](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/script_run_iterator.cc)。全是中文的一段话里给出一个字其实已经够了，是为了效率的考虑。
 
 `FontCache::GetLastResortFallbackFont` 其实就是使用 sans-serif，如果 sans-serif 没有用 sans, 再没有用 Arial, 再没有用 Courier New。Windows 还多维护了几个 Fallback 字体，在 [font_family_names.json5](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/fonts/font_family_names.json5)
