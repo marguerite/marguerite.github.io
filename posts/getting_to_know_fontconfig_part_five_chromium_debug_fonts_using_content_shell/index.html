@@ -144,8 +144,8 @@ prepare_build.sh:">
   "keywords": [
     
   ],
-  "articleBody": "上一篇文章我们提到了 content_shell 可以用来调试 blink 引擎，今天我们就来编译一份 content_shell 并魔改它用来调试网页字体查询。\n编译 content_shell 主要参考了 Checking out and building Chromium on Linux\nChromium 的源代码是使用它自己的 depot_tools 编译的，我们先下载一份，比如解压到了 ~/Dev/depot_tools\n然后这份 depot_tools 我们需要修改一个地方，添加代理，来应对网络环境，编辑 cipd 的这个地方：\nif hash curl 2\u003e /dev/null ; then curl -x socks5h://localhost:65533 \"${URL}\" -s --show-error -f --retry 3 --retry-delay 5 -A \"${USER_AGENT}\" -L -o \"${CIPD_CLIENT_TMP}\" 然后就可以使用 fetch 去获取代码了。\n具体编译我使用了以下脚本：\nset_environment.sh:\n#!/bin/sh export PATH=$PATH:~/Dev/depot_tools export http_proxy=http://127.0.0.1:8128 export https_proxy=http://127.0.0.1:8128 export socks_proxy=socks5://127.0.0.1:65533 export all_proxy=http://127.0.0.1:8128 export NO_AUTH_BOTO_CONFIG=~/.boto prepare_build.sh:\n#!/bin/sh . ./set_environment.sh pushd src gn gen --args=\"host_os=\\\"linux\\\" is_debug=true dcheck_always_on=false enable_nacl=false is_component_ffmpeg=true use_cups=false use_aura=true use_kerberos=false enable_vr=false optimize_webui=false enable_reading_list=false use_pulseaudio=false link_pulseaudio=false is_component_build=false use_gnome_keyring=false use_vaapi=false use_dbus=false enable_rust=false enable_hangout_services_extension=false enable_vulkan=false use_lld=true is_clang=true\" out/Debug popd 其中 gn gen 的 args 部分我主要参考了 openSUSE 下 chromium 的编译设置。\ncontent_shell_build.sh:\n#!/bin/sh . ./set_environment.sh autoninja -C ./src/out/Debug content_shell 启用 Logging 编译好的 content_shell 在 ./src/out/Debug。\n我们先创建一个测试用的 html\n你好😃，我能吃玻璃而不伤身体 然后 content_shell 要启用 logging（因为 chromium 就自己的 Log 机制，所以纯 cpp 的 printf 没输出）：\ncontent_shell_wrapper.sh:\n#!/bin/sh ./src/out/Debug/content_shell --no-sandbox --enable-logging=stderr --vmodule=\"\\*/fonts/\\*=4, \\*/css/\\*=0\" --v=-3 \u003e log.txt 2\u003e\u00261 $1 –vmodule 的意思是只要路径中含有 fonts 和 css 的日志，–v=-3 的意思是压制其他日志。跑一下：\n./content_shell_wrapper.sh test.html [6197:1:0212/100126.380015:VERBOSE4:shape_result_bloberizer.cc(513)] FillGlyphsNG fast path 我们只发现了一条，因为 Chromium 的开发者针对字体没有过多的 DEBUG 输出，所以我们要自己加…加的方法可以通过 shape_result_bloberizer.cc 看到：\n先添加头文件：\n#include 然后在需要输出日志的地方：\nDVLOG(4) \u003c\u003c \" SetText from: \" \u003c\u003c from \u003c\u003c \" to: \" \u003c\u003c to; 添加字体调试的日志输出 我们在 third_party/blink/renderer/platform/fonts/shaping 的 harfbuzz_shaper.cc 里加一条日志：\n// our dlog test const FontFamily* curr_family = \u0026font_description.Family(); DVLOG(0) \u003c\u003c \"fontdescription in HarfBuzzShaper::ShapeSegment\"; for (; curr_family; curr_family = curr_family-\u003eNext()) { DVLOG(0) \u003c\u003c \" current font_family is \" \u003c\u003c curr_family-\u003eFamilyName(); } 然后重新编译一下 content_shell 再看。\n注意：content_shell_wrapper.sh 里面的 loglevel 要从 4 改为 0。loglevel 是输出这个 level 及以下的，所以数字越小，内容越少。另外，虽然只改动了一个文件，但重新 LINK content_shell 的时间非常长，所以真正使用的时候，最好一次性把需要 DVLOG 输出的地方都改好再重新编译 content_shell。\n运行结果如下：\n[18085:18085:0212/111541.814978:INFO:harfbuzz_shaper.cc(754)] fontdescription in HarfBuzzShaper::ShapeSegment [18085:18085:0212/111541.815081:INFO:harfbuzz_shaper.cc(756)] current font_family is \"Segoe UI\" [18085:18085:0212/111541.815120:INFO:harfbuzz_shaper.cc(756)] current font_family is \"Roboto\" [18085:18085:0212/111541.815152:INFO:harfbuzz_shaper.cc(756)] current font_family is \"sans-serif\" 以上只是简单示例，距离产出完整的字体调试输出还需要修改好多地方。完整版的补丁在 marguerite’s blink_font_stack_debug.patch，最终编译的 content_shell 有 2GB 大小，有兴趣的可以自己去编译下。我是基于23年6月的一个 commit 编译的，本来打算更新到最新代码来着，但发现我的代码树是 cherry pick 的，就已经有 50GB 了，想想还是算了。两年前的代码也不是不能用，反正是为了验证基础逻辑。\n字体加载阶段 原理篇里面已经说了，blink 在解析 DOM 树时，会针对每个 dom 元素计算出一个样式（ComputedStyle），该样式拥有 FontDescription 和 Font Object。Font Object 是由 FontBuilder 生成的，拥有一个 CssFontSelector 和一个 FontFallbackList。具体到 Debug Log 里面是这样的：\n[INFO:font.cc(83)] [Font(font_description, font_selector)] Font constructor called with font_selector 0x7fff553008c0 [INFO:font_builder.cc(559)] [FontBuilder::CreateFont] FontDescription{family: \"Segoe UI, Roboto, sans-serif\", computedsize: 26.6667} [INFO:font_builder.cc(534)] [FontBuilder::ComputeFontSelector] FontSelectorFromTreeScope [INFO:font_builder.cc(526)] [FontBuilder::FontSelectorFromTreeScope] tree_scope outerHTML \"\\n",
-  "wordCount" : "1354",
+  "articleBody": "上一篇文章我们提到了 content_shell 可以用来调试 blink 引擎，今天我们就来编译一份 content_shell 并魔改它用来调试网页字体查询。\n编译 content_shell 主要参考了 Checking out and building Chromium on Linux\nChromium 的源代码是使用它自己的 depot_tools 编译的，我们先下载一份，比如解压到了 ~/Dev/depot_tools\n然后这份 depot_tools 我们需要修改一个地方，添加代理，来应对网络环境，编辑 cipd 的这个地方：\nif hash curl 2\u003e /dev/null ; then curl -x socks5h://localhost:65533 \"${URL}\" -s --show-error -f --retry 3 --retry-delay 5 -A \"${USER_AGENT}\" -L -o \"${CIPD_CLIENT_TMP}\" 然后就可以使用 fetch 去获取代码了。\n具体编译我使用了以下脚本：\nset_environment.sh:\n#!/bin/sh export PATH=$PATH:~/Dev/depot_tools export http_proxy=http://127.0.0.1:8128 export https_proxy=http://127.0.0.1:8128 export socks_proxy=socks5://127.0.0.1:65533 export all_proxy=http://127.0.0.1:8128 export NO_AUTH_BOTO_CONFIG=~/.boto prepare_build.sh:\n#!/bin/sh . ./set_environment.sh pushd src gn gen --args=\"host_os=\\\"linux\\\" is_debug=true dcheck_always_on=false enable_nacl=false is_component_ffmpeg=true use_cups=false use_aura=true use_kerberos=false enable_vr=false optimize_webui=false enable_reading_list=false use_pulseaudio=false link_pulseaudio=false is_component_build=false use_gnome_keyring=false use_vaapi=false use_dbus=false enable_rust=false enable_hangout_services_extension=false enable_vulkan=false use_lld=true is_clang=true\" out/Debug popd 其中 gn gen 的 args 部分我主要参考了 openSUSE 下 chromium 的编译设置。\nbuild.sh:\n#!/bin/sh . ./set_environment.sh autoninja -C ./src/out/Debug $1 然后使用\n./build.sh content_shell 编译 content_shell。\n启用 Logging 编译好的 content_shell 在 ./src/out/Debug。\n我们先创建一个测试用的 html\n你好😃，我能吃玻璃而不伤身体 然后 content_shell 要启用 logging（因为 chromium 就自己的 Log 机制，所以纯 cpp 的 printf 没输出）：\ncontent_shell_wrapper.sh:\n#!/bin/sh LC_NUMERIC=\"C\" ./src/out/Debug/content_shell --no-sandbox --single-process --enable-logging=stderr --vmodule=\"\\*/fonts/\\*=4, \\*/css/\\*=0\" --v=-3 \u003e log.txt 2\u003e\u00261 $1 要启用 --single-process 必须把 LC_NUMERIC 设为默认的 C，openSUSE 下它是空的。不然 third_party/blink/renderer/platform/wtf/text/wtf_string.ccwtf_string.cc 中的一个 DCHECK_EQ(strcmp(setlocale(LC_NUMERIC, NULL), \"C\"), 0); 会失败，造成 content_shell 崩溃。\n–vmodule 的意思是只要路径中含有 fonts 和 css 的日志，–v=-3 的意思是压制其他日志。跑一下：\n./content_shell_wrapper.sh test.html [6197:1:0212/100126.380015:VERBOSE4:shape_result_bloberizer.cc(513)] FillGlyphsNG fast path 我们只发现了一条，因为 Chromium 的开发者针对字体没有过多的 DEBUG 输出，所以我们要自己加…加的方法可以通过 shape_result_bloberizer.cc 看到：\n先添加头文件：\n#include 然后在需要输出日志的地方：\nDVLOG(4) \u003c\u003c \" SetText from: \" \u003c\u003c from \u003c\u003c \" to: \" \u003c\u003c to; 添加字体调试的日志输出 我们在 third_party/blink/renderer/platform/fonts/shaping 的 harfbuzz_shaper.cc 里加一条日志：\n// our dlog test const FontFamily* curr_family = \u0026font_description.Family(); DVLOG(0) \u003c\u003c \"fontdescription in HarfBuzzShaper::ShapeSegment\"; for (; curr_family; curr_family = curr_family-\u003eNext()) { DVLOG(0) \u003c\u003c \" current font_family is \" \u003c\u003c curr_family-\u003eFamilyName(); } 然后重新编译一下 content_shell 再看。\n注意：content_shell_wrapper.sh 里面的 loglevel 要从 4 改为 0。loglevel 是输出这个 level 及以下的，所以数字越小，内容越少。另外，虽然只改动了一个文件，但重新 LINK content_shell 的时间非常长，所以真正使用的时候，最好一次性把需要 DVLOG 输出的地方都改好再重新编译 content_shell。\n运行结果如下：\n[18085:18085:0212/111541.814978:INFO:harfbuzz_shaper.cc(754)] fontdescription in HarfBuzzShaper::ShapeSegment [18085:18085:0212/111541.815081:INFO:harfbuzz_shaper.cc(756)] current font_family is \"Segoe UI\" [18085:18085:0212/111541.815120:INFO:harfbuzz_shaper.cc(756)] current font_family is \"Roboto\" [18085:18085:0212/111541.815152:INFO:harfbuzz_shaper.cc(756)] current font_family is \"sans-serif\" 以上只是简单示例，距离产出完整的字体调试输出还需要修改好多地方。完整版的补丁在 marguerite’s blink_font_stack_debug.patch，最终编译的 content_shell 有 2GB 大小，有兴趣的可以自己去编译下。我是基于23年6月的一个 commit 编译的，本来打算更新到最新代码来着，但发现我的代码树是 cherry pick 的，就已经有 50GB 了，想想还是算了。两年前的代码也不是不能用，反正是为了验证基础逻辑。\n字体加载阶段 原理篇里面已经说了，blink 在解析 DOM 树时，会针对每个 dom 元素计算出一个样式（ComputedStyle），该样式拥有 FontDescription 和 Font Object。Font Object 是由 FontBuilder 生成的，拥有一个 CssFontSelector 和一个 FontFallbackList。具体到 Debug Log 里面是这样的：\n[INFO:font.cc(83)] [Font(font_description, font_selector)] Font constructor called with font_selector 0x7fff553008c0 [INFO:font_builder.cc(559)] [FontBuilder::CreateFont] FontDescription{family: \"Segoe UI, Roboto, sans-serif\", computedsize: 26.6667} [INFO:font_builder.cc(534)] [FontBuilder::ComputeFontSelector] FontSelectorFromTreeScope [INFO:font_builder.cc(526)] [FontBuilder::FontSelectorFromTreeScope] tree_scope outerHTML \"\\n",
+  "wordCount" : "2450",
   "inLanguage": "en",
   "datePublished": "2025-02-12T00:00:00+08:00",
   "dateModified": "2025-02-12T00:00:00+08:00",
@@ -247,11 +247,15 @@ gn gen --args=&quot;host_os=\&quot;linux\&quot; is_debug=true dcheck_always_on=f
 popd
 </code></pre>
 <p>其中 gn gen 的 args 部分我主要参考了 openSUSE 下 chromium 的编译设置。</p>
-<p>content_shell_build.sh:</p>
+<p>build.sh:</p>
 <pre><code>#!/bin/sh
 . ./set_environment.sh
-autoninja -C ./src/out/Debug content_shell
+autoninja -C ./src/out/Debug $1
 </code></pre>
+<p>然后使用</p>
+<pre><code>./build.sh content_shell
+</code></pre>
+<p>编译 content_shell。</p>
 <h2 id="启用-logging">启用 Logging<a hidden class="anchor" aria-hidden="true" href="#启用-logging">#</a></h2>
 <p>编译好的 content_shell 在 ./src/out/Debug。</p>
 <p>我们先创建一个测试用的 html</p>
@@ -265,8 +269,9 @@ autoninja -C ./src/out/Debug content_shell
 <p>然后 content_shell 要启用 logging（因为 chromium 就自己的 Log 机制，所以纯 cpp 的 printf 没输出）：</p>
 <p>content_shell_wrapper.sh:</p>
 <pre><code>#!/bin/sh
-./src/out/Debug/content_shell --no-sandbox --enable-logging=stderr --vmodule=&quot;\*/fonts/\*=4, \*/css/\*=0&quot; --v=-3 &gt; log.txt 2&gt;&amp;1 $1
+LC_NUMERIC=&quot;C&quot; ./src/out/Debug/content_shell --no-sandbox --single-process --enable-logging=stderr --vmodule=&quot;\*/fonts/\*=4, \*/css/\*=0&quot; --v=-3 &gt; log.txt 2&gt;&amp;1 $1
 </code></pre>
+<p>要启用 <code>--single-process</code> 必须把 <code>LC_NUMERIC</code> 设为默认的 <code>C</code>，openSUSE 下它是空的。不然 <code>third_party/blink/renderer/platform/wtf/text/wtf_string.ccwtf_string.cc</code> 中的一个 <code>DCHECK_EQ(strcmp(setlocale(LC_NUMERIC, NULL), &quot;C&quot;), 0);</code> 会失败，造成 content_shell 崩溃。</p>
 <p>&ndash;vmodule  的意思是只要路径中含有 fonts 和 css 的日志，&ndash;v=-3 的意思是压制其他日志。跑一下：</p>
 <pre><code>./content_shell_wrapper.sh test.html
 [6197:1:0212/100126.380015:VERBOSE4:shape_result_bloberizer.cc(513)] FillGlyphsNG fast path
@@ -460,8 +465,8 @@ for (; curr_family; curr_family = curr_family-&gt;Next()) {
 </code></pre>
 <p>文本是“你好😊，我能吃玻璃而不伤身体”，第一遍确定使用 Noto Sans CJK SC，一直在遇到颜文字前都不需要提示词，遇到颜文字后又调整字体又调整 fallback_priority。</p>
 <h2 id="发现的问题">发现的问题<a hidden class="anchor" aria-hidden="true" href="#发现的问题">#</a></h2>
-<h4 id="times-new-roman-哪里来的">Times New Roman 哪里来的？<a hidden class="anchor" aria-hidden="true" href="#times-new-roman-哪里来的">#</a></h4>
-<p>如果是 Sans / Arial 我都能够理解，因为在代码里看见过，LastResortFont 的时候最后的两步是找它们。但是 Times New Roman 是怎么出来的？找了一圈，发现因为它是<a href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/app/resources/locale_settings_linux.grd">默认字体</a>，Linux 下 Chromium 的默认字体如下：</p>
+<h2 id="日志里好多-times-new-roman-哪里来的">日志里好多 Times New Roman 哪里来的？<a hidden class="anchor" aria-hidden="true" href="#日志里好多-times-new-roman-哪里来的">#</a></h2>
+<p>如果是 Sans / Arial 我都能够理解，因为在代码里看见过，<code>GetLastResortFont</code> 的最后的两步是找它们。但是 Times New Roman 是怎么出来的？找了一圈，发现因为它是<a href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/app/resources/locale_settings_linux.grd">默认字体</a>，Linux 下 Chromium 的默认字体如下：</p>
 <pre><code>standard_font_family: Times New Roman
 fixed_font_family: Monospace
 serif_font_family: Times New Roman
@@ -471,7 +476,7 @@ cursive_font_family: Comic Sans MS
 fantasy_font_family: Impact
 math_font_family: Latin Modern Math 
 </code></pre>
-<h4 id="sans-serif-的-fallback-不好使sans-好使">sans-serif 的 Fallback 不好使，sans 好使？<a hidden class="anchor" aria-hidden="true" href="#sans-serif-的-fallback-不好使sans-好使">#</a></h4>
+<h2 id="sans-serif-的-fallback-不好使sans-好使">sans-serif 的 Fallback 不好使，sans 好使？<a hidden class="anchor" aria-hidden="true" href="#sans-serif-的-fallback-不好使sans-好使">#</a></h2>
 <p>我们前面已经说过 Skia 了，如果喂给它  sans-serif 应该会直接有 Noto Sans CJK SC 回来，为什么 NULL Typeface 呢？</p>
 <p>两个原因：</p>
 <p>首先是在 css 里面喂会被替换成 Arial：</p>
@@ -491,6 +496,204 @@ math_font_family: Latin Modern Math
 [INFO:font_cache_skia.cc(317)] [FontCache::CreateFontPlatformData] NULL typeface sans-serif
 </code></pre>
 <p>会去要 Normal width, Bold weight, Upright slant 的 sans-serif。然后就不知道为什么网页里面没写加粗，会去要加粗的 sans-serif 了，另外，即使要粗体应该也不会一个没有，也许我应该写个 skia demo debug 一下。</p>
+<h2 id="制作-skia-debug-工具">制作 skia debug 工具<a hidden class="anchor" aria-hidden="true" href="#制作-skia-debug-工具">#</a></h2>
+<p>单独编译 skia 不太可取，因为我的 chromium 代码树下已经有 skia 了。于是就有了以下取巧的方案：</p>
+<p>在 <code>src/skia/BUILD.gn</code> 里添加这样的代码：</p>
+<pre><code>group(&quot;fuzzers&quot;) {
+    deps = [ &quot;//skia/tools/fuzzers&quot; ]
+}
+</code></pre>
+<p>下面加上：</p>
+<pre><code>group(&quot;skia_debug_tool&quot;) {
+    deps = [ &quot;//skia/skia_debug_tool&quot; ]
+}
+</code></pre>
+<p>然后建立一个 <code>src/skia/skia_debug_tool</code> 文件夹，里面内容如下：</p>
+<p>src/skia/skia_debug_tool/BUILD.gn:</p>
+<pre><code>executable(&quot;skia_debug_tool&quot;) {
+    sources = [
+        &quot;skia_debug_tool.cc&quot;,
+        &quot;fontmgr_default_linux.cc&quot;
+    ]
+
+    deps = [ &quot;//skia&quot; ]
+}
+</code></pre>
+<p>src/skia/skia_debug_tool/skia_debug_tool.cc：</p>
+<pre><code>#include &quot;fontmgr_default_linux.h&quot;
+#include &lt;stdio.h&gt;
+#include &quot;../../third_party/skia/include/core/SkFontStyle.h&quot;
+
+int main(int argc, char* argv[]) {
+    auto font_mgr = skia_debug_tool::CreateDefaultSkFontMgr();
+    printf(&quot;font_mgr created: ok\n&quot;);
+    const char* family_name = &quot;sans-serif&quot;;
+    printf(&quot;family name created: ok\n&quot;);
+    auto style = SkFontStyle(5, 700, SkFontStyle::kUpright_Slant);
+    auto typeface = font_mgr-&gt;matchFamilyStyle(family_name, style);
+    if (typeface) {
+        printf(&quot;typeface is not null\n&quot;);
+    } else {
+        printf(&quot;typeface is null\n&quot;);
+    }
+    return 0;
+}
+</code></pre>
+<p>src/skia/skia_debug_tool/fontmgr_default_linux.cc:</p>
+<pre><code>#include &quot;../../third_party/skia/include/core/SkFontMgr.h&quot;
+#include &quot;../../third_party/skia/include/ports/SkFontConfigInterface.h&quot;
+#include &quot;../../third_party/skia/include/ports/SkFontMgr_FontConfigInterface.h&quot;
+
+namespace skia_debug_tool {
+
+    SK_API sk_sp&lt;SkFontMgr&gt; CreateDefaultSkFontMgr() {
+        sk_sp&lt;SkFontConfigInterface&gt; fci(SkFontConfigInterface::RefGlobal());
+        return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
+    }
+
+}  // namespace skia_debug_tool
+</code></pre>
+<p>src/skia/skia_debug_tool/fontmgr_default_linux.h:</p>
+<pre><code>#include &quot;../../third_party/skia/include/core/SkFontMgr.h&quot;
+#include &quot;../../third_party/skia/include/ports/SkFontConfigInterface.h&quot;
+#include &quot;../../third_party/skia/include/ports/SkFontMgr_FontConfigInterface.h&quot;
+
+namespace skia_debug_tool {
+
+    SK_API sk_sp&lt;SkFontMgr&gt; CreateDefaultSkFontMgr();
+
+}  // namespace skia_debug_tool
+</code></pre>
+<p>后面两个的代码是从 src/third_party/skia/src/ports/fontmgr_default_linux.cc 抄来改的，就是为了创建跟 blink 一模一样的 fontmgr 来用。而 skia_debug_tool.cc 的代码是从 CreateTypeface 抄来的，就是想验证一下单独跑会不会是一个结果。</p>
+<p>重新 <code>prepare_build.sh</code>，然后 <code>build.sh skia_debug_tool</code>，最后运行：</p>
+<pre><code>./src/out/Debug/skia_debug_tool
+</code></pre>
+<p>得到：</p>
+<pre><code>font_mgr created: ok
+family name created: ok
+typeface is null
+</code></pre>
+<p>与 blink 返回的结果是一样的。我们要一下 normal weight（即把 700 改为 400）看看：</p>
+<pre><code>font_mgr created: ok
+family name created: ok
+typeface is null
+</code></pre>
+<p>结果是一样的。不是因为字体 weight 的问题导致的 skia 取不到 sans-serif 的 typeface。再调试这个问题之前，我们先来看一下 sans/Sans/SansSerif 的：sans/Sans 能够成功，SansSerif/sansserif/Sans-Serif 依然为空。</p>
+<h2 id="调试-skia-的-fontconfig">调试 Skia 的 fontconfig<a hidden class="anchor" aria-hidden="true" href="#调试-skia-的-fontconfig">#</a></h2>
+<p>只好继续添加调试代码，<code>src/third_party/skia/src/ports/SkFontConfigInterface_direct.cpp</code> 的调试代码如下：</p>
+<pre><code>bool SkFontConfigInterfaceDirect::matchFamilyName(const char familyName[],
+                                              SkFontStyle style,
+                                              FontIdentity* outIdentity,
+                                              SkString* outFamilyName,
+                                              SkFontStyle* outStyle) {
+    SkString familyStr(familyName ? familyName : &quot;&quot;);
+
+    printf(&quot;running SkFontConfigInterfaceDirect::matchFamilyName with family name: &quot;);
+    printf(&quot;%s&quot;, familyName);
+    printf(&quot;\n&quot;);
+    // printf 都是我加的调试代码，没有调试代码的部分略
+    ...
+
+    FcPatternAddBool(pattern, FC_SCALABLE, FcTrue);
+
+    printf(&quot;Running FcConfigSubstitute:\n&quot;);
+    FcPatternPrint(pattern);
+    FcConfigSubstitute(fc, pattern, FcMatchPattern);
+    printf(&quot;After running FcDefaultSubstitute:\n&quot;);
+    FcDefaultSubstitute(pattern);
+    FcPatternPrint(pattern);
+
+    ...
+    
+    printf(&quot;post_config_family: %s\n&quot;, post_config_family);
+
+    FcResult result;
+    FcFontSet* font_set = FcFontSort(fc, pattern, 0, nullptr, &amp;result);
+    if (!font_set) {
+        printf(&quot;FcFontSort didn't get a FontSet\n&quot;);
+        FcPatternDestroy(pattern);
+        return false;
+    }
+
+    FcPattern* match = this-&gt;MatchFont(font_set, post_config_family, familyStr);
+    if (!match) {
+        printf(&quot;post_config_family: %s\n&quot;, post_config_family);
+        printf(&quot;familyStr: %s\n&quot;, familyStr.c_str());
+        printf(&quot;MatchFont didn't get a match!\n&quot;);
+        FcPatternDestroy(pattern);
+        FcFontSetDestroy(font_set);
+        return false;
+    }
+
+    FcPatternDestroy(pattern);
+
+    // From here out we just extract our results from 'match'
+    printf(&quot;Got a match!\n&quot;);
+    post_config_family = get_string(match, FC_FAMILY);
+    if (!post_config_family) {
+        printf(&quot;Can't get a post_config_family!\n&quot;);
+        FcFontSetDestroy(font_set);
+        return false;
+    }
+    printf(&quot;Got post_config_family: %s\n&quot;, post_config_family);
+</code></pre>
+<p>之后输出如下：</p>
+<pre><code>font_mgr created: ok
+family name created: ok
+running SkFontConfigInterfaceDirect::matchFamilyName with family name: sans-serif
+Running FcConfigSubstitute:
+Pattern has 5 elts (size 16)
+    family: &quot;sans-serif&quot;(s)
+    slant: 0(i)(s)
+    weight: 0(i)(s)
+    width: 200(i)(s)
+    scalable: True(s)
+After running FcDefaultSubstitute:
+Pattern has 36 elts (size 48)
+    family: &quot;Noto Sans&quot;(w) &quot;Noto Sans SC&quot;(w) &quot;Noto Sans HK&quot;(w) &quot;Noto Sans TC&quot;(w) &quot;Noto Sans JP&quot;(w) &quot;Noto Sans KR&quot;(w) &quot;Noto Sans CJK SC&quot;(w) &quot;Arial&quot;(w) &quot;Albany AMT&quot;(w) &quot;Verdana&quot;(w) &quot;Roboto&quot;(w) &quot;Noto Kufi Arabic&quot;(w) &quot;Noto Naskh Arabic&quot;(w) &quot;Noto Sans&quot;(w) &quot;Noto Sans Armenian&quot;(w) &quot;Noto Sans Avestan&quot;(w) &quot;Noto Sans Balinese&quot;(w) &quot;Noto Sans Bamum&quot;(w) &quot;Noto Sans Batak&quot;(w) &quot;Noto Sans Bengali&quot;(w) &quot;Noto Sans Brahmi&quot;(w) &quot;Noto Sans Buginese&quot;(w) &quot;Noto Sans Buhid&quot;(w) &quot;Noto Sans Canadian Aboriginal&quot;(w) &quot;Noto Sans Carian&quot;(w) &quot;Noto Sans Cherokee&quot;(w) &quot;Noto Sans Coptic&quot;(w) &quot;Noto Sans Cypriot&quot;(w) &quot;Noto Sans Deseret&quot;(w) &quot;Noto Sans Devanagari&quot;(w) &quot;Noto Sans Egyptian Hieroglyphs&quot;(w) &quot;Noto Sans Ethiopic&quot;(w) &quot;Noto Sans Georgian&quot;(w) &quot;Noto Sans Glagolitic&quot;(w) &quot;Noto Sans Gothic&quot;(w) &quot;Noto Sans Gujarati&quot;(w) &quot;Noto Sans Gurmukhi&quot;(w) &quot;Noto Sans Hanunoo&quot;(w) &quot;Noto Sans Hebrew&quot;(w) &quot;Noto Sans Imperial Aramaic&quot;(w) &quot;Noto Sans Inscriptional Pahlavi&quot;(w) &quot;Noto Sans Inscriptional Parthian&quot;(w) &quot;Noto Sans JP&quot;(w) &quot;Noto Sans Javanese&quot;(w) &quot;Noto Sans Kaithi&quot;(w) &quot;Noto Sans Kannada&quot;(w) &quot;Noto Sans Kayah Li&quot;(w) &quot;Noto Sans Kharoshthi&quot;(w) &quot;Noto Sans KR&quot;(w) &quot;Noto Sans Lao&quot;(w) &quot;Noto Sans Lepcha&quot;(w) &quot;Noto Sans Limbu&quot;(w) &quot;Noto Sans Linear B&quot;(w) &quot;Noto Sans Lisu&quot;(w) &quot;Noto Sans Lycian&quot;(w) &quot;Noto Sans Lydian&quot;(w) &quot;Noto Sans Malayalam&quot;(w) &quot;Noto Sans Mandaic&quot;(w) &quot;Noto Sans Meetei Mayek&quot;(w) &quot;Noto Sans Mongolian&quot;(w) &quot;Noto Sans Myanmar&quot;(w) &quot;Noto Sans New Tai Lue&quot;(w) &quot;Noto Sans NKo&quot;(w) &quot;Noto Sans Ogham&quot;(w) &quot;Noto Sans Old Italic&quot;(w) &quot;Noto Sans Old Persian&quot;(w) &quot;Noto Sans Old South Arabian&quot;(w) &quot;Noto Sans Old Turkic&quot;(w) &quot;Noto Sans Ol Chiki&quot;(w) &quot;Noto Sans Osmanya&quot;(w) &quot;Noto Sans Phags-pa&quot;(w) &quot;Noto Sans Phoenician&quot;(w) &quot;Noto Sans Rejang&quot;(w) &quot;Noto Sans Runic&quot;(w) &quot;Noto Sans Samaritan&quot;(w) &quot;Noto Sans Saurashtra&quot;(w) &quot;Noto Sans Shavian&quot;(w) &quot;Noto Sans Sinhala&quot;(w) &quot;Noto Sans Sumero-Akkadian Cuneiform&quot;(w) &quot;Noto Sans Sundanese&quot;(w) &quot;Noto Sans Syloti Nagri&quot;(w) &quot;Noto Sans Symbols&quot;(w) &quot;Noto Sans Syriac Eastern&quot;(w) &quot;Noto Sans Syriac Estrangela&quot;(w) &quot;Noto Sans Syriac Western&quot;(w) &quot;Noto Sans SC&quot;(w) &quot;Noto Sans Tagalog&quot;(w) &quot;Noto Sans Tagbanwa&quot;(w) &quot;Noto Sans Tai Le&quot;(w) &quot;Noto Sans Tai Tham&quot;(w) &quot;Noto Sans Tai Viet&quot;(w) &quot;Noto Sans Tamil&quot;(w) &quot;Noto Sans Telugu&quot;(w) &quot;Noto Sans Thai&quot;(w) &quot;Noto Sans Tifinagh&quot;(w) &quot;Noto Sans TC&quot;(w) &quot;Noto Sans Ugaritic&quot;(w) &quot;Noto Sans Vai&quot;(w) &quot;Noto Sans Yi&quot;(w) &quot;Liberation Sans&quot;(w) &quot;Droid Sans&quot;(w) &quot;Arimo&quot;(w) &quot;Cantarell&quot;(w) &quot;SUSE Sans&quot;(w) &quot;Bitstream Vera Sans&quot;(w) &quot;Nimbus Sans L&quot;(w) &quot;Luxi Sans&quot;(w) &quot;Mukti Narrow&quot;(w) &quot;KacstBook&quot;(w) &quot;Nachlieli CLM&quot;(w) &quot;Helvetica&quot;(w) &quot;Khmer OS System&quot;(w) &quot;Lohit Punjabi&quot;(w) &quot;Lohit Oriya&quot;(w) &quot;Pothana2000&quot;(w) &quot;TSCu_Paranar&quot;(w) &quot;BPG Glaho&quot;(w) &quot;Terafik&quot;(w) &quot;FreeSans&quot;(w) &quot;Meiryo&quot;(w) &quot;MS PGothic&quot;(w) &quot;MS Gothic&quot;(w) &quot;HGPGothicB&quot;(w) &quot;HGGothicB&quot;(w) &quot;IPAPGothic&quot;(w) &quot;IPAGothic&quot;(w) &quot;IPAexGothic&quot;(w) &quot;VL PGothic&quot;(w) &quot;VL Gothic&quot;(w) &quot;Sazanami Gothic&quot;(w) &quot;Kochi Gothic&quot;(w) &quot;CMEXSong&quot;(w) &quot;FZSongTi&quot;(w) &quot;WenQuanYi Micro Hei&quot;(w) &quot;WenQuanYi WenQuanYi Bitmap Song&quot;(w) &quot;WenQuanYi Zen Hei&quot;(w) &quot;AR PL ShanHeiSun Uni&quot;(w) &quot;FZMingTiB&quot;(w) &quot;AR PL SungtiL GB&quot;(w) &quot;AR PL Mingti2L Big5&quot;(w) &quot;NanumGothic&quot;(w) &quot;UnDotum&quot;(w) &quot;Baekmuk Gulim&quot;(w) &quot;Baekmuk Dotum&quot;(w) &quot;Noto Sans&quot;(w) &quot;DejaVu Sans&quot;(w) &quot;Verdana&quot;(w) &quot;Arial&quot;(w) &quot;Albany AMT&quot;(w) &quot;Luxi Sans&quot;(w) &quot;Nimbus Sans L&quot;(w) &quot;Nimbus Sans&quot;(w) &quot;Helvetica&quot;(w) &quot;Lucida Sans Unicode&quot;(w) &quot;BPG Glaho International&quot;(w) &quot;Tahoma&quot;(w) &quot;Nachlieli&quot;(w) &quot;Lucida Sans Unicode&quot;(w) &quot;Yudit Unicode&quot;(w) &quot;Kerkis&quot;(w) &quot;ArmNet Helvetica&quot;(w) &quot;Artsounk&quot;(w) &quot;BPG UTF8 M&quot;(w) &quot;Waree&quot;(w) &quot;Loma&quot;(w) &quot;Garuda&quot;(w) &quot;Umpush&quot;(w) &quot;Saysettha Unicode&quot;(w) &quot;JG Lao Old Arial&quot;(w) &quot;GF Zemen Unicode&quot;(w) &quot;Pigiarniq&quot;(w) &quot;B Davat&quot;(w) &quot;B Compset&quot;(w) &quot;Kacst-Qr&quot;(w) &quot;Urdu Nastaliq Unicode&quot;(w) &quot;Raghindi&quot;(w) &quot;Mukti Narrow&quot;(w) &quot;malayalam&quot;(w) &quot;Sampige&quot;(w) &quot;padmaa&quot;(w) &quot;Hapax Berbère&quot;(w) &quot;MS Gothic&quot;(w) &quot;UmePlus P Gothic&quot;(w) &quot;Microsoft YaHei&quot;(w) &quot;Microsoft JhengHei&quot;(w) &quot;WenQuanYi Zen Hei&quot;(w) &quot;WenQuanYi Bitmap Song&quot;(w) &quot;AR PL ShanHeiSun Uni&quot;(w) &quot;AR PL New Sung&quot;(w) &quot;Hiragino Sans&quot;(w) &quot;PingFang SC&quot;(w) &quot;PingFang TC&quot;(w) &quot;PingFang HK&quot;(w) &quot;Hiragino Sans CNS&quot;(w) &quot;Hiragino Sans GB&quot;(w) &quot;MgOpen Modata&quot;(w) &quot;VL Gothic&quot;(w) &quot;IPAMonaGothic&quot;(w) &quot;IPAGothic&quot;(w) &quot;Sazanami Gothic&quot;(w) &quot;Kochi Gothic&quot;(w) &quot;AR PL KaitiM GB&quot;(w) &quot;AR PL KaitiM Big5&quot;(w) &quot;AR PL ShanHeiSun Uni&quot;(w) &quot;AR PL SungtiL GB&quot;(w) &quot;AR PL Mingti2L Big5&quot;(w) &quot;ＭＳ ゴシック&quot;(w) &quot;ZYSong18030&quot;(w) &quot;TSCu_Paranar&quot;(w) &quot;NanumGothic&quot;(w) &quot;UnDotum&quot;(w) &quot;Baekmuk Dotum&quot;(w) &quot;Baekmuk Gulim&quot;(w) &quot;Apple SD Gothic Neo&quot;(w) &quot;KacstQura&quot;(w) &quot;Lohit Bengali&quot;(w) &quot;Lohit Gujarati&quot;(w) &quot;Lohit Hindi&quot;(w) &quot;Lohit Marathi&quot;(w) &quot;Lohit Maithili&quot;(w) &quot;Lohit Kashmiri&quot;(w) &quot;Lohit Konkani&quot;(w) &quot;Lohit Nepali&quot;(w) &quot;Lohit Sindhi&quot;(w) &quot;Lohit Punjabi&quot;(w) &quot;Lohit Tamil&quot;(w) &quot;Meera&quot;(w) &quot;Lohit Malayalam&quot;(w) &quot;Lohit Kannada&quot;(w) &quot;Lohit Telugu&quot;(w) &quot;Lohit Oriya&quot;(w) &quot;LKLUG&quot;(w) &quot;FreeSans&quot;(w) &quot;Arial Unicode MS&quot;(w) &quot;Arial Unicode&quot;(w) &quot;Code2000&quot;(w) &quot;Code2001&quot;(w) &quot;sans-serif&quot;(s) &quot;Roya&quot;(w) &quot;Koodak&quot;(w) &quot;Terafik&quot;(w)
+    familylang: &quot;zh-CN&quot;(s) &quot;en-us&quot;(w)
+    stylelang: &quot;zh-CN&quot;(s) &quot;en-us&quot;(w)
+    fullnamelang: &quot;zh-CN&quot;(s) &quot;en-us&quot;(w)
+    slant: 0(i)(s)
+    weight: 0(i)(s)
+    width: 200(i)(s)
+    size: 12(f)(s)
+    pixelsize: 12.5(f)(s)
+    antialias: True(w)
+    hintstyle: 1(i)(w)
+    hinting: True(s)
+    verticallayout: False(s)
+    autohint: False(s)
+    globaladvance: True(s)
+    scalable: True(s)
+    dpi: 75(f)(s)
+    rgba: 1(i)(w) 5(i)(w)
+    scale: 1(f)(s)
+    lang: &quot;zh-CN&quot;(w)
+    fontversion: 2147483647(i)(s)
+    embeddedbitmap: True(s)
+    decorative: False(s)
+    lcdfilter: 1(i)(w) 1(i)(w)
+    namelang: &quot;zh-CN&quot;(s)
+    prgname: &quot;skia_debug_tool&quot;(s)
+    symbol: False(s)
+    variable: False(s)
+    order: 0(i)(s)
+    desktop: &quot;KDE&quot;(s)
+    force_hintstyle: &quot;hintslight&quot;(w)
+    force_autohint: False(w)
+    force_bw: False(w)
+    force_bw_monospace: False(w)
+    search_metric_aliases: True(w)
+    user_preference_list: True(w)
+
+post_config_family: Noto Sans
+post_config_family: Noto Sans
+familyStr: sans-serif
+MatchFont didn't get a match!
+typeface is null
+</code></pre>
+<p>看到是这个 pattern match 有些问题。导致匹配到的是 Noto Sans。</p>
 
 
   </div>
