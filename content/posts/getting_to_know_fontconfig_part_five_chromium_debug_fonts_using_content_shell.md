@@ -41,12 +41,18 @@ prepare_build.sh:
 
 其中 gn gen 的 args 部分我主要参考了 openSUSE 下 chromium 的编译设置。
 
-content_shell_build.sh:
+build.sh:
 
     #!/bin/sh
     . ./set_environment.sh
-    autoninja -C ./src/out/Debug content_shell
+    autoninja -C ./src/out/Debug $1
     
+然后使用
+
+    ./build.sh content_shell
+    
+编译 content_shell。
+
 ## 启用 Logging
 
 编译好的 content_shell 在 ./src/out/Debug。
@@ -65,7 +71,9 @@ content_shell_build.sh:
 content_shell_wrapper.sh:
 
     #!/bin/sh
-    ./src/out/Debug/content_shell --no-sandbox --enable-logging=stderr --vmodule="\*/fonts/\*=4, \*/css/\*=0" --v=-3 > log.txt 2>&1 $1
+    LC_NUMERIC="C" ./src/out/Debug/content_shell --no-sandbox --single-process --enable-logging=stderr --vmodule="\*/fonts/\*=4, \*/css/\*=0" --v=-3 > log.txt 2>&1 $1
+
+要启用 `--single-process` 必须把 `LC_NUMERIC` 设为默认的 `C`，openSUSE 下它是空的。不然 `third_party/blink/renderer/platform/wtf/text/wtf_string.ccwtf_string.cc` 中的一个 `DCHECK_EQ(strcmp(setlocale(LC_NUMERIC, NULL), "C"), 0);` 会失败，造成 content_shell 崩溃。
 
 --vmodule  的意思是只要路径中含有 fonts 和 css 的日志，--v=-3 的意思是压制其他日志。跑一下：
 
@@ -282,9 +290,9 @@ content_shell_wrapper.sh:
 
 ## 发现的问题
 
-#### Times New Roman 哪里来的？
+## 日志里好多 Times New Roman 哪里来的？
 
-如果是 Sans / Arial 我都能够理解，因为在代码里看见过，LastResortFont 的时候最后的两步是找它们。但是 Times New Roman 是怎么出来的？找了一圈，发现因为它是[默认字体](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/app/resources/locale_settings_linux.grd)，Linux 下 Chromium 的默认字体如下：
+如果是 Sans / Arial 我都能够理解，因为在代码里看见过，`GetLastResortFont` 的最后的两步是找它们。但是 Times New Roman 是怎么出来的？找了一圈，发现因为它是[默认字体](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/app/resources/locale_settings_linux.grd)，Linux 下 Chromium 的默认字体如下：
 
     standard_font_family: Times New Roman
     fixed_font_family: Monospace
@@ -295,7 +303,7 @@ content_shell_wrapper.sh:
     fantasy_font_family: Impact
     math_font_family: Latin Modern Math 
     
-#### sans-serif 的 Fallback 不好使，sans 好使？
+## sans-serif 的 Fallback 不好使，sans 好使？
 
 我们前面已经说过 Skia 了，如果喂给它  sans-serif 应该会直接有 Noto Sans CJK SC 回来，为什么 NULL Typeface 呢？
 
@@ -321,3 +329,218 @@ content_shell_wrapper.sh:
     
 会去要 Normal width, Bold weight, Upright slant 的 sans-serif。然后就不知道为什么网页里面没写加粗，会去要加粗的 sans-serif 了，另外，即使要粗体应该也不会一个没有，也许我应该写个 skia demo debug 一下。
 
+## 制作 skia debug 工具
+
+单独编译 skia 不太可取，因为我的 chromium 代码树下已经有 skia 了。于是就有了以下取巧的方案：
+
+在 `src/skia/BUILD.gn` 里添加这样的代码：
+
+    group("fuzzers") {
+        deps = [ "//skia/tools/fuzzers" ]
+    }
+
+下面加上：
+
+    group("skia_debug_tool") {
+        deps = [ "//skia/skia_debug_tool" ]
+    }
+
+然后建立一个 `src/skia/skia_debug_tool` 文件夹，里面内容如下：
+
+src/skia/skia_debug_tool/BUILD.gn:
+
+    executable("skia_debug_tool") {
+        sources = [
+            "skia_debug_tool.cc",
+            "fontmgr_default_linux.cc"
+        ]
+
+        deps = [ "//skia" ]
+    }
+    
+src/skia/skia_debug_tool/skia_debug_tool.cc：
+
+    #include "fontmgr_default_linux.h"
+    #include <stdio.h>
+    #include "../../third_party/skia/include/core/SkFontStyle.h"
+
+    int main(int argc, char* argv[]) {
+        auto font_mgr = skia_debug_tool::CreateDefaultSkFontMgr();
+        printf("font_mgr created: ok\n");
+        const char* family_name = "sans-serif";
+        printf("family name created: ok\n");
+        auto style = SkFontStyle(5, 700, SkFontStyle::kUpright_Slant);
+        auto typeface = font_mgr->matchFamilyStyle(family_name, style);
+        if (typeface) {
+            printf("typeface is not null\n");
+        } else {
+            printf("typeface is null\n");
+        }
+        return 0;
+    }
+    
+src/skia/skia_debug_tool/fontmgr_default_linux.cc:
+
+    #include "../../third_party/skia/include/core/SkFontMgr.h"
+    #include "../../third_party/skia/include/ports/SkFontConfigInterface.h"
+    #include "../../third_party/skia/include/ports/SkFontMgr_FontConfigInterface.h"
+
+    namespace skia_debug_tool {
+
+        SK_API sk_sp<SkFontMgr> CreateDefaultSkFontMgr() {
+            sk_sp<SkFontConfigInterface> fci(SkFontConfigInterface::RefGlobal());
+            return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
+        }
+
+    }  // namespace skia_debug_tool
+
+src/skia/skia_debug_tool/fontmgr_default_linux.h:
+
+    #include "../../third_party/skia/include/core/SkFontMgr.h"
+    #include "../../third_party/skia/include/ports/SkFontConfigInterface.h"
+    #include "../../third_party/skia/include/ports/SkFontMgr_FontConfigInterface.h"
+
+    namespace skia_debug_tool {
+
+        SK_API sk_sp<SkFontMgr> CreateDefaultSkFontMgr();
+
+    }  // namespace skia_debug_tool
+
+后面两个的代码是从 src/third_party/skia/src/ports/fontmgr_default_linux.cc 抄来改的，就是为了创建跟 blink 一模一样的 fontmgr 来用。而 skia_debug_tool.cc 的代码是从 CreateTypeface 抄来的，就是想验证一下单独跑会不会是一个结果。
+
+重新 `prepare_build.sh`，然后 `build.sh skia_debug_tool`，最后运行：
+
+    ./src/out/Debug/skia_debug_tool
+    
+得到：
+
+    font_mgr created: ok
+    family name created: ok
+    typeface is null
+    
+与 blink 返回的结果是一样的。我们要一下 normal weight（即把 700 改为 400）看看：
+
+    font_mgr created: ok
+    family name created: ok
+    typeface is null
+    
+结果是一样的。不是因为字体 weight 的问题导致的 skia 取不到 sans-serif 的 typeface。再调试这个问题之前，我们先来看一下 sans/Sans/SansSerif 的：sans/Sans 能够成功，SansSerif/sansserif/Sans-Serif 依然为空。
+
+## 调试 Skia 的 fontconfig
+
+只好继续添加调试代码，`src/third_party/skia/src/ports/SkFontConfigInterface_direct.cpp` 的调试代码如下：
+
+    bool SkFontConfigInterfaceDirect::matchFamilyName(const char familyName[],
+                                                  SkFontStyle style,
+                                                  FontIdentity* outIdentity,
+                                                  SkString* outFamilyName,
+                                                  SkFontStyle* outStyle) {
+        SkString familyStr(familyName ? familyName : "");
+
+        printf("running SkFontConfigInterfaceDirect::matchFamilyName with family name: ");
+        printf("%s", familyName);
+        printf("\n");
+        // printf 都是我加的调试代码，没有调试代码的部分略
+        ...
+
+        FcPatternAddBool(pattern, FC_SCALABLE, FcTrue);
+
+        printf("Running FcConfigSubstitute:\n");
+        FcPatternPrint(pattern);
+        FcConfigSubstitute(fc, pattern, FcMatchPattern);
+        printf("After running FcDefaultSubstitute:\n");
+        FcDefaultSubstitute(pattern);
+        FcPatternPrint(pattern);
+
+        ...
+        
+        printf("post_config_family: %s\n", post_config_family);
+
+        FcResult result;
+        FcFontSet* font_set = FcFontSort(fc, pattern, 0, nullptr, &result);
+        if (!font_set) {
+            printf("FcFontSort didn't get a FontSet\n");
+            FcPatternDestroy(pattern);
+            return false;
+        }
+
+        FcPattern* match = this->MatchFont(font_set, post_config_family, familyStr);
+        if (!match) {
+            printf("post_config_family: %s\n", post_config_family);
+            printf("familyStr: %s\n", familyStr.c_str());
+            printf("MatchFont didn't get a match!\n");
+            FcPatternDestroy(pattern);
+            FcFontSetDestroy(font_set);
+            return false;
+        }
+
+        FcPatternDestroy(pattern);
+
+        // From here out we just extract our results from 'match'
+        printf("Got a match!\n");
+        post_config_family = get_string(match, FC_FAMILY);
+        if (!post_config_family) {
+            printf("Can't get a post_config_family!\n");
+            FcFontSetDestroy(font_set);
+            return false;
+        }
+        printf("Got post_config_family: %s\n", post_config_family);
+
+之后输出如下：
+
+    font_mgr created: ok
+    family name created: ok
+    running SkFontConfigInterfaceDirect::matchFamilyName with family name: sans-serif
+    Running FcConfigSubstitute:
+    Pattern has 5 elts (size 16)
+        family: "sans-serif"(s)
+        slant: 0(i)(s)
+        weight: 0(i)(s)
+        width: 200(i)(s)
+        scalable: True(s)
+    After running FcDefaultSubstitute:
+    Pattern has 36 elts (size 48)
+        family: "Noto Sans"(w) "Noto Sans SC"(w) "Noto Sans HK"(w) "Noto Sans TC"(w) "Noto Sans JP"(w) "Noto Sans KR"(w) "Noto Sans CJK SC"(w) "Arial"(w) "Albany AMT"(w) "Verdana"(w) "Roboto"(w) "Noto Kufi Arabic"(w) "Noto Naskh Arabic"(w) "Noto Sans"(w) "Noto Sans Armenian"(w) "Noto Sans Avestan"(w) "Noto Sans Balinese"(w) "Noto Sans Bamum"(w) "Noto Sans Batak"(w) "Noto Sans Bengali"(w) "Noto Sans Brahmi"(w) "Noto Sans Buginese"(w) "Noto Sans Buhid"(w) "Noto Sans Canadian Aboriginal"(w) "Noto Sans Carian"(w) "Noto Sans Cherokee"(w) "Noto Sans Coptic"(w) "Noto Sans Cypriot"(w) "Noto Sans Deseret"(w) "Noto Sans Devanagari"(w) "Noto Sans Egyptian Hieroglyphs"(w) "Noto Sans Ethiopic"(w) "Noto Sans Georgian"(w) "Noto Sans Glagolitic"(w) "Noto Sans Gothic"(w) "Noto Sans Gujarati"(w) "Noto Sans Gurmukhi"(w) "Noto Sans Hanunoo"(w) "Noto Sans Hebrew"(w) "Noto Sans Imperial Aramaic"(w) "Noto Sans Inscriptional Pahlavi"(w) "Noto Sans Inscriptional Parthian"(w) "Noto Sans JP"(w) "Noto Sans Javanese"(w) "Noto Sans Kaithi"(w) "Noto Sans Kannada"(w) "Noto Sans Kayah Li"(w) "Noto Sans Kharoshthi"(w) "Noto Sans KR"(w) "Noto Sans Lao"(w) "Noto Sans Lepcha"(w) "Noto Sans Limbu"(w) "Noto Sans Linear B"(w) "Noto Sans Lisu"(w) "Noto Sans Lycian"(w) "Noto Sans Lydian"(w) "Noto Sans Malayalam"(w) "Noto Sans Mandaic"(w) "Noto Sans Meetei Mayek"(w) "Noto Sans Mongolian"(w) "Noto Sans Myanmar"(w) "Noto Sans New Tai Lue"(w) "Noto Sans NKo"(w) "Noto Sans Ogham"(w) "Noto Sans Old Italic"(w) "Noto Sans Old Persian"(w) "Noto Sans Old South Arabian"(w) "Noto Sans Old Turkic"(w) "Noto Sans Ol Chiki"(w) "Noto Sans Osmanya"(w) "Noto Sans Phags-pa"(w) "Noto Sans Phoenician"(w) "Noto Sans Rejang"(w) "Noto Sans Runic"(w) "Noto Sans Samaritan"(w) "Noto Sans Saurashtra"(w) "Noto Sans Shavian"(w) "Noto Sans Sinhala"(w) "Noto Sans Sumero-Akkadian Cuneiform"(w) "Noto Sans Sundanese"(w) "Noto Sans Syloti Nagri"(w) "Noto Sans Symbols"(w) "Noto Sans Syriac Eastern"(w) "Noto Sans Syriac Estrangela"(w) "Noto Sans Syriac Western"(w) "Noto Sans SC"(w) "Noto Sans Tagalog"(w) "Noto Sans Tagbanwa"(w) "Noto Sans Tai Le"(w) "Noto Sans Tai Tham"(w) "Noto Sans Tai Viet"(w) "Noto Sans Tamil"(w) "Noto Sans Telugu"(w) "Noto Sans Thai"(w) "Noto Sans Tifinagh"(w) "Noto Sans TC"(w) "Noto Sans Ugaritic"(w) "Noto Sans Vai"(w) "Noto Sans Yi"(w) "Liberation Sans"(w) "Droid Sans"(w) "Arimo"(w) "Cantarell"(w) "SUSE Sans"(w) "Bitstream Vera Sans"(w) "Nimbus Sans L"(w) "Luxi Sans"(w) "Mukti Narrow"(w) "KacstBook"(w) "Nachlieli CLM"(w) "Helvetica"(w) "Khmer OS System"(w) "Lohit Punjabi"(w) "Lohit Oriya"(w) "Pothana2000"(w) "TSCu_Paranar"(w) "BPG Glaho"(w) "Terafik"(w) "FreeSans"(w) "Meiryo"(w) "MS PGothic"(w) "MS Gothic"(w) "HGPGothicB"(w) "HGGothicB"(w) "IPAPGothic"(w) "IPAGothic"(w) "IPAexGothic"(w) "VL PGothic"(w) "VL Gothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "CMEXSong"(w) "FZSongTi"(w) "WenQuanYi Micro Hei"(w) "WenQuanYi WenQuanYi Bitmap Song"(w) "WenQuanYi Zen Hei"(w) "AR PL ShanHeiSun Uni"(w) "FZMingTiB"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Gulim"(w) "Baekmuk Dotum"(w) "Noto Sans"(w) "DejaVu Sans"(w) "Verdana"(w) "Arial"(w) "Albany AMT"(w) "Luxi Sans"(w) "Nimbus Sans L"(w) "Nimbus Sans"(w) "Helvetica"(w) "Lucida Sans Unicode"(w) "BPG Glaho International"(w) "Tahoma"(w) "Nachlieli"(w) "Lucida Sans Unicode"(w) "Yudit Unicode"(w) "Kerkis"(w) "ArmNet Helvetica"(w) "Artsounk"(w) "BPG UTF8 M"(w) "Waree"(w) "Loma"(w) "Garuda"(w) "Umpush"(w) "Saysettha Unicode"(w) "JG Lao Old Arial"(w) "GF Zemen Unicode"(w) "Pigiarniq"(w) "B Davat"(w) "B Compset"(w) "Kacst-Qr"(w) "Urdu Nastaliq Unicode"(w) "Raghindi"(w) "Mukti Narrow"(w) "malayalam"(w) "Sampige"(w) "padmaa"(w) "Hapax Berbère"(w) "MS Gothic"(w) "UmePlus P Gothic"(w) "Microsoft YaHei"(w) "Microsoft JhengHei"(w) "WenQuanYi Zen Hei"(w) "WenQuanYi Bitmap Song"(w) "AR PL ShanHeiSun Uni"(w) "AR PL New Sung"(w) "Hiragino Sans"(w) "PingFang SC"(w) "PingFang TC"(w) "PingFang HK"(w) "Hiragino Sans CNS"(w) "Hiragino Sans GB"(w) "MgOpen Modata"(w) "VL Gothic"(w) "IPAMonaGothic"(w) "IPAGothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "AR PL KaitiM GB"(w) "AR PL KaitiM Big5"(w) "AR PL ShanHeiSun Uni"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "ＭＳ ゴシック"(w) "ZYSong18030"(w) "TSCu_Paranar"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Dotum"(w) "Baekmuk Gulim"(w) "Apple SD Gothic Neo"(w) "KacstQura"(w) "Lohit Bengali"(w) "Lohit Gujarati"(w) "Lohit Hindi"(w) "Lohit Marathi"(w) "Lohit Maithili"(w) "Lohit Kashmiri"(w) "Lohit Konkani"(w) "Lohit Nepali"(w) "Lohit Sindhi"(w) "Lohit Punjabi"(w) "Lohit Tamil"(w) "Meera"(w) "Lohit Malayalam"(w) "Lohit Kannada"(w) "Lohit Telugu"(w) "Lohit Oriya"(w) "LKLUG"(w) "FreeSans"(w) "Arial Unicode MS"(w) "Arial Unicode"(w) "Code2000"(w) "Code2001"(w) "sans-serif"(s) "Roya"(w) "Koodak"(w) "Terafik"(w)
+        familylang: "zh-CN"(s) "en-us"(w)
+        stylelang: "zh-CN"(s) "en-us"(w)
+        fullnamelang: "zh-CN"(s) "en-us"(w)
+        slant: 0(i)(s)
+        weight: 0(i)(s)
+        width: 200(i)(s)
+        size: 12(f)(s)
+        pixelsize: 12.5(f)(s)
+        antialias: True(w)
+        hintstyle: 1(i)(w)
+        hinting: True(s)
+        verticallayout: False(s)
+        autohint: False(s)
+        globaladvance: True(s)
+        scalable: True(s)
+        dpi: 75(f)(s)
+        rgba: 1(i)(w) 5(i)(w)
+        scale: 1(f)(s)
+        lang: "zh-CN"(w)
+        fontversion: 2147483647(i)(s)
+        embeddedbitmap: True(s)
+        decorative: False(s)
+        lcdfilter: 1(i)(w) 1(i)(w)
+        namelang: "zh-CN"(s)
+        prgname: "skia_debug_tool"(s)
+        symbol: False(s)
+        variable: False(s)
+        order: 0(i)(s)
+        desktop: "KDE"(s)
+        force_hintstyle: "hintslight"(w)
+        force_autohint: False(w)
+        force_bw: False(w)
+        force_bw_monospace: False(w)
+        search_metric_aliases: True(w)
+        user_preference_list: True(w)
+
+    post_config_family: Noto Sans
+    post_config_family: Noto Sans
+    familyStr: sans-serif
+    MatchFont didn't get a match!
+    typeface is null
+    
+ 看到是这个 pattern match 有些问题。导致匹配到的是 Noto Sans。
