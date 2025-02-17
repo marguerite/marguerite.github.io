@@ -406,7 +406,7 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
 
     }  // namespace skia_debug_tool
 
-后面两个的代码是从 src/third_party/skia/src/ports/fontmgr_default_linux.cc 抄来改的，就是为了创建跟 blink 一模一样的 fontmgr 来用。而 skia_debug_tool.cc 的代码是从 CreateTypeface 抄来的，就是想验证一下单独跑会不会是一个结果。
+后面两个的代码是从 src/skia/ext/fontmgr_default_linux.cc 抄来改的，就是为了创建跟 blink 一模一样的 fontmgr 来用。而 skia_debug_tool.cc 的代码是从 CreateTypeface 抄来的，就是想验证一下单独跑会不会是一个结果。
 
 重新 `prepare_build.sh`，然后 `build.sh skia_debug_tool`，最后运行：
 
@@ -428,7 +428,7 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
 
 ## 调试 Skia 的 fontconfig
 
-只好继续添加调试代码，`src/third_party/skia/src/ports/SkFontConfigInterface_direct.cpp` 的调试代码如下：
+只好继续添加调试代码，`fontmgr->matchFamilyStyle` 对应的 `onMatchFamilyStyle` 是在 `SkFontMgr_FontConfigInterface.cpp` 里面定义的，主要是先匹配 Family Name, 再匹配 style，所以最终到了 `src/third_party/skia/src/ports/SkFontConfigInterface_direct.cpp` 的调试代码如下：
 
     bool SkFontConfigInterfaceDirect::matchFamilyName(const char familyName[],
                                                   SkFontStyle style,
@@ -454,6 +454,11 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
 
         ...
         
+        const char* post_config_family = get_string(pattern, FC_FAMILY);
+        if (!post_config_family) {
+          // we can just continue with an empty name, e.g. default font
+          post_config_family = "";
+        }
         printf("post_config_family: %s\n", post_config_family);
 
         FcResult result;
@@ -544,3 +549,46 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
     typeface is null
     
  看到是这个 pattern match 有些问题。导致匹配到的是 Noto Sans。
+ 
+ 先来说下这个 matchFamilyName 函数的逻辑，post_config_family 是 `get_string(pattern, FC_FAMILY)` 生成的，然后是把 fc-match -all 出来的 FontSet（未排序）与 post_config_family 和 familyStr 一起做 `MatchFont`。
+ 
+ `get_string` 主要是 `FcPatternGetString(pattern, FC_FAMILY)`，它最终等价于 `FcPatternObjectGetWithBinding (pattern, FC_FAMILY, 0, FcValue *v, NULL)`，最后在 loop family name 的时候，由于 ID 给的 0, 导致循环一次后 id-- 就不再满足条件了，也就是只能返回第一个 family name。
+ 
+ `MatchFont` 的作用是找到 font_set 里面第一个安装在系统上的字体，找到了并且不是允许 Fallback 的字体（sans/monospace/serif 这种通用字体名就属于允许 Fallback 的字体，可惜 skia 不认为 sans-serif 是允许 Fallback 的字体），就查询它的 family name 并与 post_config_family 相比较。否则直接返回该第一个安装的字体（因为可以 Fallback, 名字不需要一样）。
+ 
+ matchFamilyName 函数的后半部分是查找匹配上的字体文件在系统上是否存在。
+ 
+ 下面回来说这套逻辑为什么错了，以及为什么匹配到了 Noto Sans。
+ 
+ 它其实是假设了默认初始化得到的 sans-serif pattern 里面的第一个字体，与应用了 FcFontSort all 后的第一个字体（match -a sans-serif）是一样的。但是它忽略了默认初始化得到的 pattern 并没有考虑这个排第一的字体在不在系统上。而 match -a 的字体考虑了存在性。就导致会对不上。
+ 
+ 这套逻辑本身就很荒谬啊，**因为如果100%一样的话，写代码完全可以省略掉 FcFontSort all 这种情况，让 FcFontSort 只针对 sort 这种情况就好了嘛**。
+ 
+ 为了说明这一点，我们来构造上面的查询：
+ 
+     FC_DEBUG=4 fc-match "sans-serif:slant=0:weight=0:width=200:scalable=True"
+     
+这个查询与上面的代码至少写 Skia 代码那位应该认为是等价的。
+
+结果是：
+
+    FcConfigSubstitute donePattern has 50 elts (size 64)
+      family: "Noto Sans CJK SC"(w)
+      familylang: "en"(s)
+      style: "Thin"(s) "Regular"(s)
+      stylelang: "en"(s) "en"(w)
+      slant: 0(i)(s)
+      weight: 0(f)(s)
+      width: 100(f)(s)
+      scalable: True
+
+ 那么 Skia 为什么会得到 Noto Sans 呢？因为它取到了这个 donePattern:
+ 
+    FcConfigSubstitute donePattern has 17 elts (size 32)
+      family: "Noto Sans"(w) "Noto Sans SC"(w) "Noto Sans HK"(w) "Noto Sans TC"(w) "Noto Sans JP"(w) "Noto Sans KR"(w) "Noto Sans CJK SC"(w) "Arial"(w) "Albany AMT"(w) "Verdana"(w) "Roboto"(w) "Noto Kufi Arabic"(w) "Noto Naskh Arabic"(w) "Noto Sans"(w) "Noto Sans Armenian"(w) "Noto Sans Avestan"(w) "Noto Sans Balinese"(w) "Noto Sans Bamum"(w) "Noto Sans Batak"(w) "Noto Sans Bengali"(w) "Noto Sans Brahmi"(w) "Noto Sans Buginese"(w) "Noto Sans Buhid"(w) "Noto Sans Canadian Aboriginal"(w) "Noto Sans Carian"(w) "Noto Sans Cherokee"(w) "Noto Sans Coptic"(w) "Noto Sans Cypriot"(w) "Noto Sans Deseret"(w) "Noto Sans Devanagari"(w) "Noto Sans Egyptian Hieroglyphs"(w) "Noto Sans Ethiopic"(w) "Noto Sans Georgian"(w) "Noto Sans Glagolitic"(w) "Noto Sans Gothic"(w) "Noto Sans Gujarati"(w) "Noto Sans Gurmukhi"(w) "Noto Sans Hanunoo"(w) "Noto Sans Hebrew"(w) "Noto Sans Imperial Aramaic"(w) "Noto Sans Inscriptional Pahlavi"(w) "Noto Sans Inscriptional Parthian"(w) "Noto Sans JP"(w) "Noto Sans Javanese"(w) "Noto Sans Kaithi"(w) "Noto Sans Kannada"(w) "Noto Sans Kayah Li"(w) "Noto Sans Kharoshthi"(w) "Noto Sans KR"(w) "Noto Sans Lao"(w) "Noto Sans Lepcha"(w) "Noto Sans Limbu"(w) "Noto Sans Linear B"(w) "Noto Sans Lisu"(w) "Noto Sans Lycian"(w) "Noto Sans Lydian"(w) "Noto Sans Malayalam"(w) "Noto Sans Mandaic"(w) "Noto Sans Meetei Mayek"(w) "Noto Sans Mongolian"(w) "Noto Sans Myanmar"(w) "Noto Sans New Tai Lue"(w) "Noto Sans NKo"(w) "Noto Sans Ogham"(w) "Noto Sans Old Italic"(w) "Noto Sans Old Persian"(w) "Noto Sans Old South Arabian"(w) "Noto Sans Old Turkic"(w) "Noto Sans Ol Chiki"(w) "Noto Sans Osmanya"(w) "Noto Sans Phags-pa"(w) "Noto Sans Phoenician"(w) "Noto Sans Rejang"(w) "Noto Sans Runic"(w) "Noto Sans Samaritan"(w) "Noto Sans Saurashtra"(w) "Noto Sans Shavian"(w) "Noto Sans Sinhala"(w) "Noto Sans Sumero-Akkadian Cuneiform"(w) "Noto Sans Sundanese"(w) "Noto Sans Syloti Nagri"(w) "Noto Sans Symbols"(w) "Noto Sans Syriac Eastern"(w) "Noto Sans Syriac Estrangela"(w) "Noto Sans Syriac Western"(w) "Noto Sans SC"(w) "Noto Sans Tagalog"(w) "Noto Sans Tagbanwa"(w) "Noto Sans Tai Le"(w) "Noto Sans Tai Tham"(w) "Noto Sans Tai Viet"(w) "Noto Sans Tamil"(w) "Noto Sans Telugu"(w) "Noto Sans Thai"(w) "Noto Sans Tifinagh"(w) "Noto Sans TC"(w) "Noto Sans Ugaritic"(w) "Noto Sans Vai"(w) "Noto Sans Yi"(w) "Liberation Sans"(w) "Droid Sans"(w) "Arimo"(w) "Cantarell"(w) "SUSE Sans"(w) "Bitstream Vera Sans"(w) "Nimbus Sans L"(w) "Luxi Sans"(w) "Mukti Narrow"(w) "KacstBook"(w) "Nachlieli CLM"(w) "Helvetica"(w) "Khmer OS System"(w) "Lohit Punjabi"(w) "Lohit Oriya"(w) "Pothana2000"(w) "TSCu_Paranar"(w) "BPG Glaho"(w) "Terafik"(w) "FreeSans"(w) "Meiryo"(w) "MS PGothic"(w) "MS Gothic"(w) "HGPGothicB"(w) "HGGothicB"(w) "IPAPGothic"(w) "IPAGothic"(w) "IPAexGothic"(w) "VL PGothic"(w) "VL Gothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "CMEXSong"(w) "FZSongTi"(w) "WenQuanYi Micro Hei"(w) "WenQuanYi WenQuanYi Bitmap Song"(w) "WenQuanYi Zen Hei"(w) "AR PL ShanHeiSun Uni"(w) "FZMingTiB"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Gulim"(w) "Baekmuk Dotum"(w) "Noto Sans"(w) "DejaVu Sans"(w) "Verdana"(w) "Arial"(w) "Albany AMT"(w) "Luxi Sans"(w) "Nimbus Sans L"(w) "Nimbus Sans"(w) "Helvetica"(w) "Lucida Sans Unicode"(w) "BPG Glaho International"(w) "Tahoma"(w) "Nachlieli"(w) "Lucida Sans Unicode"(w) "Yudit Unicode"(w) "Kerkis"(w) "ArmNet Helvetica"(w) "Artsounk"(w) "BPG UTF8 M"(w) "Waree"(w) "Loma"(w) "Garuda"(w) "Umpush"(w) "Saysettha Unicode"(w) "JG Lao Old Arial"(w) "GF Zemen Unicode"(w) "Pigiarniq"(w) "B Davat"(w) "B Compset"(w) "Kacst-Qr"(w) "Urdu Nastaliq Unicode"(w) "Raghindi"(w) "Mukti Narrow"(w) "malayalam"(w) "Sampige"(w) "padmaa"(w) "Hapax Berbère"(w) "MS Gothic"(w) "UmePlus P Gothic"(w) "Microsoft YaHei"(w) "Microsoft JhengHei"(w) "WenQuanYi Zen Hei"(w) "WenQuanYi Bitmap Song"(w) "AR PL ShanHeiSun Uni"(w) "AR PL New Sung"(w) "Hiragino Sans"(w) "PingFang SC"(w) "PingFang TC"(w) "PingFang HK"(w) "Hiragino Sans CNS"(w) "Hiragino Sans GB"(w) "MgOpen Modata"(w) "VL Gothic"(w) "IPAMonaGothic"(w) "IPAGothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "AR PL KaitiM GB"(w) "AR PL KaitiM Big5"(w) "AR PL ShanHeiSun Uni"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "ＭＳ ゴシック"(w) "ZYSong18030"(w) "TSCu_Paranar"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Dotum"(w) "Baekmuk Gulim"(w) "Apple SD Gothic Neo"(w) "KacstQura"(w) "Lohit Bengali"(w) "Lohit Gujarati"(w) "Lohit Hindi"(w) "Lohit Marathi"(w) "Lohit Maithili"(w) "Lohit Kashmiri"(w) "Lohit Konkani"(w) "Lohit Nepali"(w) "Lohit Sindhi"(w) "Lohit Punjabi"(w) "Lohit Tamil"(w) "Meera"(w) "Lohit Malayalam"(w) "Lohit Kannada"(w) "Lohit Telugu"(w) "Lohit Oriya"(w) "LKLUG"(w)
+ 
+ 这里面这堆字体是我的 fontconfig 规则里的，具体点说是 /usr/share/fontconfig/conf.avail/60-latin.conf，**不是任何人的锅，这是个官方默认配置**。但是有规则不代表有字体啊。
+ 
+ 所以我们修正这里 post_config_family 初始化部分：
+ 
+     const char* post_config_family = get_string(pattern, FC_FAMILY);
