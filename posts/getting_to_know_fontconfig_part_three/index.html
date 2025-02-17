@@ -67,7 +67,7 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
         }
 
     </style>
-</noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.1/styles/github.min.css" integrity="sha512-7QTQ5Qsc/IL1k8UU2bkNFjpKTfwnvGuPYE6fzm6yeneWTEGiA3zspgjcTsSgln9m0cn3MgyE7EnDNkF1bB/uCw==" crossorigin="anonymous" /><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
   <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
   <meta property="og:title" content="深入理解 Linux fontconfig 第三部分">
   <meta property="og:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&#34;scan&#34;&gt; 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。
@@ -412,13 +412,7 @@ patch -p1 &lt; ../fc-emoji-subtract.patch
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+  </footer>
 </article>
     </main>
     
@@ -435,7 +429,13 @@ patch -p1 &lt; ../fc-emoji-subtract.patch
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a>
+</a><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 
 <script>
     let menu = document.getElementById('menu')
