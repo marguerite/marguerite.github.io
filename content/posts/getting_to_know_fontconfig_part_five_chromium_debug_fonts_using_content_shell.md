@@ -185,109 +185,6 @@ content_shell_wrapper.sh:
       
 最终是到 [SkFontConfigInterface_direct.cpp](https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/ports/SkFontConfigInterface_direct.cpp)
 
-## 字体匹配阶段
-
-原理篇也说了，先将 text 按照 unicode 切分，然后按照每一段 unicode 相同的文本选择对应的字体。具体到 Debug Log 长这样：
-
-    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
-    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kText
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "你"
-    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
-    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
-    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
-    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
-    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
-    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kEmojiEmoji
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "😃"
-    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
-    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
-    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
-    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "😃"
-    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
-    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
-    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
-    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 1
-    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFallbackPriorityFonts
-    [INFO:font_fallback_iterator.cc(136)] [FontFallbackIterator::Next] FallbackPriorityFont
-    [INFO:font_fallback_iterator.cc(270)] [FontFallbackIterator::FallbackPriorityFont] FontCache::Get().FallbackFontForCharacter
-    [INFO:font_fallback_iterator.cc(271)] [FontFallbackIterator::FallbackPriorityFont] font_description_ "Segoe UI, Roboto, sans-serif"
-    [INFO:font_fallback_iterator.cc(272)] [FontFallbackIterator::FallbackPriorityFont] hint 😃
-    [NFO:font_fallback_iterator.cc(273)] [FontFallbackIterator::FallbackPriorityFont] fallback_priority_ kEmojiEmoji
-    [INFO:font_fallback_iterator.cc(274)] [FontFallbackIterator::FallbackPriorityFont] font_fallback_list_->PrimarySimpleFontData(font_description_)"Noto Sans CJK SC"
-    [INFO:font_cache.cc(88)] running FontCache::Get()
-    [INFO:font_cache.cc(168)] running FontCache::GetFontPlatformData()
-    [INFO:font_cache.cc(169)] [FontCache::GetFontPlatformData] font_description"Segoe UI, Roboto, sans-serif"
-    [INFO:font_cache.cc(170)] [FontCache::GetFontPlatformData] creation_params creation_type kCreateFontByFciIdAndTtcIndex
-    [INFO:font_cache.cc(174)] [FontCache::GetFontPlatformData] creation_params filename /usr/share/fonts/truetype/NotoColorEmoji.ttf
-    [INFO:font_cache.cc(175)] [FontCache::GetFontPlatformData] creation_params FontconfigInterfaceId 0
-    [INFO:font_cache.cc(176)] [FontCache::GetFontPlatformData] creation_params TtcIndex 0
-    [INFO:font_cache.cc(178)] [FontCache::GetFontPlatformData] alternative_font_name kAllowAlternate
-    [INFO:font_platform_data_cache.cc(75)] [FontPlatformDataCache::GetOrCreateFontPlatformData] FontCacheKey hash 13982713
-    [INFO:font_platform_data_cache.cc(88)] [FontPlatformDataCache::GetOrCreateFontPlatformData] font-size 26.66
-    [INFO:font_platform_data_cache.cc(89)] [FontPlatformDataCache::GetOrCreateFontPlatformData] rounded_size 2666
-    [INFO:font_platform_data_cache.cc(196)] [FontPlatformDataCache::SizedFontPlatformDataSet::GetOrCreateFontPlatformData] running font_cache->CreateFontPlatformData
-    [INFO:font_cache_skia.cc(298)] [FontCache::CreateFontPlatformData] CreateTypeface(font_description, creation_params, name)
-    [INFO:font_cache_skia.cc(299)] [FontCache::CreateFontPlatformData] font_description "Segoe UI, Roboto, sans-serif"
-    [INFO:font_cache_skia.cc(300)] [FontCache::CreateFontPlatformData] creation_params creation_type kCreateFontByFciIdAndTtcIndex
-    [INFO:font_cache_skia.cc(304)] [FontCache::CreateFontPlatformData] creation_params filename /usr/share/fonts/truetype/NotoColorEmoji.ttf
-    [INFO:font_cache_skia.cc(305)] [FontCache::CreateFontPlatformData] creation_params FontconfigInterfaceId 0
-    [INFO:font_cache_skia.cc(306)] [FontCache::CreateFontPlatformData] creation_params TtcIndex 0
-    [INFO:font_cache_skia.cc(230)] [FontCache::CreateTypeface] creation_params.CreationType() is kCreateFontByFciIdAndTtcIndex
-    [INFO:font_cache_skia.cc(341)] [FontCache::CreateFontPlatformData] std::make_unique<FontPlatformData> name 
-    [INFO:font_cache_skia.cc(344)] [FontCache::CreateFontPlatformData] typeface getFamilyName() Noto Color Emoji
-    [INFO:font_cache_skia.cc(345)] [FontCache::CreateFontPlatformData] font_size 26.66
-    [INFO:font_cache_skia.cc(347)] [FontCache::CreateFontPlatformData] synthetic_bold 0
-    [INFO:font_cache_skia.cc(349)] [FontCache::CreateFontPlatformData] synthetic_italic 0
-    [INFO:font_cache_skia.cc(350)] [FontCache::CreateFontPlatformData] text_rendering "Auto"
-    [INFO:font_cache_skia.cc(361)] [FontCache::CreateFontPlatformData] font_platform_data.FontFamilyName() "Noto Color Emoji"
-    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
-    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kText
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "，我"
-    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
-    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
-    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
-    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
-    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
-    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
-    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
-    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
-
-文本是“你好😊，我能吃玻璃而不伤身体”，第一遍确定使用 Noto Sans CJK SC，一直在遇到颜文字前都不需要提示词，遇到颜文字后又调整字体又调整 fallback_priority。
-
 ## 发现的问题
 
 ## 日志里好多 Times New Roman 哪里来的？
@@ -591,50 +488,109 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
 
 即使是为了过滤掉系统上不存在的字体，也没有把 `FcDefaultSubstitute` 的结果与 `FcFontSort` 的结果比较，因为 `FcFontSort` 里面有两次 qsort，`MatchFont` 自己本身又有一次 `isValidPattern` 也就是验证字体文件是否存在，这三次的开销其实是非常大的，这可是 blink 引擎啊，全世界基于 chromium 的浏览器都在用的基础设施...
 
-那应该怎么修改呢？首先 `IsFallbackFontAllowed` 的字体逻辑现在是没毛病的，也就是取第一个存在的 CFF/TrueType 字体。而第二种具体字体的逻辑，则存在开销较大的毛病，应该优化成这种逻辑：如果是 sans-serif，就返回默认 pattern 中第一个存在的字体，如果不是，直接判断第一个字体存在不存在即可。
+那应该怎么修改呢？首先 `IsFallbackFontAllowed` 的字体逻辑现在是没毛病的，也就是取第一个存在的 CFF/TrueType 字体。而第二种具体字体的逻辑，则存在开销较大的毛病，由于具体字体初始化 pattern 的第一个字体与 `fc-match -a` 的第一个字体在字体存在时永远相等，字体不存在时永远不等，修改成判断默认初始化的 pattern 的第一个字体存在不存在即可。
+
+修改的补丁可以看 [marguerite's skia fontconfig patch](https://gist.github.com/marguerite/edee185fa2aa005d32ec2061def5491c)。准备给 openSUSE 的 chromium 先打上试试效果。
  
- 所以我们修正这里 post_config_family 初始化部分：
- 
-    const char* post_config_family = get_string(pattern, FC_FAMILY);
-    if (!post_config_family) {
-    +   FcPatternDestroy(pattern);
-    +   return false;
-    -   post_config_family = "";
-    }
+## 字体匹配阶段
 
-    - FcResult result;
-    - FcFontSet* font_set = FcFontSort(fc, pattern, 0, nullptr, &result);
-    - if (!font_set) {
-    -    FcPatternDestroy(pattern);
-    -    return false;
-    - }
+原理篇也说了，先将 text 按照 unicode 切分，然后按照每一段 unicode 相同的文本选择对应的字体。具体到 Debug Log 长这样：
 
-    - FcPattern* match = this->MatchFont(font_set, post_config_family, familyStr);
-    - if (!match) {
-    -    FcPatternDestroy(pattern);
-    -    FcFontSetDestroy(font_set);
-    -    return false;
-    - }
+    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
+    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kText
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "你"
+    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
+    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
+    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
+    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
+    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
+    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kEmojiEmoji
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "😃"
+    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
+    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
+    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
+    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "😃"
+    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
+    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
+    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
+    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 1
+    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFallbackPriorityFonts
+    [INFO:font_fallback_iterator.cc(136)] [FontFallbackIterator::Next] FallbackPriorityFont
+    [INFO:font_fallback_iterator.cc(270)] [FontFallbackIterator::FallbackPriorityFont] FontCache::Get().FallbackFontForCharacter
+    [INFO:font_fallback_iterator.cc(271)] [FontFallbackIterator::FallbackPriorityFont] font_description_ "Segoe UI, Roboto, sans-serif"
+    [INFO:font_fallback_iterator.cc(272)] [FontFallbackIterator::FallbackPriorityFont] hint 😃
+    [NFO:font_fallback_iterator.cc(273)] [FontFallbackIterator::FallbackPriorityFont] fallback_priority_ kEmojiEmoji
+    [INFO:font_fallback_iterator.cc(274)] [FontFallbackIterator::FallbackPriorityFont] font_fallback_list_->PrimarySimpleFontData(font_description_)"Noto Sans CJK SC"
+    [INFO:font_cache.cc(88)] running FontCache::Get()
+    [INFO:font_cache.cc(168)] running FontCache::GetFontPlatformData()
+    [INFO:font_cache.cc(169)] [FontCache::GetFontPlatformData] font_description"Segoe UI, Roboto, sans-serif"
+    [INFO:font_cache.cc(170)] [FontCache::GetFontPlatformData] creation_params creation_type kCreateFontByFciIdAndTtcIndex
+    [INFO:font_cache.cc(174)] [FontCache::GetFontPlatformData] creation_params filename /usr/share/fonts/truetype/NotoColorEmoji.ttf
+    [INFO:font_cache.cc(175)] [FontCache::GetFontPlatformData] creation_params FontconfigInterfaceId 0
+    [INFO:font_cache.cc(176)] [FontCache::GetFontPlatformData] creation_params TtcIndex 0
+    [INFO:font_cache.cc(178)] [FontCache::GetFontPlatformData] alternative_font_name kAllowAlternate
+    [INFO:font_platform_data_cache.cc(75)] [FontPlatformDataCache::GetOrCreateFontPlatformData] FontCacheKey hash 13982713
+    [INFO:font_platform_data_cache.cc(88)] [FontPlatformDataCache::GetOrCreateFontPlatformData] font-size 26.66
+    [INFO:font_platform_data_cache.cc(89)] [FontPlatformDataCache::GetOrCreateFontPlatformData] rounded_size 2666
+    [INFO:font_platform_data_cache.cc(196)] [FontPlatformDataCache::SizedFontPlatformDataSet::GetOrCreateFontPlatformData] running font_cache->CreateFontPlatformData
+    [INFO:font_cache_skia.cc(298)] [FontCache::CreateFontPlatformData] CreateTypeface(font_description, creation_params, name)
+    [INFO:font_cache_skia.cc(299)] [FontCache::CreateFontPlatformData] font_description "Segoe UI, Roboto, sans-serif"
+    [INFO:font_cache_skia.cc(300)] [FontCache::CreateFontPlatformData] creation_params creation_type kCreateFontByFciIdAndTtcIndex
+    [INFO:font_cache_skia.cc(304)] [FontCache::CreateFontPlatformData] creation_params filename /usr/share/fonts/truetype/NotoColorEmoji.ttf
+    [INFO:font_cache_skia.cc(305)] [FontCache::CreateFontPlatformData] creation_params FontconfigInterfaceId 0
+    [INFO:font_cache_skia.cc(306)] [FontCache::CreateFontPlatformData] creation_params TtcIndex 0
+    [INFO:font_cache_skia.cc(230)] [FontCache::CreateTypeface] creation_params.CreationType() is kCreateFontByFciIdAndTtcIndex
+    [INFO:font_cache_skia.cc(341)] [FontCache::CreateFontPlatformData] std::make_unique<FontPlatformData> name 
+    [INFO:font_cache_skia.cc(344)] [FontCache::CreateFontPlatformData] typeface getFamilyName() Noto Color Emoji
+    [INFO:font_cache_skia.cc(345)] [FontCache::CreateFontPlatformData] font_size 26.66
+    [INFO:font_cache_skia.cc(347)] [FontCache::CreateFontPlatformData] synthetic_bold 0
+    [INFO:font_cache_skia.cc(349)] [FontCache::CreateFontPlatformData] synthetic_italic 0
+    [INFO:font_cache_skia.cc(350)] [FontCache::CreateFontPlatformData] text_rendering "Auto"
+    [INFO:font_cache_skia.cc(361)] [FontCache::CreateFontPlatformData] font_platform_data.FontFamilyName() "Noto Color Emoji"
+    [INFO:harfbuzz_shaper.cc(754)] [HarfBuzzShaper::ShapeSegment] font_description: "Segoe UI, Roboto, sans-serif"
+    [INFO:harfbuzz_shaper.cc(755)] [HarfBuzzShaper::ShapeSegment] font_fallback_priority: kText
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(113)] [FontFallbackIterator::NeedsHintList] FontDataAt
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:harfbuzz_shaper.cc(790)] [HarfbuzzShaper::ShapeSegment] fallback_chars_hint: "，我"
+    [INFO:font_fallback_iterator.cc(127)] [FontFallbackIterator::Next] fallball_stage_: kFontGroupFonts
+    [INFO:font_fallback_iterator.cc(197)] [FontFallbackIterator::Next] Running font_fallback_list_->FontDataAt
+    [INFO:font_fallback_iterator.cc(198)] [FontFallbackIterator::Next] font_description_ "Segoe UI, Roboto, sans-serif"
+    [INFO:font_fallback_iterator.cc(199)] [FontFallbackIterator::Next] current_font_data_index_(realized_font_index) 0
+    [INFO:font_fallback_list.cc(275)] [FontFallbackList::FontDataAt] This fallback font is already in our list: 
+    [INFO:font_fallback_list.cc(276)] [FontFallbackList::FontDataAt] realized_font_index of font_list_ size (0/1)
+    [INFO:font_fallback_list.cc(277)] [FontFallbackList::FontDataAt] the result FontData: "Noto Sans CJK SC"
+    [INFO:font_fallback_iterator.cc(216)] [FontFallbackIterator::Next] font_data is not segmented 
 
-    - FcPatternDestroy(pattern);
-
-    - // From here out we just extract our results from 'match'    
-
-    + if (IsFallbackFontAllowed(familyStr)) {
-    +      
-    + }
-    - post_config_family = get_string(match, FC_FAMILY);
-    - if (!post_config_family) {
-    -    FcFontSetDestroy(font_set);
-    -    return false;
-    - }
-
-    - const char* c_filename = get_string(match, FC_FILE);
-    + const char* c_filename = get_string(pattern, FC_FILE);
-    if (!c_filename) {
-        - FcFontSetDestroy(font_set);
-        + FcPatternDestroy(pattern);
-        return false;
-    }
-
-    // 不管是通用字体还是具体字体都需要变为 FontSet
+文本是“你好😊，我能吃玻璃而不伤身体”，第一遍确定使用 Noto Sans CJK SC，一直在遇到颜文字前都不需要提示词，遇到颜文字后又调整字体又调整 fallback_priority。
