@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>CJK 的尊嚴 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="好吧，這名字起的有點義和團的 feeling？
@@ -23,16 +23,16 @@
 轉
 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
+<link rel="canonical" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
 <noscript>
     <style>
         #theme-toggle,
@@ -69,7 +69,94 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="CJK 的尊嚴">
+  <meta property="og:description" content="好吧，這名字起的有點義和團的 feeling？
+民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
+首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
+其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。
+這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。
+起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
+答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。
+承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G&#43;，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
+主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。
+由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
+也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）
+轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-05-13T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-05-13T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CJK 的尊嚴">
+<meta name="twitter:description" content="好吧，這名字起的有點義和團的 feeling？
+民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。
+首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。
+其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。
+這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。
+起
+5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？
+答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。
+承
+但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G&#43;，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。
+主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。
+由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。
+也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）
+轉
+openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CJK 的尊嚴",
+      "item": "https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CJK 的尊嚴",
+  "name": "CJK 的尊嚴",
+  "description": "好吧，這名字起的有點義和團的 feeling？\n民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。\n首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。\n其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。\n這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。\n起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？\n答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。\n承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G+，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。\n主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。\n由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。\n也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）\n轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "好吧，這名字起的有點義和團的 feeling？\n民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。\n首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。\n其次這天我們 CJK FOSS 社區首次擺脫了被動接受的局面，對世界發出了自己的聲音。還是在一個重量級社區 GNOME。而且成功了。\n這兩者各自都不那麼重要，但是放在一起，就重要了。讓我表述給你聽：我們也可以決定任意一個發行版默認的樣子，而不是只對定製中文版。我們也可以決定世界級社區的走向。\n起 5 月 10 日晚，我與 OBS 的全域管理員 coolo 在關於是否在 soft.opensuse.org 上顯示本地化軟件包描述的一個郵件列表主題裏遇到，實際上是我問如何製作這樣的包描述。因爲輸入法這樣的軟件包只對本地化用戶有用，完全沒有必要顯示英文。於是我隨意問了一句，如何替換發行版默認輸入法？\n答案簡單的出乎人所料，coolo 說這事隨你，只要去工廠版郵件列表（openSUSE 的主開發列表）上發個文章，抄送給相關各個輸入法的維護者，大家討論出結果，然後你來做就行（技術上的實現很簡單），因爲你是本地化軟件源的管理員。\n承 但我覺得輸入法很重要，應該聽聽用戶的聲音，於是我做了這個投票：openSUSE 中日韓輸入法調查。然後投遞到了 G+，臉書，linuxsir 和官方論壇。接着發表了這個主題：建議從 DVD 中替換默認的IBus/SCIM 輸入法。\n主題貼本身沒什麼值得好跟進的。大體的經過就是簡體繁體中文沒人發表意見，全部意見來自於投票。大家一致同意 drop scim，替換簡體中文默認輸入法爲更強大的小企鵝輸入法; 替換繁體中文輸入法爲 gcin 和它的衍生品 hime 姬。\n由於日文目前沒有輸入法，所以暫時保留 IBus，直到 fcitx-anthy 或其他日文輸入法完全可用。韓文社區沒有迴應。\n也就是說，在未來即將到來的 openSUSE 12.2 裏，大家將會有一個全新的更好的中文體驗。（IBus 依然在 DVD 中，安裝時可手選）\n轉 openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲什麼要建議放棄 IBus？GNOME 正在整合 IBus 到它的系統，是強制運行依賴。\n日文的大佬 Takashi 表示憤慨。他講這樣的話，其他輸入法完全就沒法活下去。是的，如果未來，我們安裝 GNOME，IBus 永遠卸不掉的話，那麼任何帶 GNOME 的發行版都不再有輸入法的自由選擇權。\n於是我即時的拉來了翁雪天，小企鵝輸入法的作者，去 GNOME 報 Bug，但第一時間被關掉了。（臉書上的林說，收 Bug 的人和開發這個特性的人沒有關係。除了關掉建議你去找開發者。沒有選擇。）\n這時有點當機了。\n風迴路轉的是，在我準備睡覺的時候，話說那天和工廠版郵件列表上發英文發的手指打中文總錯字，要知道我在上班，要看着老闆，跟高中上課傳紙條一樣。翁突然跟嗑藥了一樣過來感謝我，我說這都過半天了，您反射弧很長？\n他說不是，是孤軍奮戰那麼多年，突然有了重量級盟友。還有類似什麼比網友更可靠的是推友，比推友更可靠的是基友，比基友更可靠的是戰友什麼的。原來是 Vincent 大佬跑去 GNOME desktop-devel-list 去踢館了。\n大意是說：我看你們似乎準備把 IBus 深度整合到 GNOME 中去，但我不知道你們是否知道用戶對 IBus 並不滿意呢？\n然後翁和該特性的主要作者攪了一些技術細節。\n也許這樣就會不了了之。因爲翁很碉堡很龜毛，好吧是我教的，我之前有說過作爲一個開發者你要不是吊，顯不出你技術強不是麼。\n然後第二天我覺得他噴的不夠好，沒有噴到 GNOME 開發者點頭說「哈依」，打完左臉伸右臉的淚流滿面痛改前非的境界。作爲他的人生導師，我有必要進行一番矯正。\n於是我發了一篇回覆，大意如下： 你們可能知道，我有一個調查。幸運的是，它現在產生了一些結果。\nCJK 社區裏，中文社區最大，我們最大的三個發行版是 Ubuntu，Fedora 和 openSUSE（寫 openSUSE 時我很心虛的，因爲我其實覺得 Arch 也很大，反而是我們和潘多拉沒什麼用戶。但在 KDE 論壇上看隔三差五就冒出來一個我不認識的 openSUSE 用戶，所以我覺得可能是我們比較好用不折騰，所以沒冒尖的用戶？），其中烏斑兔和 open 西施 都有 IBus 和 Fcitx，它們是我的目標社團。\n潘多拉沒有的原因如下：我們都知道它使用 Bugzilla 作爲包審查平臺。小企鵝的包在上面已經等兩年了。爲什麼？因爲它們的開發者和你們一樣，只知道 IBus。\n目前收到的迴應裏，繁中社區 100% 投票給 gcin/hime，簡中社區 100% 投票給 fcitx。有意思的是，有些用戶用着 IBus 卻投票給它們，更有意思的是，日文用戶甚至號召開發 fcitx-anthy。如果你住在一個夠豪華的房子裏，你還需要別的房子住嗎？\n但我們依然不能阻止您整合 IBus，因爲 FOSS 精神就是你可以開發你感興趣的，還有因爲潘多拉沒有替代品。\n所以請不要整合的那麼緊，緊到讓已有更好選擇的人也強制使用。實際上你們正在做的是一些前向移植工作以兼容潘多拉。要是在 GNOME 上，我裝了 Fcitx，IBus 卻抽不掉。我們又回到視窗了嗎？\n聽起來就好像是在到處都有電的情況下重新發明蒸汽機。\n然後 GNOME 的開發者迴應說： 我們的目標不是更多選擇，是儘可能好的用戶體驗。\n要是你拿到 GNOME， IBus 不好用，你朋友來裝了小企鵝，這是自由軟件的勝利嗎？不是，是失敗。我們得給用戶一個不需要「修」的系統。\n如果你的小企鵝壞了找到 Bugzilla 上，我用 IBus，沒法修。\n我們不能這個語言用一個輸入法，那個又提供一個。\n你得向我證明爲什麼小企鵝比 IBus 好，blabla 一堆技術細節。\n== 可是這完全就不對嘛。==\n你要問微軟，肯定他們也告訴你「我們要儘可能好的用戶體驗」—— 這是一個西文用戶說的。\n不，這不是 FOSS 和 GNOME 的失敗，是 IBus 的失敗。所以應該讓他滾，讓有能力的來。這才叫自然選擇。而不是把壞東西都握手裏。即使你今天修了，明天還是會壞，因爲你根本不用輸入法。\n那爲什麼不能標記爲上游 Bug 然後轉給小企鵝的開發者的？那不是標準工作流程嗎？而且你用啥都沒法修。你根本不懂中文。\n爲什麼不能？沒有開發者能開發出所有語言都好用的輸入法，除非他就是個語言學家，每天就是上網聊聊天。要是有的語言有人勝過他，用戶必去。\n你不覺得要求用戶去比較兩個輸入法的技術細節很粗魯嗎？\nGNOME 的開發者還說 我們資源有限，只能分發一個輸入法。要是 IBus 現在不行，我們就修好它。\n== 可是這完全就不對嘛 ==\n你們沒法「分發」，你連面向最終用戶的套件源都沒！\n修輸入法不是你的活。\n要是兩三年之後，一個新鮮出爐的輸入法出現了，你們就推到一切重來？那樣修輸入法就變成你一輩子的功課了。\nGNOME 的開發者仍說 單一輸入法可以提供如下好處： 1. 我們可以緊密整合 2. 可以立刻使用新特性 3. 我們只需要與一方聯絡\n然後還舉了一些例證： 1. X11/NM/Webkit 都是單一的，和 GNOME 整合的很好 2. 輸入法的那些自己繪製的面板很醜很討厭\n== 可是這完全就不對嘛 ==\n多少例子告訴你不能緊密整合了?\n那那些由其他輸入法提供的更多的新特性怎麼辦？不給用戶了?\n要是那方死了呢？你就以爲世界上沒別人了?\nX11 是每個人都要的，輸入法不是每個人都要的。老外要輸入法幹嘛？裝逼嗎?\n那你就世界聞名了。中文用戶直接叫你神經病。要是這東西應該修，早修了，所有輸入法都用它; 即使這東西需要修，也不是一個不用輸入法的老外手欠就能修的。\n於是我說 IBus 在代碼領域可能只是落後一點，但在用戶體驗領域它落後了幾光年。\n是的，你能修好 IBus 的 Bug，你能替代它的開發者開發它缺的那麼多特性嗎？不能。你能日用測試嗎？不能。你能看懂中文報告嗎？不能。你又不用，中文用戶不報上游 Bug，事情就變成：輸入法抽掉，你不知道，用戶忍着。至少現在我們還能換。\n所以技術上說，即使你提供了一個修復版的 IBus，用戶還是會怪你。因爲你缺特性。這不是個技術上事，有些網頁就是比其它的好看，但用了牛逼技術嗎？沒，同樣的瀏覽器，同樣的技術。\n可能這個修復版的 IBus 對你來說足夠了。可是好不好用是誰決定的？你？可是你不用輸入法; IBus，沒有爹媽不愛自己孩子。是用戶好不好。你只能取悅他們。\n既然你不是日用，那你就應該聽那些日用的開發者的意見。這很難，但你要知道用戶們忍了幾十年了。\n就好比，他們坐的那艘飛向未知宇宙的飛船，是由一些根本沒做過飛機，不知道月球的科學家造的。\n就好比，你們住在大海中的船上，開發造屋技術，根本不管陸地上的用戶還住不住屋，甚至不管陸地還在不在！\n我們真是受夠了，受夠了隨便什麼人都覺得他能開發輸入法。\n就好比，每個人的會寫字，你有書法家寫的美？IBus 是你先看過他的字的那位，小企鵝才是真正的書法家。\n你不能閉門造車，捏造事實，事實掌握在我們手裏。\n你們可能覺得輸入法能輸入就好了，還要什麼？但用戶根本不在意能不能輸入，不能輸入的叫輸入法嗎？輸入法的定製才是趨勢。用戶都讓其他系統和手機上的輸入法養嬌氣了，你不吸收技術，重造輪子，那永遠也追不上。\n現在就好比，你沒有個人電腦，你去網咖上網，你有了，我拿走，你願意嗎？你會戰鬥至死。從用戶這兒把特性拿走，比根本沒給過還要命。\n沒人能比 CJK 開發者更懂輸入法。\n「唯一」根本就不可能，輸入法是用戶使用其他程序的時候面向的第一個也是唯一一個程序，它掛了，系統就掛了，你能保證 100% 不掛嗎？不能。\n爲什麼一定要選個唯一的呢？\n這次你選了 IBus，傷了小企鵝的心; 下次你傷了 Ibus 的心。輸入法開發者可比 GNOME 開發者少多了，這個循環的結果就是，沒有輸入法願意和你合作了。\n但是你要是不剔除 IBus 只加入小企鵝，那到最後你把所有輸入法都弄到自己手裏了，那爲何當初不開發一個統一的協議來讓自己的手不那麼髒？\n基本算術應該懂的吧。\n合 如此激烈交鋒兩三天。\n圍觀的老外都看不下去了。進來幫腔。\n有個總結帝說的很好：\n「GNOME 開發者是在以用戶體驗之名去強制推廣一個最終用戶認爲不好，也不要的東西。沒有核心功能，再好看的面板窗口有啥子用咧？」\n有點定調的感覺。 終章\n這中間也有一些小插曲，比如中文「友幫拓」開發者的攪局，說真的都對不起你發行版的名字。反正我一直都覺得他挺「奴相」的。當初在 Launchpad 就找不到重點，誰破壞，誰恢復，反而去爲 TOC 道歉，拜託 Linus 都罵人好不好，人家翁自己可以道歉，用你搶嗎？買辦嗎？然後在這個主題裏居然把 LP 的事往自己身上攬功勞，可笑的是當事人之一 Xu 就在主題裏，翁不發在自己部落格上，有那麼多關注嗎。\n目前事態是往好的方向去的。相信很快開發者們就會坐在一起討論合作了。\n寫這篇文章的目的不是批評誰。都是兩邊不瞭解，好心辦錯事。\n要怪只能怪 CJK 用戶自己不爭氣，參與不到人家國際社區裏面去，整天在中文圈坐井觀天，然後反過來說人家國際社區是土匪。其實事實是，只要我們願意發出自己的聲音，就會有人肯聽。至少西施社區和地精社區都是如此。\n今年是民國 101 年，滿清遺毒，閉關鎖國，真的還在嗎？\n蘇\n民國 101 年，西歷 2012, 5 月 13 日。\n（之前 Xu 找我说怕我终章里面会有人误会成他。所以我加了呜谢）\n呜谢： Vincent, Who starts the war. openSUSE GNOME 社区实际领导者。\nWeng Xuetian，小企鹅输入法核心开发者，主喷技术细节\nAron Xu, Debian 维护者，主喷脑残，事实举证\nJustin Wong， GNOME-SHELL KIMPANEL 外挂联合开发者，协喷技术细节\nLiang Suilong，Fedora 维护者，事实举证。\n所有在投票中出力的人，是你们提供了大量事实依据。比所有调查公司都靠谱。\nLinux CJK 中文用户圈。\n我妈，因为写文当天是母亲节。\n注 我是 openSUSE Member 了。由 openSUSE 董事會獨立董事 mrdocs 推薦，獨立董事、Packman 管理員帕斯卡爾通過。以後我會在 lizards.opensuse.org 會員博客開設自己的英文博客。\n近期 openSUSE 其他進展。主要是簡中。\n更新了 software.opensuse.org。以後這個頁面是中文的了。 維基 zh.opensuse.org 更新若干頁面。 ",
+  "wordCount" : "354",
+  "inLanguage": "en",
+  "datePublished": "2012-05-13T00:00:00+08:00",
+  "dateModified": "2012-05-13T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -87,7 +174,7 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -254,7 +341,7 @@ openSUSE GNOME 的大佬 Vincent 在上述帖子中問了我一個問題：爲�
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>openSUSE 的人气为何远不如 Ubuntu 和 Fedora? | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
@@ -16,16 +16,16 @@ DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 
 一。openSUSE 确实是好发行版。
 它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">
+<link rel="canonical" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">
 <noscript>
     <style>
         #theme-toggle,
@@ -62,7 +62,83 @@ DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora?">
+  <meta property="og:description" content="某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
+我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。
+DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。
+更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。
+缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。
+好了，我下面集中谈一下为什么人气不高。
+一。openSUSE 确实是好发行版。
+它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-03-31T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-03-31T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openSUSE 的人气为何远不如 Ubuntu 和 Fedora?">
+<meta name="twitter:description" content="某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
+我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。
+DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。
+更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。
+缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。
+好了，我下面集中谈一下为什么人气不高。
+一。openSUSE 确实是好发行版。
+它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora?",
+      "item": "https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora?",
+  "name": "openSUSE 的人气为何远不如 Ubuntu 和 Fedora?",
+  "description": "某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？\n我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。\nDVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。\n更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。\n缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。\n好了，我下面集中谈一下为什么人气不高。\n一。openSUSE 确实是好发行版。\n它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？\n我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。\nDVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。\n更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。\n缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。\n好了，我下面集中谈一下为什么人气不高。\n一。openSUSE 确实是好发行版。\n它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。\n它的 KDE 得天得厚，没办法的第一好，因为 KDE 的主要开发者都是德国人，它是受德国政府资助的未来桌面，好多 Linux 大将都被政府雇佣来开发 KDE。SuSE 的本部在德国，地理上的原因使得好多 SuSE 的开发者同时又是 KDE 的开发者，反之亦然。你给 Kbuntu 报 KDE 的 bug，好多时候它甚至无法受理你，因为它的开发者开发不了底层的 KDE，被 Ubuntu 的吸血习惯带坏了。而 SuSE 可能随手就解决了，人家就是坐在 SuSE 的办公室开发 KDE 的。新手心中的大神，Linux 的创始人 Linus，他用 SuSE 都不敢找内核的 bug。因为 SuSE 的内核力量太恐怖了，我都不敢订阅内核开发的邮件列表，每天都有修复补丁和新功能补丁，每条都十多条回复，Gmail 受不了。\n但是这些你不熟悉到一定境界都看不到，甚至估计发表后好多 Ubuntu 的脑残粉会过来喷我。SuSE 把 GNOME/KDE 都调教的太顺手了，很多时候不需要某坛子上面那些所谓教学帖，然后内核你又不研究，SuSE 甚至不像其他发行版那样会教你编译「符合自己的内核」，因为它有自信你编译的玩意跟它官方的没法比。这是老牌发行版的共性，开发者折腾得多，用户就折腾的少，openSUSE 官方的编译服务，俗称打包的，有 31717 个打包者不分昼夜的在干活，有两层质量控制，每层需要许多的人来复审，明显的东西早抓出来了。开发的人我不太了解，就没法说了，但据我所知，SuSE 的开发者跟红帽的一样，在非发行版的 Linux 社区里都做到了很有名的位置，只是离普通用户太远，大家看不到。比如北京办事处就几个人，但是里面就有 GNOME 亚洲的负责人之一，他还是 Linux 所有发行版都在用的网路管理 Network Manager 的全球两个维护者之一。但是由于你所谓的人气不高，一旦你遇到了只发生在你身上的诡异问题，如果你英文不好，到中文论坛可能只有版主或 SuSE 中国的人能有资格去回复你，但我们确实太少了呀。如果去英文坛子发问，多数是能得到解决的，我甚至在英文坛子里面搞定了一个全世界只有几个人电脑会发生的问题。德国人的严谨不是你能想象的。\n二。德国的习惯和中国的很大不一样。\n这点在真正说缺点的时候我排第一个，甚至比后面要说的市场时机，社区培育要优先。\n德国人很严谨。他们的军队动作很少，但一击必杀。所以比较讨厌。这种过度理性的性格比较适合做技术，不太适合干需要感性和创意的市场。纳粹杀人都有纪律啊，为什么国际社会说它恐怖，因为它是唯一有系统有纪律的杀平民百姓的啊。你能想象和一群整天不会笑的家伙们在一起合作的感受么，最近我就比较头疼。你跟他们简单说点什么事是走不通的，必须道理一条一条摆出来，逐字逐句和他们争论，最后才能解决事情，超练英文，而且你会发现大多数德国人的英文比你流利得多的多。我经常发现我争论了几夜，因为和欧洲有时差嘛，的问题，实际上跟中国人说就一句话搞定。你提出一个问题，他们是真的会去实验的，甚至社会问题都会去实验的，比如前面的 Linus 用 openSUSE 骂 Linux 权限管理，按中国人的看法，他一个创始人，吃到了自己窖藏20年的狗屎，明显脑残一个。但德国人不是这样的，一个论据不够充分，他们会帮你找很多的论据，搞得我都哭笑不得。技术问题他们不是像其他人一样搞个渣代码能运行就好，他们一定要搞清楚原因在那里，怎么最优化解决，他们一旦干出来绝对十几年没人推翻得了的。而且他们不接受夸奖，你说德国人怎样怎样他们会说你放地图炮搞地域攻击，即使你是夸他都不行。再比如打包写授权协议， GPL-3.0+ 丢个加号都不行，他们一定要搞清楚还没发布的 4.0 行不行，一定要让你去问作者，还没发布作者怎么知道呀。所以 openSUSE 继承了这种性格后，是很慢吞吞很稳定的，推新功能推的慢，社区建设的慢，但是稳定得一塌糊涂。比较适合在「点」的范畴上搞技术问题，但很可惜，市场是个「面」，你不撒网就捞不到鱼，但没办法，德国人主导的世界就应该一条一条捡鱼，养到最肥，伺候的心情好好，然后才拿来吃。\n德国很重视版权。在德国下载盗版软件被抓住是要逐出欧盟的，很大义灭亲。这决定了 openSUSE 的纯净度绝对是最高的。不是像楼上的朋友说的，投靠了微软导致的，是他们天生就这样，微软也头疼得很。因为 openSUSE 的主要打包服务器都在德国境内。上面的严谨性的一个表现。他们觉得三天两头穿上防护服去检修服务器是很正常的，跟中国人一样扔电信机房不管是完全两个极端。有一次有一个叫做 tapatalk 的软件，可以支持 android 手机以 app 的方式浏览论坛，我建议他们加上，他们回答我说，谁去维护呢？我超莫名的，fedora 论坛说加就加上了，我真没用竟然让你问出这种问题，到后来才明白，他们一旦添加什么功能，就一定要测试，tapatalk 是个付费 app，他们说谁去花 10 欧元买它。结论是没有人，于是他们通宵了几昼夜，开发了一个堪比 app 的手机界面！因为在德国嘛，所以我们中国人认为不算个事情的，mp3,mp4,quicktime，他们都以版权问题没有默认放在发行版里，而是贼喊捉贼的 SuSE 德国的人挑头搞了个 Packman！结果还是死纠结，还是放在德国境内，看，他们宁可违法也要维护！荷兰离他们那么近他们就是想不到。因此这点就很不符合我们中国人的习惯，实际上也不符合大多数地球人的习惯，openSUSE 是唯一一个没有官方打包的 ffmpeg，mplayer的发行版，你播放所有的影音都要添加第三方源。而且它的源实在是个万花筒，严谨到不行，分门别类，比如 firefox 的最新版和 chromium 的最新版不是在一个源里，哦对了，他们甚至集中人力开发了一个纯净的 chromium！就是默认不能看 youtube 的 mp4，不能用 flash 看优酷，不能在新标签打开 pdf，都要添加另一个第三方源才能做到。而且我们中国人常用的软件都是版权比较模糊的，因为我们没有超严格的这个概念。德国人是不认同免费的，他们认同开源，免费不开源，一样不能随发行版分发！这在我们中国人眼里是非常荒谬的，人家都免费使用了，你用就不会被问责，为什么不提供给用户。他们不是的，免费可以，一定要提供一个兼容开源的免费使用协议，外加一个给他们的允许分发协议，他们才可以以 “non-free” （不免费，名字就很荒谬）的方式提供在另一个源里。如果 openSUSE 有教程，那一定是教你如何组合一个一个源来干你在其他发行版上一键就能搞定的事情。第二个就是 RPM 系老牌发行版包括红帽的 fedora 共同吃亏的地方，由于 Ubuntu 吸血嘛，站在巨人的肩膀上那影子始终显得比巨人长，国内的软件提供的都是 deb，我们 RPM 的要重新打包，在分发上面就比它慢很多。\n这些对用户来说都是壁垒，是完全没有必要的，但是主导 openSUSE 的德国人性格就是这样。\n二。市场做的不够。\nSuSE 进中国是很晚很晚的。前面说到了在其他 Linux 都在派光盘圈地盘的时候它在台湾岛敲妈妈桑的门。反而和 debian 一道把对岸的开源传统给养成了，对岸一个 gcin 的开发者能开发 20 年，所有的大学都有开源项目，这我们是望尘莫及的。等它进我们大陆的时候，已经晚到没什么蛋糕分了。然后它还是延续欧洲的做法，优先发展企业客户，国内 debian 的服务器都很少的，大部分反而是 RPM 系。银行、政府这些，哦对，红帽是我国政府当年邀请进来的，特别特别早，属于特例。国内还没太市场经济的时候一些电信那个时候叫邮电什么的服务器就已经是红帽的了，这任哪个发行版都拼不了。母公司给配的人力财力是很少的，SuSE 只有北京一个办公室，20几个人，然后还有开发者要做 SuSE 的企业版 SLES，基本是不过问市场的，实际跑市场的没有几个人，跑社区的更都是兼职的了，人少任务重，企业客户也就是市场都跑不过来，分心给社区真的是非常非常难得的了。另外还有一个特殊情况就是 SuSE 的公司结构不稳定，一直在经历并购，到现在 SuSE 中国的人都说不清 SuSE 这个公司到底属于哪个母公司。但是各种并购 SuSE 的总部始终在德国，德国人的严谨性不变，中国办公室的人决定权是很少的。面对一个全球最大的市场，投入聊胜于无的人力财力，还不让放开手脚大干特干，企业市场做怎样我不知道，个人市场做成现在至少你们还都听到过，已经很不容易了。我觉得在这种限制下，要给当年宣传 SuSE 是全世界最美丽的发行版的那位营销人员特殊功勋奖。\n三。社区培育不够。\n实际上 SuSE 有社区已经很不错了，这尤其要感谢 Linuxsir 当年随手帮我们做的推广，还有 thruth 这个曾经的开源脑残粉的呕心沥血（他因为这个聋了，说他是 SuSE 中文教父也不为过。另外台湾还有一个著名的黑眼珠2 swyear 年叔，几十年如一日的在写 SuSE 的博客）。SuSE 官方的人从来没有专职专业的去做过社区。因为所有的老牌发行版都是这样，不在乎桌面用户，因为他们不创造背后的母公司的营收。而 Ubuntu 的背后母公司定位就在桌面市场，一方面战略是全力以赴，一方面是无伤大雅，差别很大的。中国办公室的人已经意识到了，这一年在和社区寥寥的几个人在搞前期准备，但说实在的，非常非常难，因为 SuSE 的技术底蕴和德国佬的特殊太多太多了，我们要把它们搞成中国人能看懂能接受的方式，需要很长很长的时间，比如维基，SuSE 的英文维基和德文维基浩如烟海，而台湾加大陆一共只有三个人在翻译。我承认我们已经有点走入怪圈了，没中文资料，就没用户易用性就没用户，没用户反过来就没中文资料。而德国官方的不重视，导致中国官方的没法太重视，因此不会用一些鼓动性的宣传来推广。好东西都烂在手里了。\nSuSE 的中文社区人员没有一个是专职的开发者和程序员。这决定了我们没办法去提供太专业的帮助，做太专业的定制，实际上我们中文圈子的最大能量就是打包和封装了。你们觉得在其他发行版很正常的一些东西，比如 ibus，比如 fcitx，都是我们熬夜不睡推送的结果。之前大陆活跃用户为零的时候，完全是在拾台湾的牙慧。\n而社区的人都是分散在中国的各个城市，每个城市只有一个。我们自身都聚不起来，怎么去组织聚会呢。SuSE 官方对于经费实际上不太当个事情，SuSE 的大使每年都可以去德国开聚会。今年更是放在了美国的佛罗里达，这些都是非常非常好的事情，其他任何一个发行版都办不到，每年，每人，免费出国。但我们都是有单位的人，没有一个能去得了，官方的人都很行的正，不像占社区的名额和便宜，而社区的人又不想浪费。和外界的接触不够，人家对你的投入就不够，又是一个怪圈。\n而且没有大学的资源。目前 SuSE 中文社区没有一个是大学生，这意味着我们进入学校是很难的。我们平时也都是活跃在在境内完全不存在的推特上，接触的也都是中文 Linux 圈的名人，但问题是他们已经有忠诚的发行版倾向了，人的名，树的影，是不会转投的。但是所有的发行版最活跃的其实都是学生，这也是我们的一个短板。曾经 SuSE 有一个专门负责社区的人，甚至设立了一台教育网服务器在北邮，可是独木难支实在力不能逮，后来他离职了。于是服务器搬回了办公室，那个职位这些年也就没有再招。更没有计算机系的学生，大家都知道的，只有开发者才容易变脑残粉，才会去推广，才会去做专业的演讲。而 SuSE 是官方大社区小，大部分这样的大贤都在公司里，他们时间紧任务重，线上和大家交流的机会都不多，实在是有心无力。\n总之呢，这种现象是有历史的，传统的，文化的各方面原因的，唯独没有技术上的原因，如果你用 SuSE 遇到了问题，那是一定会得到解决的。圈子的交流目前以推特和 gtalk 为主，论坛只是辅助。因为社区的人都有工作，gtalk 和推特是必开的，但确实没办法太照顾论坛。而论坛由于它本身的原因，回复确实很少，也没什么意义，大多数都是问过的问题，真的回答到想吐。新手还是善用 google 吧，老发行版嘛，历史悠久，大部分都能找到答案。来论坛上问如果我们知道，是一定有回复的，另外就是建议去官方的论坛 forums.opensuse.org 来问，这里才是真正被支持的论坛，是台湾和大陆共同维护的，那里也能问到 opensuse 的官方中文 gtalk 群，因为那里员工和社区混着的，一般聊的没什么「边界」，所以也不太好太明确推，但如果想深入了解 opensuse，那里确实是个应该去的地方。\n",
+  "wordCount" : "319",
+  "inLanguage": "en",
+  "datePublished": "2012-03-31T00:00:00+08:00",
+  "dateModified": "2012-03-31T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -80,7 +156,7 @@ DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -161,7 +237,7 @@ DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>openshift 搭建 wordpress 教程 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
@@ -20,16 +20,16 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 提交一次，留意命令行中的信息，会说数据库的 IP。
 然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
+<link rel="canonical" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
 <noscript>
     <style>
         #theme-toggle,
@@ -66,7 +66,89 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="openshift 搭建 wordpress 教程">
+  <meta property="og:description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
+你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。
+安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
+提交一次，留意命令行中的信息，会说数据库的 IP。
+然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-02-18T00:00:00+08:00">
+    <meta property="article:modified_time" content="2013-02-18T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openshift 搭建 wordpress 教程">
+<meta name="twitter:description" content="最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。
+下面把搭建时候的要点简单说一下。
+准备
+你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。
+你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。
+你要安装 rvm  和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。
+安装 WordPress
+生成 ssh 密钥对并把公共密钥贴到 openshift 去。
+申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。
+git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。
+提交一次，留意命令行中的信息，会说数据库的 IP。
+然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "openshift 搭建 wordpress 教程",
+      "item": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "openshift 搭建 wordpress 教程",
+  "name": "openshift 搭建 wordpress 教程",
+  "description": "最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。\n下面把搭建时候的要点简单说一下。\n准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。\n你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。\n你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。\n安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。\n申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。\ngit clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。\n提交一次，留意命令行中的信息，会说数据库的 IP。\n然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。\n下面把搭建时候的要点简单说一下。\n准备 你要有一个 openshift 账户。每个账户可以开三个 Gear，共享 3 GB 硬盘和 1.5 GB 内存（VPS 泪流满面）。\n你要会 Git 基本命令。比如 git clone，git add，git rm，git commit。不会的快去学习 codeschool 的免费课程 Try Git，半个小时包教包会。\n你要安装 rvm 和 ruby，然后安装 openshift 的命令行客户端 rhc，具体的 Ruby 新新人指南可以看我的上一篇文章。\n安装 WordPress 生成 ssh 密钥对并把公共密钥贴到 openshift 去。\n申请一个 Gear，选 wordpress。然后看需要可以添加一个 phpMyAdmin 的 Cartridge。把它给你的数据库 root 用户名和密码以及数据库名记在小本本上别弄丢了。\ngit clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-config.php，把里面的数据库名、root 用户名和密码安装上面的填了。WPLANG 愿意改改一下。\n提交一次，留意命令行中的信息，会说数据库的 IP。\n然后再到 php/wp-config.php 里把 DB_HOST 改对。用 localhost 是不行的。\n接下来就是 wordpress 的 5 分钟安装了。\n绑定域名 先配置您的域名的 A 记录。建议最好在域名注册商那里把 NS 记录改成一些免费的 DNS 服务商的 NS 记录，然后在 DNS 服务商的面板里配置（注册商可配置的东西特别少）。比如我的是 cloudns.net。ping 一下 openshift 给你分配的那个 appname-username.rhcloud.com 的二级域名，得到一个 IP 地址。把带 www 和不带 www 的域名的 A 记录都设为那个 IP。\n然后安装 rvm 和 ruby 后 gem install rhc。您可能需要\nexport PATH=$PATH:/home/marguerite/.rvm/gems/ruby-1.9.3-p374/bin 才能使用 rhc（Linux 下）。\nrhc alias add appname 你的域名可以绑定域名，把带 www 和不带 www 的都绑定上。\n注意：\nrhc 可能需要你在本地 ssh 里有你刚生成的那个 ssh 才能正常使用 openshift 给你分配的二级域名免费送了一个 https，你千万不要傻到在 WordPress 的 General 设置里把自己的主域名也输入成 https://，那样你访问站点的时候 css/js 什么的统统加载不出来的。因为 https 只适用于二级域名，你那个域名不行。 升级和备份 （皮肤、插件、上传文件等） 绝对要看！不然您会发现 WordPress 有各种各样的问题，比如再次本地提交后之前上传的图片显示不出来了啊之类的。\nopenshift 有一个比较神秘的地方在于，你使用 git 管理。但平时你是在 WordPress 后台进行操作的，所以就产生了下面的问题：\n***你发现你在后台修改的内容是没法 git pull 取回本地的！***比如你升级了 wordpress 版本，然后在本地 git 仓库里改了下主题，一提交发现你的 wordpress 没有升级！\nRed Hat 给出的解释是说：那些叫运行时修改，是跳过 git 的。有以下几个办法可以解决，从难到易：\nssh 登录进去，把那些东西都复制到一个文件夹里，tar 压缩那个文件夹，在网页里面下载回来添加到 git。这个不说太具体，和 VPS 的管理一样，您既然都会 ssh 远程登录了，是吧。\n使用 rhc app snapshot save -a {appName} 把当前 Gear 的快照下载回来，用 app_root/repo 里面的东西覆盖到 git。然后添加、提交。\n使用配置文件：\n你会在你的 git 仓库里发现这样一个隐藏文件：.openshift/action_hooks/build\n里面有这样的内容：\nif [ ! -d $OPENSHIFT_DATA_DIR/uploads ]; then mkdir $OPENSHIFT_DATA_DIR/uploads fi ln -sf $OPENSHIFT_DATA_DIR/uploads $OPENSHIFT_REPO_DIR/php/wp-content/ 这段内容的作用就是把 uploads 文件夹作为 DATA_DIR。DATA_DIR 的内容是不会被 git 管理也不会被 git 修改的。所以我们照样子抄然后把 uploads 替换为我们的内容比如 themes 和 plugins 即可。\n注意：此方法有一个缺点就是还是无法应对升级，另外就是如果你把那些文件夹添加为 DATA_DIR 会产生一个问题就是你发现除了万能的 ssh 运程登录，你几乎没有办法再修改它，相当于一个丢失了 FTP 功能的 PHP 空间，只能在线运行，没法备份和管理。不要有侥幸心态觉得我这个博客就一直放在这里不动，可以负责任的说您的博客多运行一天，您再出问题进行修复或迁移的难度就增加一分。\n所以个人比较推荐第二种方法。\n参考文献 openshift 用户手册 https://openshift.redhat.com/community/forums/openshift/one-newbie-question OpenShift免费空间绑定顶级域名（图文教程） 小结 以上。\n至少我现在的 suse.ws 还没有任何问题地倔强地狂奔在 openshift 上。\n",
+  "wordCount" : "254",
+  "inLanguage": "en",
+  "datePublished": "2013-02-18T00:00:00+08:00",
+  "dateModified": "2013-02-18T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -84,7 +166,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -203,7 +285,7 @@ ln -sf $OPENSHIFT_DATA_DIR/uploads $OPENSHIFT_REPO_DIR/php/wp-content/
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

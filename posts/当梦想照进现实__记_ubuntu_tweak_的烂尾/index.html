@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>当梦想照进现实  记 Ubuntu Tweak 的烂尾 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
@@ -19,16 +19,16 @@
 其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
 主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">
 <noscript>
     <style>
         #theme-toggle,
@@ -65,7 +65,83 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="当梦想照进现实  记 Ubuntu Tweak 的烂尾">
+  <meta property="og:description" content="本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
+大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：
+针对超级大牛：SuSE/RedHat -&gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -&gt; Canonical -&gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -&gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -&gt; forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &lt;-&gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
+其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
+主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-10-20T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-10-20T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="当梦想照进现实  记 Ubuntu Tweak 的烂尾">
+<meta name="twitter:description" content="本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）
+大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：
+
+针对超级大牛：SuSE/RedHat -&gt; Google，比如苏哲，黄鹏。
+针对中小牛：SuSE/RedHat -&gt; Canonical -&gt; Google。
+针对自以为很牛的一般人：网易/百度/腾讯 -&gt; 自主创业
+针对苦逼：中关村/张江/华强北/各种科技园 -&gt; forever
+
+不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -&gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC &lt;-&gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。
+其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？
+主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "当梦想照进现实  记 Ubuntu Tweak 的烂尾",
+      "item": "https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "当梦想照进现实  记 Ubuntu Tweak 的烂尾",
+  "name": "当梦想照进现实  记 Ubuntu Tweak 的烂尾",
+  "description": "本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）\n大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：\n针对超级大牛：SuSE/RedHat -\u0026gt; Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -\u0026gt; Canonical -\u0026gt; Google。 针对自以为很牛的一般人：网易/百度/腾讯 -\u0026gt; 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -\u0026gt; forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -\u0026gt; Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC \u0026lt;-\u0026gt; CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。\n其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？\n主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）事情大家已经很清楚了，所以就是社论。（明明是胡勒！）\n大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：\n针对超级大牛：SuSE/RedHat -\u003e Google，比如苏哲，黄鹏。 针对中小牛：SuSE/RedHat -\u003e Canonical -\u003e Google。 针对自以为很牛的一般人：网易/百度/腾讯 -\u003e 自主创业 针对苦逼：中关村/张江/华强北/各种科技园 -\u003e forever 不在前两条路上走着的人们，无论你是 virushuo 还是 tinyfool，总归有点半路出家的感觉，在另一个 level 的人的眼里看来总是很 cheap，就好比金融口一个 standardchartered/HSBC/Citi -\u003e Goldman Sachs/Morgan Stanley/Merrill Lynch/UBS 的人看一个 ICBC \u003c-\u003e CCB 转来转去的人，就是人家两步超神，你转来转去始终在高手的阶位不上不下的感觉。\n其中 C 家说清楚了就是进去偷个懒，为去西海岸攒点生活费的地方。那为什么招主席？\n主席的经历说真的我不是很清楚，我进 Linux 圈是在 09 年 10 月，认识他的时候他已经是 C 家的人了，Ubuntu Tweak 也已经开发了很久。但根据圈里的风评和他们言语里给人的感觉，主席就是个 Python 程序员，只不过阴差阳错选了个「好」项目，近水楼台地，在 10 年 C 家刚有中国分部的时候入主了 C 家。简单说，天时地利，没什么羡慕也没什么嫉妒的。就好比你金融专业一毕业就赶上金融危机大规模裁员一样，没什么好抱怨的，造化弄人而已。\n当时我说的意思大概就是，成也萧何，败也萧何。同样的话还有我那句在圈内的名言「Ubuntu Tweak（主席）的成功就是 Ubuntu 的失败」，金融的术语说就是两者是完全的负相关，前者是后者的标准反指。主席就是始终没有认识到这个问题，所以才一直那么的伤春悲秋，自怨自艾。\n下面祭出咨询界现在没人再用的裹脚布 —— SWOT 分析。（不是反恐精英，是 Strength、Weakness、Opportunity、Threats）来分析一下主席这个人对 C 家的意义：\nStrength 实力： Python 程序员，实力不强，全民语言 C/C++ 懂的不多（对照老 K），似乎是半路出家写程序;本科，学校在杭州似乎也不是很出众，属于我少考一百分人家都抢着要的学校（杭州电子科大？猜的）;家似乎在舟山，属于浙江省的穷地方。家里应该也没什么人财可以靠（废话，你有钱你当程序员？！）;也非社区的 leader 性质的人物（花花 @shellexy、一叶这样的），算是 Ubuntu 社区墙里开花墙外红的一张熟脸。总之，达不到 C 家这个 level 的基本要求。进 SuSE/RedHat/Canonical，没玩过内核、没参与过国际社区、没修过 50 个 bug、不会三到四种编程语言同时其他语言不看文档可以凭人类逻辑快速上手，给你个 Project Manager 你还是干活的。这要求高吗？不高，正规学校至少教你两种，Java/C++。C 和 C++ 那么像，还有 Python。这天经地义的就四种了，实在不行还有 Php/Javascript/CSS/Markdown/Wiki Markup 来给你滥竽充数。\nWeakness 硬伤 对于一个刚进中国的公司，没市场背景是最大的 Weakness。要知道，C 家在搞的是预装+售后，就是 SuSE/RedHat 05～06 赛季玩烂了的东西，这边过去的人没吃过猪肉至少都看过猪跑; 兼之实力不足，属于别人有你没有所以扯了后腿的独特 Weakness。C 家要的是成手，这种成手指的不是说你有一个与 C 家相关的项目，并开发得很有声有色，指的是你有足够的经验和技术储备能够随时承担 C 家在中国独特的开发任务。比如 C 家接了大公司的服务器装机和运行维护，人家内核坏了或 overload 了，你得手到擒来。意思就是有内涵，首战用我，用我必胜，才值得人家每月 1.1w 的养着你发福。毕竟程序员的战场是 Matrix 不是祖国的大好河山也不是全国各大动车主干线和国际航班，那是小暖 @littlenuan 那样的跨国审计的战场。\nOpportunity 机会 前面说了，天时地利。但问题这东西跟天气预报一样是动态的，指望它最不靠谱了。没那手腕进了县政府可能还可以装县长的狗腿子，进了政治局那连酱油都没机会打。\nThreats 威胁 对主席来说，最大的威胁就是他没有 Connection。Home based 说的好听是员工，说的不好听那就是临时工。Google 的 Home based 的概念是你可以在公司，也可以在家，自己选; Canonical 的 Home based 的意思是你根本就不用来，办公室就没你桌子。这要放在小城市，父母不以为是无业游民或者网游代练那种概念就怪了。另外一个 Threats 就是主席其实对 Linux 并没太多了解，只能算是一个资深运维（能让已有的它跑的更好，但不能决定它未来往哪跑），算不上一个合格的 dev。除了 Ubuntu Tweak 他其实可能并没有太多的立身之道和进身之阶。\n以上都是我的一家之言，说清楚了就是宏观猜的。我就认为 C 家要主席就是为了 Ubuntu Tweak，吸收或毁掉。如 Thruth 所说：Ubuntu Tweak is the shame of Ubuntu。大公司一般都是这么玩，你看 Google，看 Apple，看 Microsoft 的并购策略就懂了。威胁到我的，吸收或毁掉。G 家是用钱砸，A 家是偷偷使银票+欺负你钱少拖你进车轮官司，M 家是利用 Windows 的不正当地位压你。在咨询圈里，这有个很通俗的说法，叫「买驴 – 卸磨 – 杀驴」。很常见的战略，美国对前苏联的「休克疗法」如是。咨询和高端金融圈比较喜欢军事术语，显得执行力强。所以修饰一下我叫「合作 – 蚕食 – 侵略」，再简单点，叫「假途灭虢」。\n主席的情况比较特殊，他做的是「Tweak」，意思就是挖角。于是涉及到一点公关战术，就是 360 的那个「公关战不要找比你弱的对手，赢了没面子输了丢人」。翻译成中文叫「杀猪杀肥膘」。好吧，跟 Ubuntu 一样，什么高端东西到我嘴里都跟哺乳动物挂上勾了，改用军事术语就是解放军的「超限战」（游击战是恐怖主义的前身，我们是祖宗）。于是对主席还要多加一个「漠视阶段」。\n漠视阶段。 主席自己也跟老 K 抱怨：Ubuntu Tweak 无论怎样都进入不了官方仓库。即便我很努力。\n这种想法就错了好吗？就跟雨林木风一天到晚想着到微软亚洲研究院一样。无论黑帽子白帽子，你始终是个 Hacker。\n而且最关键点可能一直没有人撕破脸一样的指出，那就是，who you are。你要是 Gnome Chairman，你出了一个 Ubuntu Tweak，那证明 Ubuntu 确实有硬伤，比如 Linus 这大嘴炮骂什么，那什么就必然是硬伤。比如骂 openSUSE 打印机。那就是你二十年前自己埋的狗屎，现在挖出来吃了说谁腌的咸菜这么臭！他的身份地位在那里，BinLi 只能说哦不好意思我家马桶放错位置了。否则自由软件世界谁承认？只会说，哦，我和你的用途/用法不同。你的可能更简单，我的侧重点在系统性和可操作性。这样的鬼话我没有问过主席，想来是很常听的。\n合作阶段。 招了主席。这属于下套子阶段，一般这个阶段反应不过来，那以后你也不用反应了。\n古话讲叫食君之禄忠君之事，我就是要让你做事前想一想，你的衣食父母是谁？吃饱了就骂厨子你有没有脸？这和安全公司招黑客一样，你原来是个盗 Q 币的，我招你进腾讯游戏组，你还好意思监守自盗吃里爬外吗？\n但是主席和这些人又不一样，Ubuntu Tweak 不是那些抓新 0day hole 的黑客，而是像老 K 说的，Ubuntu 开发滚滚向前，主席就相当于一个铁路系统扒火车偷煤的，干的始终是一件事，偷煤，不管随着这辆车走了多远。但要是有一天这条干线不运煤了怎么办？\n于是我就问 @shellex，你觉得主席如果没加入 C 家，会不会为了进 Store 出阉割版 Ubuntu Tweak？\n他说不会。\n我说，那你觉得主席加入了 C 家之后，以后的重点是在阉割版还是在爷们版。\n他说阉割版。\n至少从我们看到的，确实是这样。如果主席当初没入主 C 家，那他的视野不会像现在这么狭窄。会像老 K 对 GNOME 的态度一样，管你做甚。对 Ubuntu 的 Hack 不少吧，Mint 人家现在是分庭抗礼的大发行版，deepin。主席完全可以选择只开发爷们版，进 deepin store。然后来个「君子不器」，中国话就是老子只选牛的，你是官方有怎样，犯二一样废你。\n蚕食阶段 这两年，Ubuntu 的开发者一定在实现 Ubuntu Tweak 早已实现的部分，当然开发是独立的、点子是自主的、目的是用户的。具体例子我举不出来，但我想主席这两年一定无意识的做了很多这种事。\n侵略阶段 我把这个问题想的太深入了。始终没有想过是主席自己砍掉（估计是看到了未来？）。我的两个设想是对 Ubuntu Tweak 像游戏一样，分成，通过 Ubuntu Store 来 charge 他个免费软件。或者把主席在 C 家调教个八九成百依百顺，然后 VP 直接关门摊牌，要么在这干，Ubuntu Tweak drop 掉，要么它活，你去讨饭。所以这个时间窗口我没有对 @shellex 讲，因为我觉得时间可能不会太短，但也不会太长，一般在入职以后的第三个合同也就是 3 到 5 年左右。在你在这上班上出了依赖感认同感荣誉感之后。当然在职期间你的主要任务绝对不是干这个，总之是淡化 Ubuntu Tweak 在你生活中的重要性，就好比苏哲去了 Google 之后，FJKong 给他发邮件问 bug，他完全没有理会一样。如果现在有人给你打电话说，Hi，你能不能把你小学作业的错题再给我做一遍？\n只是没想到主席会选择自己砍。他说是因为流量问题。When making free software is no longer free。但问题是，在你是个躲在寝室吃方便面也要开发 Ubuntu Tweak 的穷小子的时候，你都没说放弃 freeware; 再每个月有了 1.1w 的月收入之后，软件知名度已经很高，有很多墙外科技网站一定不介意 host 它的时候却说出了这样的话。那我只能说，Ubuntu Tweak 对主席来说已经从梦想变成了理想，从理想变成了现实，于是从现实变成无论怎么甩也甩不掉的过去，也很理所当然了。毕竟马化腾是没有说，当聊天软件变得不再是聊天软件就怎样怎样。\n结尾 虽然人类总是悲伤将军不能饭否、美人总是易老、好软时常太监，事已至此，只能祝主席找到生活重心了。妹子最高什么的。\nPS:\n另外正文忘了说，这和开发自由不自由的应该也没什么关系。老 K 一样被 GTK 搞的焦头烂额，Linux 开发桌面软件都不自由，跟 Mac，跟 Windows，QQ 都是一样的。相对自由的软件是命令行下不依赖 X 的软件，但用户不多。绝对自由的软件只有你 github 上永远不下生产线的软件了。吸血鬼猎人林肯他妈说过，所有人都解放之前，我们都是奴隶。\n",
+  "wordCount" : "345",
+  "inLanguage": "en",
+  "datePublished": "2012-10-20T00:00:00+08:00",
+  "dateModified": "2012-10-20T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -83,7 +159,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -186,7 +262,7 @@
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

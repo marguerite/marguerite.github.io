@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
@@ -27,16 +27,16 @@ end
 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
 但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
 <noscript>
     <style>
         #theme-toggle,
@@ -73,7 +73,90 @@ end
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine">
+  <meta property="og:description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
+我们先准备一个脚手架 openbuildservice_onebox.rb
+module Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-11-28T16:07:00+08:00">
+    <meta property="article:modified_time" content="2020-11-28T16:07:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine">
+<meta name="twitter:description" content="上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。
+我们先准备一个脚手架 openbuildservice_onebox.rb
+module Onebox
+  module Engine
+    class OpenBuildServiceOnebox
+      include Engine
+      include LayoutSupport
+      include HTML
+      always_https
+
+      matches_regexp(%r{^(https?://)?build.opensuse.org/\w&#43;/show/(.)&#43;$})
+
+      private
+
+    end
+  end
+end
+我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。
+但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
+      "item": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
+  "name": "为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine",
+  "description": "上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。\n我们先准备一个脚手架 openbuildservice_onebox.rb\nmodule Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。\n但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "上一篇为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。\n我们先准备一个脚手架 openbuildservice_onebox.rb\nmodule Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\\w+/show/(.)+$}) private end end end 我们已经知道了这两个 module Onebox和 module Engine 嵌套 class OpenBuildServiceOnebox 是为什么，为了让 Preview.new 的 ordered_engines能够找到我们这个以 Onebox 结尾的类，并调用它通过 matches_regexp 设置的 @@matcher来与真正的 URI 对比来确定唯一一个 engine。include Engine的作用是为了得到 ClassMethods里面定义的与 URI 做相等比较的方法。另外 OpenBuildServiceOnebox 这个 class 没有 initialize 方法是因为 module Engine里面已经统一实现了，我们可以直接用 @options和 @uri 这样的实例变量。\n但是有一个问题是不是我忽略了？没有 to_html 这个最终把 URL 转成 html preview 的函数呀！\n不要慌，它实际上是通过 include LayoutSupport 实现的：\nmodule Onebox module LayoutSupport def self.max_text 500 end def layout @layout ||= Layout.new(self.class.onebox_name, data) end def to_html layout.to_html end end end 这个简单的不能再简单的 module 的作用是什么呢？lib/onebox/layout.rb 和 lib/onebox/template_support.rb 可以得到解释：就是去 templates 文件夹下找到 openbuildservice.mustache，用 data 这个 hash 补全，然后 render 成 html。这个 data 自然是返回 hash 的函数，至于返回 hash 的 key 是来自于你的 openbuildservice.mustache 模板。 但也有一些 reserved names 比如 link title favicon image，可以看 layout.rb 的 details 函数。\n而 include HTML 的作用是这样的：\nmodule Onebox module Engine module HTML private def raw @raw ||= Onebox::Helpers.fetch_html_doc(url, http_params) end end end end 我们可以得到一个名为 raw 的方法，返回使用 rubygem nokogiri 处理过的 URI，你可以从里面挑一些文本来填充你的 data 函数的 hash 的值。\n下面我们来写我们的 openbuildservice.mustache 模板。mustache 语法在这里。\n{{#image}}\u003cimg src='{{image}}' class='thumbnail'/\u003e{{/image}} \u003ch4\u003e\u003ca href='{{link}}' target='_blank'\u003e{{title}}\u003c/a\u003e\u003c/h4\u003e \u003cp\u003e{{description}}\u003c/p\u003e {{#request}} \u003cp\u003eSubmit package \u003ca href='{{source_prj_link}}'\u003e{{source_prj}}\u003c/a\u003e / \u003ca href='{{source_pkg_link}}'\u003e{{source_pkg}}\u003c/a\u003e to package \u003ca href='{{dest_prj_link}}'\u003e{{dest_prj}}\u003c/a\u003e / \u003ca href='{{dest_pkg_link}}'\u003e{{dest_pkg}}\u003c/a\u003e\u003c/p\u003e \u003cp\u003e \u003cimg /\u003e Created by \u003ca href='{{author_link}}' target='_blank'\u003e{{author_name}}\u003c/a\u003e \u003cspan\u003e{{fuzzy_time}}\u003c/span\u003e \u003c/p\u003e \u003cp\u003e \u003cimg /\u003e In state \u003ca href='{{link}}#request_history'\u003e{{request_state}}\u003c/a\u003e \u003c/p\u003e {{/request}} \u003cul\u003e {{#packages}} \u003cli\u003e \u003cul\u003e \u003cli class=\"obs-buildstatus\"\u003e \u003ca href='{{repo_uri}}' target='_blank'\u003e{{repo}}\u003c/a\u003e \u003c/li\u003e \u003cli class=\"obs-buildstatus\"\u003e {{arch}} \u003c/li\u003e \u003cli class=\"obs-buildstatus\"\u003e \u003ca class=\"{{status_class}}\" href='{{buildlog}}' target='_blank'\u003e{{buildstatus}}\u003c/a\u003e \u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e {{/packages}} \u003c/ul\u003e 这个基本上就是 html。相信比较好理解，build.opensuse.org 上面能够带 show 的链接主要就四种：user, project, package 和 request。其中前两者没什么好说的，就是有 avatar 就显示，没有就不显示呗。request 就显示提交人的头像，同时显示来源和去向。至于贴 pacakge 的，最值得预览的就是它的编译状态。所以后两者用了条件判断。就是 data 给的 hash 里 package/request key 的值不为空就显示这些。同时根据这些我们也就能知道 data 函数需要什么了，填充一下脚手架：\nmodule Onebox module Engine class OpenBuildServiceOnebox include Engine include LayoutSupport include HTML always_https matches_regexp(%r{^(https?://)?build.opensuse.org/\\w+/show/(.)+$}) private def data { image: avatar, link: link, title: title, description: user? ? raw.css('#home-username').text : raw.css('#description-text').text, request: request, packages: package } end def avatar if request? author_avatar elsif user? raw.css('.home-avatar').attr('src') end end def title if user? raw.css('#home-realname').text else link.gsub(%r{^.*show/}, '') end end def user? link =~ %r{/user/} end def request? link =~ %r{/request/} end def package? link =~ %r{/package/} end def host 'https://' + URI.parse(link).host end def author_link host + raw.css('.clean_list li a').first['href'] end def author_avatar author_html = Nokogiri::HTML(open(author_link)) author_html.css('.home-avatar').attr('src') end def request return unless request? [{ \"author_link\": author_link, \"author_name\": File.basename(author_link), \"fuzzy_time\": raw.css('.clean_list li span.fuzzy-time')[0].text, \"request_state\": raw.css('.clean_list li a')[1].text, \"source_prj_link\": host + raw.css('a.project')[0].attr('href'), \"source_prj\": raw.css('a.project')[0].text, \"source_pkg_link\": host + raw.css('a.package')[0].attr('href'), \"source_pkg\": raw.css('a.package')[0].text, \"dest_prj_link\": host + raw.css('a.project')[1].attr('href'), \"dest_prj\": raw.css('a.project')[1].text, \"dest_pkg_link\": host + raw.css('a.package')[1].attr('href'), \"dest_pkg\": raw.css('a.package')[1].text }] end def package reload_id = if request? 'result_reload_0_0' elsif package? 'result_reload__0' end return unless reload_id buildstatus(reload_id) end end end end 这个 buildstatus 是最闹心的，它是 javascript，用 nokogiri 直接取是没有的。最后没办法我用 watir gem 去点了一下刷新按钮再取就有了，代码如下：\ndef buildstatus(reload_id) browser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600', '--no-sandbox', '--disable-dev-shm-usage'] }) browser.goto(link) browser.image(id: reload_id).click doc = Nokogiri::HTML(browser.html).css('#package-buildstatus') elements = doc.xpath('//div[@id=\"package-buildstatus\"]/table/tbody/tr') packages = [] elements.each do |element| repo = element.css('.no_border_bottom a') arch = element.css('.arch div') build = element.css('.buildstatus a') repo_uri = repo.empty? ? '' : host + repo.attr('href').text.strip repo_text = repo.empty? ? '' : repo.text status_class = if build.text == 'unresolvable' || build.text == 'failed' 'obs-status-red' elsif build.text == 'succeeded' 'obs-status-green' else 'obs-status-grey' end packages \u003c\u003c { \"repo_uri\": repo_uri, \"repo\": repo_text, \"arch\": arch.text.strip, \"buildlog\": host + build.attr('href').text.strip, \"status_class\": status_class, \"buildstatus\": build.text } end packages end 这样基本就写好了。onebox 是支持测试的：\ngit clone https://github.com/discourse/onebox cd onebox 把 openbuildservice_onebox.rb 丢到 lib/onebox/engine，openbuildservice.mustache 丢到 templates /usr/bin/bundler.ruby2.7 exec /usr/bin/rake.ruby2.7 server 然后你可以访问网页测试你写的引擎好使不好使。\n",
+  "wordCount" : "544",
+  "inLanguage": "en",
+  "datePublished": "2020-11-28T16:07:00+08:00",
+  "dateModified": "2020-11-28T16:07:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -91,7 +174,7 @@ end
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -363,7 +446,7 @@ end
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

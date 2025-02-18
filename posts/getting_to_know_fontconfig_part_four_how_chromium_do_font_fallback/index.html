@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
@@ -28,16 +28,16 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
 
 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
+<link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
 <noscript>
     <style>
         #theme-toggle,
@@ -74,7 +74,93 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制">
+  <meta property="og:description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
+UI 字体的渲染 官方文档：RenderText and Chrome UI text drawing
+Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：
+它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。
+这里面就是我非常熟悉的 fontconfig 了，核心代码：
+FallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result); } 核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-10T00:00:00+08:00">
+    <meta property="article:modified_time" content="2025-02-10T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Linux Fontconfig 之四：Chromium 字体查询机制">
+<meta name="twitter:description" content="要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。
+UI 字体的渲染
+官方文档：RenderText and Chrome UI text drawing
+Linux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：
+它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。
+这里面就是我非常熟悉的 fontconfig 了，核心代码：
+FallbackFontList fallback_fonts;
+FcPattern* pattern = FcPatternCreate();
+FcPatternAddString(pattern, FC_FAMILY,
+                 reinterpret_cast&lt;const FcChar8*&gt;(font_family.c_str()));
+
+FcConfig* config = GetGlobalFontConfig();
+
+if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
+  FcDefaultSubstitute(pattern);
+  FcResult result;
+  FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, &amp;result);
+}
+
+核心是 FcFontSort-&gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-&gt;FcCompareValueList 生成。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "深入理解 Linux Fontconfig 之四：Chromium 字体查询机制",
+      "item": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解 Linux Fontconfig 之四：Chromium 字体查询机制",
+  "name": "深入理解 Linux Fontconfig 之四：Chromium 字体查询机制",
+  "description": "要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。\nUI 字体的渲染 官方文档：RenderText and Chrome UI text drawing\nLinux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：\n它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。\n这里面就是我非常熟悉的 fontconfig 了，核心代码：\nFallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast\u0026lt;const FcChar8*\u0026gt;(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, \u0026amp;result); } 核心是 FcFontSort-\u0026gt;FcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-\u0026gt;FcCompareValueList 生成。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。\nUI 字体的渲染 官方文档：RenderText and Chrome UI text drawing\nLinux 下 Chromium 是用 harfbuzz 做文本渲染的，最重要的函数都在 render_text_harfbuzz.cc 里面，其中 RenderTextHarfbuzz::ShapeRuns 是最重要的：\n它会先用 primary configured fonts from font_list() 的字体 Shape 一轮。剩下没匹配上的 Unicode 用 primary font 的 FallbackFont 再 Shape 一轮（比如你配置的字体是 Noto Sans CJK SC 跑了首轮, 第二轮就用它的 fallback font）。第三轮是用 fallback_font_list 跑，fallback_font_list 是用 GetFallbackFonts(primary_font) 生成的，最终是回到 font_fallback_linux.cc。\n这里面就是我非常熟悉的 fontconfig 了，核心代码：\nFallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast(font_family.c_str())); FcConfig* config = GetGlobalFontConfig(); if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) { FcDefaultSubstitute(pattern); FcResult result; FcFontSet* fonts = FcFontSort(config, pattern, FcTrue, nullptr, \u0026result); } 核心是 FcFontSort-\u003eFcFontSetSort。本质是基于 score 决定排序，score 主要是由 FcCompare-\u003eFcCompareValueList 生成。\n我们只需要知道 Chromium 使用了 FcConfigSubstitute 即可，UI 字体这部分它是尊重 fontconfig 的。\n另外第二轮用 GetFallbackFont(Primary font) 跑的时候，确实只会返回一个字体，但也是先通过 FcFontSort 取结果，然后比较 charset 找到一个 coverage 最高的。\n网页文本的渲染 官方文档：Blink’s Text Stack。\n文档里提到了 FallbackFontForCharacter，这是很多人认为 Chromium 渲染是单字的源头。我也是想了解 Blink 引擎到底是怎么调用 fontconfig 的，才有了这篇文章。\nChromium 在解析网页的 DOM 树的时候，每一个 DOM 元素都会计算出一个样式（因为 CSS 是零散分布的，浏览器还会有一些默认的 CSS）。这个样式会拥有一个 Font 和 FontDescription 元素。FontDescription 元素比较简单了，基本上就是 “font-size: 11 pt; font-family: sans-serif” 原样来的。Font 拥有两个内容，一个是 CssFontSelector, 一个是 FontFallbackList。\nFontFallbackList 最重要的函数是：\nconst FontData* FontFallbackList::GetFontData(const FontDescription\u0026 font_description) 它会 loop font_description.Family() 返回的 FontFamily, 后者是一个 iter，其实就是把 css 中的 font-family 逐个返回。要系统字体的代码是 FontCache::Get().GetFontData()。如果 font_description 中给定的 family 都处理完都不合格，会先调用用户偏好设置的字体，最后是 GetLastResortFallbackFont。\nFontCache 下的 GetFontData(font_description, font_family) 会调用 FontPlatformDataCache::GetOrCreateFontPlatformData()，最终到 font_cache_skia.cc 中的 FontCache::CreateFontPlatformData-\u003eFontCache::CreateTypeface。\nSkia 在 Linux 上是用 fontconfig 的：SkFontMgr_fontconfig.cpp，它的 onMatchFamily 主要是这么搞的：\nSkAutoFcPattern pattern; FcPatternAddString(pattern, FC_FAMILY, (const FcChar8*)familyName); FcConfigSubstitute(fFC, pattern, FcMatchPattern); FcDefaultSubstitute(pattern); 根据我们在前几篇文章中的分析，这个结构处理 ‘sans-serif’，甚至我们切掉部分 charset 的 font 都是没问题的。\n另外 Skia 还有一个 SkFontConfigInterface_direct.cpp , blink 调用的其实是这个。\nFontFallbacklist 是针对每个 family 调用 FontCache::GetFontData，即便是最终到了 ‘sans-serif’，也有 Skia 兜底（后面发现 Skia 不会给 sans-serif 兜底，而是给 sans 兜底）。\n知道了 FontFallbackList 的数据是怎么来的，还需要知道它是怎么用的，才可以不盯着 FallbackForChar 不放。这需要我们再去研究一下 Blink 是怎么切文本的，如果它把每个文本都切成 char, 那 per char 的 fallback 就没有问题。\n关键函数在 harfbuzz_shaper.cc 的 HarfBuzzShaper::ShapeSegment。它会建立一个 FontFallbackIterator 然后一直把 reshape_queue 跑干净。跑 Iter 的时候，会区分带 hint_list 的 runs 或 hint_list 为空的 runs。而是不是需要 hint_list 是由 FontFallbackIter 的 fallback_stage 处于哪一阶段决定的，segmented 和 kFontGroupFonts 需要提供提示字。\nFontFallbackIter 在创建的时候会创建空白的 FontFallbackList，即 EnsureFontFallbacklist()。\nFontFallbackIter 关键函数是 FallbackPriorityFont、UniqueSystemFontForHintList和FontCache::GetLastResortFallbackFont，顺序执行这三个函数。前两者都会调用 FallbackFontForChar，原因是 segmented 其实是一句话，但提示词只给了一个字，这个字就能决定这段话的 Unicode。中文是单独 segmented 的，如何 segment 在 script_run_iterator.cc。全是中文的一段话里给出一个字其实已经够了，是为了效率的考虑。\nFontCache::GetLastResortFallbackFont 其实就是使用 sans-serif，如果 sans-serif 没有用 sans, 再没有用 Arial, 再没有用 Courier New。Windows 还多维护了几个 Fallback 字体，在 font_family_names.json5\nFallbackFontForCharacter 兜兜转转，实现在 ui/gfx/font_fallback_linux.cc，其实就是封装了一个 FcCharSetHasChar。\n其他 我还发现了 Chromium 是如何处理文本中的 Emoji 的，它在切词的时候发现文本中有 Emoji 会调整 FontFallbackPriority，从 kText 调整为 kEmojiText 这样，然后 FontCache 查找的时候，发现 Emoji 会优先在 und-zsye 这个 locale 里找字体。\n它的 emoji 判断代码感觉也比较巧妙：\nbool IsEmojiRelatedCodepoint(UChar32 codepoint) { return u_hasBinaryProperty(codepoint, UCHAR_EMOJI) || u_hasBinaryProperty(codepoint, UCHAR_EMOJI_PRESENTATION) || u_hasBinaryProperty(codepoint, UCHAR_REGIONAL_INDICATOR); } 现在我的 fonts-config-ng 是先找 emoij 字体，再扫描它有什么 charset，如果用这个方法，应该可以减少一轮扫描。\n知道了原理，你可能也想去测试一些想法，我建议不要直接使用 Chromium 去测，可以考虑编译一下只包含了 Blink 引擎的 Content Shell。\n",
+  "wordCount" : "363",
+  "inLanguage": "en",
+  "datePublished": "2025-02-10T00:00:00+08:00",
+  "dateModified": "2025-02-10T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -92,7 +178,7 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -207,7 +293,7 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

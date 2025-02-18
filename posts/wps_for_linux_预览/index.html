@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>WPS for Linux 预览 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
@@ -16,16 +16,16 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
 它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
 它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
+<link rel="canonical" href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
 <noscript>
     <style>
         #theme-toggle,
@@ -62,7 +62,83 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="WPS for Linux 预览">
+  <meta property="og:description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-03-30T00:00:00+08:00">
+    <meta property="article:modified_time" content="2012-03-30T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WPS for Linux 预览">
+<meta name="twitter:description" content="前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。
+当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux  肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。
+因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。
+很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。
+WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。
+放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。
+它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。
+它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "WPS for Linux 预览",
+      "item": "https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "WPS for Linux 预览",
+  "name": "WPS for Linux 预览",
+  "description": "前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。\n当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。\n因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。\n很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。\nWPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。\n放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。\n它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。\n它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。\n当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux 肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。\n因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。\n很多人拿它和 libreoffice 比。拜托，一个全盘仿制微软的产品怎么能和 libreoffice 那万年不开张的玩意比呢。\nWPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。而且支持鼠标中键滚动哦。\n放映 ppt 还是有些卡的，而且有些 ppt 还是会出现找不到图片的红叉叉。没办法啦，微软是闭源的嘛。做 ppt 的话要是不要求像 slideshare 那种商业品质的话，学生上课用用，或者序员弄几个白板 ppt 还是没有问题的。\n它使用了自己维护的 QT 分支来开发（金山甚至准备把它们的分支 merge 到上游，拜托一个商业公司都说这话了你还怎么黑它），因此造成了各种诡异的输入法问题。比如光标跟随等。而且不方便 RPM 打包，要为它单独开个源来做，不然以后你就别在这个源打包 QT 软件了。它会告诉你有两个东西都提供了 QT，一个是 libqt4,一个是 wps-office。\n它使用了 ubuntu 这种乱搞的发行版来开发而不是 centOS 或者 debian 这样的标准发行版。举一个例子来说，它要求 libtiff.so.4，但拜托，tiff 官方发布的所有正式版本没法编译出 .so.4 的，SuSE、Fedora 都是 3.9.5。然后最新的 4.0.1 版编译出来的其实是 libtiff.so.5。去 ubuntu 官方一找，嘿，居然也宣称自己使用的是 3.9.5 的源码，那你跟我讲讲你是怎么编译出 libtiff.so.4.3.4 的。ubuntu 的瞎搞，不尊重上游可见一斑。\n总的来说，金山这次还是很「业内良心」的，至少还尊重 Linux 社区。甚至明白好奇心害死猫，明确说明，在不泄露下载地址的情况下，可以协助你的朋友安装体验。也就是说，只要「可控」，人家根本不介意你发个 deb 或者迅雷快传什么的链接给朋友。\n看到了嘛，人家有信心做一款好软件出来，不怕分发，反正早晚也免费的嘛。其实我觉得收 50 元以下的费用 Linux 社区还是会支付的（Linux 社区是中国付费的良心和希望嘛），或者可以采用「软件内付费」的方法，集中精力开发一些收费功能、收费模板什么的，毕竟靠分享这种不靠谱的方法找到专业的模板跟大海捞针差不多。甚至可以建一个模板市场，像 wordpress 主题一样抽开发者的分成嘛（毕竟模板这种东西技术含量很低，充起数量很快的），引来专业的 UI 设计师那就碉堡了，不止完爆 libreoffice，甚至能完爆 ms office。还有模板求购市场，比如我要做金融专业 PPT，我花 30 元求购一套模板，可能一个学动画的 10 分钟搞出一套我这种渣审美搞一小时的东西。\n另外看了下开发者 wiki 和 bugzilla。社区还是反馈了不少东西的。真心希望这种模式能够为其他开发 Linux 版本的商业公司学去。\n最后，关于是否开源。金山的考虑很慎重，最早版本的 wiki 说，开源是一件很慎重的问题，甚至对代码质量要求很高。看，这才是真正商业公司序员的心底话，意思就是我们为糊口写的都是渣代码暂时不能扔出来丢人现眼，传到老总耳朵里我们的日子就没法过了。后期的版本说是，未来会考虑像部分社区成员开放。当然是你贡献了很多东西之后，或者你从源代码编译打包这样子。估计也要签保密协议。不过对姐来说保密协议太多就债多不愁啦。\n姐为金山的精神稍许感动了一点，于是在寸土寸金的主博客给他们写了这篇半黑半讚（看还是蛮中立的）的不像软文的软文。\nPS：另外本博客已经聚合到 openSUSE 星球 了。今天做了一会儿一种叫做 hackergotchi （黑客秀）的特殊头像，觉得蛮有趣的。福利就是文章头部右侧的那个小人偶。当然你要是右键了帮我做一个 3D 模型出来送给我我会蛮开心的，当然别做一比一的鬼知道你拿来干什么。。。福利二（花花真相）：\n福利三（hillwood）真相：\n当然山木的博客也聚合到星球去了，早晚你们都会看见的。\n最后是姐发现 openSUSE 蜥蜴，就是它们成员才有权利进聚合的博客，有张壁纸不错，分享给壁纸控：\n也有没有 openSUSE 标识的通用版本，熟悉的人可以到推特上找我要，放这里盗链会很多的。\n",
+  "wordCount" : "137",
+  "inLanguage": "en",
+  "datePublished": "2012-03-30T00:00:00+08:00",
+  "dateModified": "2012-03-30T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -80,7 +156,7 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -156,7 +232,7 @@ WPS 还是蛮有心的，开发了 Office 2010 开始才有的 robbin 界面。�
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

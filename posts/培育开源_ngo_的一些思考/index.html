@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>培育开源 NGO 的一些思考 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
@@ -38,16 +38,16 @@
 政策错
 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
 <noscript>
     <style>
         #theme-toggle,
@@ -84,7 +84,108 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="培育开源 NGO 的一些思考">
+  <meta property="og:description" content="这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
+大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
+首先提到 openSUSE，大家想到的应该是：
+华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。 一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
+宣传不到位 沉默的大多数 这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
+宣传不到位 宣传不到位的常见原因有以下几种：
+投入不够 政策错 没有细分用户 投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
+金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。
+为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？
+很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。
+政策错 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-03-23T00:00:00+08:00">
+    <meta property="article:modified_time" content="2013-03-23T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="培育开源 NGO 的一些思考">
+<meta name="twitter:description" content="这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。
+大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。
+首先提到 openSUSE，大家想到的应该是：
+
+华丽
+稳定
+用户少
+很少人讲
+千年老二。红帽的小弟。
+
+一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：
+
+宣传不到位
+沉默的大多数
+
+这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。
+宣传不到位
+宣传不到位的常见原因有以下几种：
+
+投入不够
+政策错
+没有细分用户
+
+投入不够
+这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。
+金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。
+为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？
+很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。
+政策错
+这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "培育开源 NGO 的一些思考",
+      "item": "https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "培育开源 NGO 的一些思考",
+  "name": "培育开源 NGO 的一些思考",
+  "description": "这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。\n大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。\n首先提到 openSUSE，大家想到的应该是：\n华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。 一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：\n宣传不到位 沉默的大多数 这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。\n宣传不到位 宣传不到位的常见原因有以下几种：\n投入不够 政策错 没有细分用户 投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。\n金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。\n为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？\n很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。\n政策错 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。\n大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。\n首先提到 openSUSE，大家想到的应该是：\n华丽 稳定 用户少 很少人讲 千年老二。红帽的小弟。 一个华丽而稳定的系统，为什么 Linux 中文圈却没有声音？我能想到的有两方面：\n宣传不到位 沉默的大多数 这就是我们的现状。为什么会有这些现状，玛格丽特有几篇选料生猛的文章。社区的管理者应该都有共鸣。我们试图解决这一问题。\n宣传不到位 宣传不到位的常见原因有以下几种：\n投入不够 政策错 没有细分用户 投入不够 这里的投入不够不只是批评 SUSE，也在批评社区自己。SUSE 对 Linux 社区一直是有期待的，这种期待到了什么程度呢？如果你是一个来自其它社区的成员，想要去参与 openSUSE Conference，我们的 Travel team 出机票。SUSE 也曾为 openSUSE 在大陆的推广做过很多工作，「最漂亮的 Linux 发行版」，听说过吧，但是很遗憾，在一个没有培育出「我应该怎样」的国家，这些努力都可悲的失败了。这是所有开源活动都会面临的问题，玛格丽特总结的很好，大家都是站在泡沫上的，人家爱的就是你这股冒傻气似的不要钱。\n金钱社会，奉献总是看得很轻。这就是为什么至今中国开源运动的中坚依然是 70 末 80 初这些人。因为理想已经被现实取代了，我们没法在用「开源是为人类解放」来招揽用户了。或者说，在一个全民追求「装逼又不贵」的社会，我们已经断代了。在这样的社会，用户的多少已经不能说明问题了。我们必须认识到：现在是末法时代，不是传教的时代，不是我扯起大旗就能拉帮结伙的时代，而是，我们要把我们的理想，贩卖，给我们想要卖的人。\n为什么要批评社区呢？因为中文社区没有发出过自己的声音。会哭的孩子有奶吃。Ubuntu 宣传的多，人家就认识它。你中文社区没有哭过，国际社区和 SUSE 又怎么会知道你饿？\n很幸运，现在这个问题已经开始着手解决了。SUSE 中国目前指定了两位 Site Manager，Sunny 和 Jia ju 来作为联系社区的纽带，再加上 SUSE Desktop Team 的协助，弹药的问题总算解决了，现在能拉起一个加强排还是一个加强连，就看社区能够吸引到多少大头兵了。\n政策错 这是很多社区都不愿承认的问题。Linux 社区总是基友少，嘴炮多，越活跃的，嘴炮越多。像 openSUSE/Fedora 这种完全没冲突的基友社区，少。但我想问一句，我们的理想不是一起的么？\n目前几乎所有的社区的定性思维就是：用户？（学三国杀司马懿，天命？）哈哈哈哈…\n正如马晓骏在 Linuxtoy 说的那样，一群市场份额不到 1% 的在窝里斗。我们的星辰大海在哪里？在 Windows！ 在 Mac！根本不在 Linux。所以每天去喷 RedHat 的 GNOME 输入法、去喷 Ubuntu 的 Mir，去八卦开发者之间的总总过节，其实是在自掘坟墓。\n玛格丽特想让我代表，群嘲大家一句，你们非常幼稚可笑。\nLinux 应该是一个大家庭，是一个和 Windows/Mac 分庭抗礼的社区。是一个「我是一个 Linuxer 」在任何人面前说起来都自豪骄傲的社区。是一个所有发行版像兄弟姐妹一样团结有爱的社区。而不是一个相互挖角，转化对方用户，这个不行用那个，那个不行用这个的社区。不是一个用 Linux 不好意思说，像加入了邪教一样的社区。而不是一个鄙视 Windows/Mac 的社区。鄙视是因为自卑，不敢跟人家站在一起，才会拼命的说自己好。对，我用 Linux，我是一个 Linuxer，这是一个 bug 重重没事死给你看的系统，但是，那是完全属于我的系统，那是，我，的系统。而不是一个用了几年转投 Mac 的社区。亲！我们不是回收站 ！\n没有细分用户 好吧（摊手），大家都意识到了我们的问题出在那里。下面就让我简单教教大家该怎么卖吧。这是玛格丽特教的。她是搞金融的，滚雪球她最在行了。\n首先是细分用户\n在座的诸位都非营销专业，这个应该不懂。所以我们都是犯了错的，都是有原罪的。\n两个误区： 1. 用户就是社区 2. 用户就是用户\n用户就是社区。这点 openSUSE 社区犯过错。用户不是社区。贡献者才是社区。\n用户是，迎面而来的一片刀子，心胸有多大，就插多少刀子。你做了 99% 的好事，一件事没让那帮爷满意，你就是千夫所指。这就是用户。丝毫不会想你没有收过一分钱，上班时间抽空照顾社区，下班整个人就交给社区，是多么的不容易，是多么的难能可贵，自己应该对你有多么的亏欠。理解都做不到！这就是用户。你就生来是他们的奴隶，开发他们的东西，他们吃饱一抹嘴开始挑捡你。这就是用户。我们也是人！不是服务器！更不是资源！\n贡献者与用户的不同，就在于理解。所以使用即支持，完全是屁话，有时候某些人使用完全是给你添堵！Fedora 的，问句，马同学在你们社区，你们堵吗？Ubuntu 的，问句，一堆嘴巴很脏的小白在你们社区，你们堵吗？看到你在厕所吃「饭」，会默默帮你把门带上的，这才是贡献者。想你所想，不明觉厉，就是理解。使用不是支持，理解才是支持！\n用户就是用户。\n用户不是一整块蛋糕，要么全吃掉，要么全别吃！用户是多种多样的，吃蛋糕，你爱吃鲜奶，可以把鲜奶吃了，爱吃水果，可以把水果吃了，爱吃蛋糕，可以把蛋糕吃了。没有爱吃蛋糕的？那就给 Windows 去吃嘛。\n细分用户就是回答这样一个问题：\n我想要什么样的使用者？\n这个问题，openSUSE 社区就是当初没有思考过这个问题，才导致了现在这种「虚假繁荣」、「尾大不掉」、「百足之虫死而不僵」。为什么这么说呢？ OpenSUSE 是一个国际性大社区，在中文圈用户也很多，但是为什么没有社区？因为你的使用者都是用户，而不是贡献者。简单说，你的使用者都是沉默的大多数，而非积极分子。要么是用 openSUSE 开发其它东西的，也即生产环境，要么是用 openSUSE 就为求方便求稳定不爱找事的。就是说，来你这儿的都是为了从你这拿东西的，而不是有借有还的。\n有借有还才是一个社区，如果你的社区全是嗷嗷待哺的，要维基文章，要软件包，要新手指南。而没有几个正常的成年人。那么这是一个客服站台，而不是一个社区。再次强调，社区不是客服站台。如果你把社区当作客服站台来做，而不去引导使用者贡献，那么挨累是你活该。社区充其量是一个接站司机。把用户从不自由的微软接到 Linux，教会他游泳，之后汪洋大海任君驰骋。\n这是 openSUSE 曾经犯过的错误。也就是说，一整个 Thruth 时代我们其实都在犯错，这个错误被吃饱了一抹嘴的用户总结为「用 openSUSE 就是用 Thruth」。王总多可悲啊，被一群抠脚大汉公用了好几年！\n所以这种错误我们以后不会再犯。\n细分用户就是把用户归类，然后选出你要的那类。\n用户大致可以分为以下几类，是根据他们处在了解 Linux 的不同阶段划分的。这里面没有任何的身份地位，钱多钱少，学历高低，总之现实当中唯一的、在虚拟社会依然需要衡量的只有以下几点：\n人品 修养 人品不好你不能让他管钱发礼品。修养不够你不能让他做新手的引导员。农民工一样可以成为社区的中坚力量，这点我们比现实中的教会要好的多。教会都能做那么大，我们凭什么不能？！\n用户的分类是：\n完全小白。电脑上还是 Windows。知道 Linux，好奇，没用过。 装机客。就是一张硬盘上面好几个操作系统的。 双系统。Windows 和 Linux 单系统。 单系统开发。 其中完全小白是最方便勾引的。数量也最大。这里 openSUSE 和 Ubuntu 都有先天优势，那就是我们的 UI 做的漂亮。但是大家都很排斥这部分人。其实这部分人如果有一个耐心的大哥哥大姐姐引导，再有一些人陪他聊天，关怀他，一个 Release，就可以变成死忠用户。甚至都不会换发行版，因为他的所有 Linux 知识都来自于一个发行版。比如玛格丽特，她就知道 openSUSE 漂亮，那就是她的第一套。勾引这部分人其实非常简单：Linux 不中毒。Linux 漂亮。Linux 能装逼。Linux 不用关机，等等等等。勾引一个人的好奇心，远比勾引一个没有好奇心神秘感的人容易得多。唯一需要的，就是一点点耐心，一点点设身处地，和一些死机、崩溃处理的基本知识。这类人一旦选了某个发行版，都是因为自己解决不了的问题或没人搭理才被逼走的，而没有一个主动想走的。习惯是非常强大的力量！但是除了 Ubuntu，我们似乎都忽略了这些人。在这一点上，就算 Ubuntu 有千万不好，它的方向是对的。我们其它发行版也要自己去地里刨食吃，而不是等着偷鸡！\nopenSUSE 的愿景就是继续发扬自己的外观，以及像 Windows 一样的稳定，这是我们的先天条件，都不用去特意做就能达到，我们需要的是一些热心的用户，趴在论坛上，一些热心的用户，用简单的文字去写维基。然后说两句暖心的话，做一些基本的指引。我们社区的目标就是要建立这样的一个系统。\n但是这样的系统需要牢牢记住我前面的那句话：社区不是客服站台！\n目前的 80 后有不看说明书遇到问题不思考直接找人的臭毛病。如果听之任之，那么你就是客服站台。要学会说不，做社区呢，就是为了一个开心，把自己搞成奴隶或服务生、接线生的角色，那误人误己不如不做。也就是说，回答问题的时候一定不能直接说答案，是的，那样显得你很牛逼，但是牛逼的后果就是，能者多劳。要像数学考试一样，写清推理思路，直接写得数是没分的！\n再说装机客。\n目前各大 Linux 社区的主要拉拢对象都是这部分人。我的看法则正好相反。这部分人恰恰是你最不需要重视的一部分人。因为他们就没有一丝一豪的发行版忠诚度。\n因为基本 Linux 知识和各大发行版的入门知识他们都懂，他们比较的完全是你发行版的底蕴，比如稳定性，维基文章和软件包数量，是否支持特定硬件，有没有特定开发工具，而人气在他们的考虑中权重相当低。因为他们懂得如何使用 bugzilla 直接联系开发者。所有的中间渠道对他们来说完全没用。这时的他们也不可能参与到特定发行版的中间渠道中去。简单说，如果你不是开发者，在论坛上回答这类人的问题，多余。因为他们只是 80 后的毛病作祟，回头人家自己就 google 到了。而他们关注的，恰恰是你在服务小白过程中大浪淘沙积累下的东西。如果把目标定位这类人，就好像和一个没国籍的人说爱国一样，事倍功半都是多的，完全就是徒劳。\n而最后三类，完全是可遇而不可求的了，因为人家完全建立了自己的 Linux 价值观，有了固定的发行版。转换发行版只有在自己的发行版深深伤了他的心，或者盛情难却同时受邀的发行版又确实比现在用的好或至少要不相上下，才会发生。简单说，我用着 openSUSE，你邀请我去用 puppy，这不是侮辱我智商呢么？是的，所有发行版的地位都是平等的，但是用户体验不一样呀！\n好，简单分类清楚了。现在我们来讲原则。原则就是：\n不要贪多嚼不烂。不要干自己能力不及的事情。\n贪多嚼不烂就是要专一。你可以服务多个小白，但不能挑捡问题。如果做不到，那么只服务一个。\n不要自己是普通用户试图去拉拢对方开发者。会被喷很惨，你解释不明白，反而给人家留下了坏印象。括弧，女生除外。\n下面是小白的详细分类：\n理工科专业的在校小白。（计算机、通讯工程之类有 Bonus） 个人能力非常强的外向型社会人员。（营销、市场、互联网行业有 Bonus） 营销类、社会活动类在校小白。 其他在校小白。 IT 公司程序员。 其他社会人员对社区有兴趣的。 其他社会人员对社区没兴趣的。 这些人的权重是不同的。理工科在校小白是火种。因为拿下他们你就拿下了这个学校。外向型社会人员。这是中坚。你拿到他们立刻就可以去办推广活动。比如我拿下一个 SUSE 的漂亮前台，那我立刻就进北邮搭台。剩下的权重逐级降低。在校生要优于社会人员，一是社会人员事情多，二是社会人员激情少。至于职业，在校生特别好问，社会人员只要他不做安利，一般也会回答的。\n过程中你必须要建立起小白们有借有还的理念。比如「这个问题我和某某某探讨过，他遇到的是一模一样的情况，他答应后头 document 到维基上，要不你私信他一下？」建立他与社区之间的 connection，让他感受到被重视，于是才会有责任感去参与社区。你白帮忙，帮完了什么都不说，那你是雷锋，不是做社区。\n沉默的大多数 特点：\n常年潜水（多数） 说话必吐槽（少数） 倚老卖老（极少数） 处理原则：\n潜水就当他不在。 吐槽就当他不在。 卖老就当他不在。 潜水用户除非你有深水炸弹，否则就请允许他们阴魂不散。而且如果是你上一个决策错误带来的潜水用户，他们冬眠也不见得是坏事。\n吐槽用户基本是对系统的某一点特别不满。但是这种人常常忽略了一点就是，发行版的缺点除了内部整合问题和打包 bug，绝大部分来自上游。还忽略的一点就是，这可能是特定硬件问题。对于一个以偏概全的人，你的话是被曲解成狡辩的，而且中国人素质普遍较差，如果不是为了 debug troll，建议节省自己的口舌和生命。\n卖老用户是吐槽用户进化的，Linuxtoy 上比较多见。特点就是 I know Linux from day one。你一不了解科技史的跟我瞎掰什么。他们是不知道只有有目的的做事的人才有资格掰社区的。而且经常会想象出一些虚无飘渺的权力与镇压，你是社区管理者是吧，那你为了手中的权力是一定会挥舞大棒的。而且还经常会捆绑民意，制造你欺压良善的感觉。因为这种人一般很自卑很懒，不想干活又想要尊重。只能带着一种我是社区的代表的尊严法相来和你对抗才会找到自尊。典型的「人在心不在」的麻瓜却想假装一个「心在人不在」的撒手大佬。所以最简单的方法就是照章办事，触犯直接开革。这时不能讲究人情。因为他不会领你情的。反而你落下了一个软弱可欺的形象。\n也许有人说，社区不是要民主吗？对，有限民主，建立在每个人都对自己说话负责，彼此尊重的基础上。因为反对而反对的人，如果大家都能够视而不见，那么就视而不见，否则有这样的队友参与社区事务讨论是不会产生任何建设性意见的，因为他做的事情就是水混好摸鱼。只有一个意见的社区，比起意见太多以至于拿不出意见的社区要好很多，因为至少无论正确错误，我们大方向上是在前进。而 Linux 社区，好就好在，它没有「错误的方向」。\nopenSUSE 的愿景 一个对新人完全友好的发行版。（DOING） 一个能让 Refugee 们一定程度上满意的发行版。（DONE） 一个多核心的社区。单核心是极为不稳定的。（TODO） 一个充满了「我觉得我该干点什么」的贡献者的社区。（TODO） 一个团结有爱的 Linux 中文圈中的一份子。（PARTIAL） 谢谢大家！\n",
+  "wordCount" : "271",
+  "inLanguage": "en",
+  "datePublished": "2013-03-23T00:00:00+08:00",
+  "dateModified": "2013-03-23T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -102,7 +203,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -275,7 +376,7 @@
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

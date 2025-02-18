@@ -2,152 +2,152 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://marguerite.github.io/</loc>
     <lastmod>2025-02-12T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
+    <loc>https://marguerite.github.io/posts/</loc>
     <lastmod>2025-02-12T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</loc>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</loc>
     <lastmod>2025-02-12T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</loc>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</loc>
     <lastmod>2025-02-10T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</loc>
     <lastmod>2025-02-07T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/getting_to_know_fontconfig_part_three/</loc>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/</loc>
     <lastmod>2022-11-26T22:02:04+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/getting_to_know_fontconfig_part_two/</loc>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/</loc>
     <lastmod>2022-11-25T19:17:09+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/getting_to_know_fontconfig_part_one/</loc>
+    <loc>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</loc>
     <lastmod>2022-11-25T12:13:29+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</loc>
+    <loc>https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</loc>
     <lastmod>2022-11-23T20:01:29+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</loc>
+    <loc>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</loc>
     <lastmod>2020-11-28T16:07:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</loc>
+    <loc>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</loc>
     <lastmod>2020-11-28T16:07:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</loc>
+    <loc>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</loc>
     <lastmod>2020-11-28T14:59:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/color_emoji_in_opensuse/</loc>
+    <loc>https://marguerite.github.io/posts/color_emoji_in_opensuse/</loc>
     <lastmod>2020-11-04T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</loc>
+    <loc>https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</loc>
     <lastmod>2020-11-04T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</loc>
+    <loc>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</loc>
     <lastmod>2016-12-31T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/</loc>
+    <loc>https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/</loc>
     <lastmod>2016-01-23T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</loc>
+    <loc>https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</loc>
     <lastmod>2016-01-23T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</loc>
+    <loc>https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</loc>
     <lastmod>2016-01-18T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</loc>
+    <loc>https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2016-01-12T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</loc>
+    <loc>https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</loc>
     <lastmod>2015-08-02T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</loc>
+    <loc>https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</loc>
     <lastmod>2014-07-11T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</loc>
     <lastmod>2013-10-12T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</loc>
     <lastmod>2013-03-26T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</loc>
+    <loc>https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</loc>
     <lastmod>2013-03-23T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</loc>
     <lastmod>2013-03-21T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</loc>
+    <loc>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</loc>
     <lastmod>2013-03-19T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</loc>
+    <loc>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</loc>
     <lastmod>2013-03-17T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</loc>
+    <loc>https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</loc>
     <lastmod>2013-03-15T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</loc>
+    <loc>https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</loc>
     <lastmod>2013-03-08T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</loc>
     <lastmod>2013-03-05T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2013-02-24T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</loc>
     <lastmod>2013-02-24T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</loc>
+    <loc>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2013-02-18T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</loc>
+    <loc>https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</loc>
     <lastmod>2012-11-11T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</loc>
+    <loc>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</loc>
     <lastmod>2012-10-20T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/boot_btrfs_takes_too_long_to_load_initramfs/</loc>
+    <loc>https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/</loc>
     <lastmod>2012-10-20T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</loc>
+    <loc>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</loc>
     <lastmod>2012-05-16T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</loc>
+    <loc>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</loc>
     <lastmod>2012-05-15T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</loc>
+    <loc>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</loc>
     <lastmod>2012-05-13T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</loc>
+    <loc>https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</loc>
     <lastmod>2012-04-10T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</loc>
+    <loc>https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</loc>
     <lastmod>2012-04-04T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</loc>
     <lastmod>2012-03-31T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</loc>
+    <loc>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</loc>
     <lastmod>2012-03-31T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</loc>
+    <loc>https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</loc>
     <lastmod>2012-03-30T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</loc>
+    <loc>https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</loc>
     <lastmod>2011-12-26T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</loc>
+    <loc>https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</loc>
     <lastmod>2011-12-07T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</loc>
+    <loc>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</loc>
     <lastmod>2011-10-26T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</loc>
+    <loc>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</loc>
     <lastmod>2011-10-26T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://marguerite.github.io/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://marguerite.github.io/tags/</loc>
   </url>
 </urlset>

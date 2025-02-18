@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>fontconfig 几个常见的坑 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
@@ -23,16 +23,16 @@
 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif
 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
+<link rel="canonical" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
 <noscript>
     <style>
         #theme-toggle,
@@ -69,7 +69,86 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="fontconfig 几个常见的坑">
+  <meta property="og:description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;sans-serif&lt;/string&gt; &lt;/test&gt; &lt;test name=“family” compare=“eq”&gt; &lt;string&gt;monospace&lt;/string&gt; &lt;/test&gt; &lt;edit name=“family” mode=“delete”/&gt; &lt;/match&gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-11-04T00:00:00+08:00">
+    <meta property="article:modified_time" content="2020-11-04T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fontconfig 几个常见的坑">
+<meta name="twitter:description" content="最近 Microsoft 加入 OIN，贡献了它的 60000&#43; 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。
+后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：
+第一个坑：从 monospace 中清除 sans-serif
+比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：
+&lt;match&gt;
+    &lt;test name=“family” compare=“eq”&gt;
+        &lt;string&gt;sans-serif&lt;/string&gt;
+    &lt;/test&gt;
+    &lt;test name=“family” compare=“eq”&gt;
+        &lt;string&gt;monospace&lt;/string&gt;
+    &lt;/test&gt;
+    &lt;edit name=“family” mode=“delete”/&gt;
+&lt;/match&gt;
+意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif
+删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "fontconfig 几个常见的坑",
+      "item": "https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "fontconfig 几个常见的坑",
+  "name": "fontconfig 几个常见的坑",
+  "description": "最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。\n后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：\n第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：\n\u0026lt;match\u0026gt; \u0026lt;test name=“family” compare=“eq”\u0026gt; \u0026lt;string\u0026gt;sans-serif\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;test name=“family” compare=“eq”\u0026gt; \u0026lt;string\u0026gt;monospace\u0026lt;/string\u0026gt; \u0026lt;/test\u0026gt; \u0026lt;edit name=“family” mode=“delete”/\u0026gt; \u0026lt;/match\u0026gt; 意思是如果 pattern 有 sans-serif，还有 monospace，就把 sans-serif 删除。目的是让字体只有一个 generic name。起因在于 /usr/share/fontconfig/conf.avail/49-sansserif.conf（针对所有没有 sans-serif、serif 和 monospace 的 pattern 加上 sans-serif）\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。\n后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：\n第一个坑：从 monospace 中清除 sans-serif 比如 Hack 字体的官方配置，还有最著名的 eev’s rant about fontconfig，都推荐了这么一种做法：\n",
+  "wordCount" : "974",
+  "inLanguage": "en",
+  "datePublished": "2020-11-04T00:00:00+08:00",
+  "dateModified": "2020-11-04T00:00:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -87,7 +166,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -371,7 +450,7 @@
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

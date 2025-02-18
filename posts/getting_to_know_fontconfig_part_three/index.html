@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>深入理解 Linux fontconfig 第三部分 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
@@ -21,16 +21,16 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
 
 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_three/">
+<link rel="canonical" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_three/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
 <noscript>
     <style>
         #theme-toggle,
@@ -67,7 +67,86 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="深入理解 Linux fontconfig 第三部分">
+  <meta property="og:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&#34;scan&#34;&gt; 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-11-26T22:02:04+08:00">
+    <meta property="article:modified_time" content="2022-11-26T22:02:04+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Linux fontconfig 第三部分">
+<meta name="twitter:description" content="上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 &lt;match target=&quot;scan&quot;&gt; 虽然应用了，但是没有影响最终 FontSet 中 &ldquo;Noto Scan CJK SC&rdquo; 的 charset。
+我们这篇要继续 debug：
+FcConfigSubstitute (config, font, FcMatchScan)
+
+FcFileScanFontConfig 中的这段代码。
+无踪无迹的指针
+我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。
+通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：
+/* different &#39;kind&#39; won&#39;t be the target of edit */
+if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
+  value[object] = vl;
+
+但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "深入理解 Linux fontconfig 第三部分",
+      "item": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解 Linux fontconfig 第三部分",
+  "name": "深入理解 Linux fontconfig 第三部分",
+  "description": "上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 \u0026lt;match target=\u0026quot;scan\u0026quot;\u0026gt; 虽然应用了，但是没有影响最终 FontSet 中 \u0026ldquo;Noto Scan CJK SC\u0026rdquo; 的 charset。\n我们这篇要继续 debug：\nFcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。\n无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。\n通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：\n/* different 'kind' won't be the target of edit */ if (!value[object] \u0026amp;\u0026amp; kind == r-\u0026gt;u.test-\u0026gt;kind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "上一篇说到，我们 debug 了 FcConfigSubstitute 和 FcConfigReference，最后找到了 FcFileScanFontConfig，一番魔改后发现 虽然应用了，但是没有影响最终 FontSet 中 “Noto Scan CJK SC” 的 charset。\n我们这篇要继续 debug：\nFcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段代码。\n无踪无迹的指针 我们知道，上面的 font 是一个指针。要想前后输出有所变化，是一定要修改这个指针指向的数据的。也就是说，我们只需要去 FcConfigSubsitute里找修改指针指向数据的部分就可以了。所以我们只需要关注应用规则集时候的 case FcRuleEdit 里 case FcOpAssign 的部分就好。\n通过 if (value[object]) 这个判断我们找到了 test 跟 edit 的联系，原来是用 test 去找到要修改的部分：\n/* different 'kind' won't be the target of edit */ if (!value[object] \u0026\u0026 kind == r-\u003eu.test-\u003ekind) value[object] = vl; 但是剩下的都是 FcConfigAdd 和 FcConfigDel 是修改 config 的，并不直接修改 Font。\n正当我措手无策的时候，无意间看到了下面：\ncase FcOpAssignReplace: /* * Delete all of the values and insert * the new set */ FcConfigPatternDel (p, r-\u003eu.edit-\u003eobject, table); FcConfigPatternAdd (p, r-\u003eu.edit-\u003eobject, l, FcTrue, table); /* * Adjust a pointer into the value list as they no * longer point to anything valid */ value[object] = NULL; break; 这家伙是修改 pattern 的啊！\n语焉不详的文档 大家一定看到过文档中的这段：\nMode With Match Without Match --------------------------------------------------------------------- \"assign\" Replace matching value Replace all values \"assign_replace\" Replace all values Replace all values \"prepend\" Insert before matching Insert at head of list \"prepend_first\" Insert at head of list Insert at head of list \"append\" Append after matching Append at end of list \"append_last\" Append at end of list Append at end of list \"delete\" Delete matching value Delete all values \"delete_all\" Delete all values Delete all values 看起来 assign 和 assign_replace 没差。\n但实际上差多了！\n我把我的代码换成：\nNoto Sans CJK SC charset 0x203c 0x2122 再跑：\nNoto Sans CJK SC before match scan: Yes charset count: 44810 after match scan: Yes charset count: 44809 成功去掉了‼字符！\n于是：\n如果是 这种需要调整 pattern 的，用 assign_replace，如果是只调整 config 就可以的，比如 ，用 assign。\n另外，在 fontconfig 里，万物皆 pattern，不要被 迷惑了，实际上它代码中的 pattern：\nstruct _FcPattern { int\tnum; int\tsize; intptr_t\telts_offset; FcRef\tref; }; 就是指针的 struct。而对于 FcPatternElt 的注释也说了：\n/* * Pattern elts are stuck in a structure connected to the pattern, * so they get moved around when the pattern is resized. Hence, the * values field must be a pointer/offset instead of just an offset */ 这是阅读源代码才得到的金科玉律啊！也就是说，别人说的，Firefox/Chromium 不支持调整 charset，是不对的，只是我们没会用 fontconfig，不要甩锅给 chromium 了！\n为什么只去掉了一个字符 因为程序里写法错了，正确的写法是：\nNoto Sans CJK SC charset 0x203c 0x2122 0x1f250 0x1f251 只有一个 block。多余的会被丢弃。\n我的问题解决了。下一步就是修改我的代码去了，顺便给大家一个去掉系统上已安装字体中 emoji 字符的 c 文件吧。因为 fontconfig 关于 FcCharSet*相关方法的 Public 函数里没有 FcCharSetIterStart 和 FcCharSetIterNext，没有办法 loop charset 里的 leaf 并打印。 也没有 FcNameUnparseCharSet，没有办法直接打印 charset。我是魔改了 fontconfig.h、src/fcint.h写出来的，需要你重新编译 fontconfig。\n#include #include int main(int argc, char **argv){ FcFontSet* fs; FcPattern* pat; FcObjectSet* os; FcChar8* strpat = (FcChar8*)\":lang=und-zsye\"; pat = FcNameParse(strpat); os = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char*)0); fs = FcFontList(0, pat, os); FcPatternDestroy(pat); FcObjectSetDestroy(os); FcCharSet* cs = FcCharSetCreate(); int i; for(i=0; infont; i++){ FcCharSet* tmp; if (FcPatternGetCharSet(fs-\u003efonts[i], FC_CHARSET, 0, \u0026tmp) != FcResultMatch) { goto nofont; } cs = FcCharSetUnion(cs, tmp); printf(\"%d\\n\", FcCharSetCount(cs)); } FcFontSetDestroy(fs); FcPattern* pat1; FcFontSet* fs1; FcObjectSet* os1; if (argc == 1) { printf(\"you have to specify a font family to subtract!\\n); goto nofont; } FcChar8* strpat1 = (FcChar8*)argv[1]; pat1 = FcNameParse(strpat1); os1 = FcObjectSetBuild(FC_FAMILY, FC_CHARSET, FC_FILE, (char*)0); fs1 = FcFontList(0, pat1, os1); FcPatternDestroy(pat1); FcObjectSetDestroy(os1); FcCharSet* cs1 = FcCharSetCreate(); for(i=0; infont; i++){ if (FcPatternGetCharSet(fs1-\u003efonts[i], FC_CHARSET, 0, \u0026cs1) != FcResultMatch) { goto nofont; } } FcFontSetDestroy(fs1); FcCharSet* cs2 = FcCharSetCreate(); cs2 = FcCharSetIntersect(cs1, cs); FcStrBuf buf; FcChar8 init_buf[1024]; FcStrBufInit(\u0026buf, init_buf, sizeof(init_buf)); if (FcNameUnparseCharSet(\u0026buf, cs) \u0026\u0026 FcStrBufChar(\u0026buf, '\\0')) { printf(\"%s\\n\", buf.buf); } else { printf(\"charset (alloc error).\\n\"); } FcStrBufDestroy(\u0026buf); FcCharSetDestroy(cs); FcCharSetDestroy(cs1); FcCharSetDestroy(cs2); return 0; nofont: return 1; } 使用方法：下载 fc-emoji-subtract.patch：\ngit clone https://github.com/freedesktop/fontconfig patch -p1 \u003c ../fc-emoji-subtract.patch 然后正常编译就可以，之后 fontconfig/fc-emoji-subtract 有一个 fc-emoji-subtract，用法：\n$ fc-emoji-subtract \"Noto Sans CJK SC\" 20 23 2a 30-39 a9 ae 203c 2049 2122 2194-2199 24c2 25aa-25ab 25b6 25c0 2600-2603 260e 261d 262f 2640 2642 2660 2663 2665-2666 2668 267b 26a0 26bd-26be 2702 27a1 2934-2935 2b05-2b07 3030 303d 3297 3299 1f170-1f171 1f17e-1f17f 1f18e 1f191-1f19a 1f201-1f202 1f21a 1f22f 1f232-1f23a 1f250-1f251 你就可以针对这些 charset 自己写规则了。\n其他我在第一部分抛出问题的答案 首先，FcConfigSubstitute 删除 charset leaf，如果你是显式的用，就是在 FcListPatternMatchAny阶段，因为 config 里无论你是 assign 还是 assign_replace 都认的。如果你是隐式的用，那就是在 FcFileScanFontConfig 的时候，但是必须用 assign_replace。\n其次，FcConfigSubstitue 只会做 ，如果你的第一个参数也就是 config 传 0 会做 。这是我验证过的。而 只会在一个地方做：FcFontRenderPrepare（可以搜 FcMatchFont 查到）。另外 Chromium 的 GetFontRenderParamsFromFcPattern 是没有调用 FcFontRenderPrepare 的，它只会取字体默认的 aa，autohint, embedded_bitmap, hinting 和 rgba。所以你们批评它也没错。 不做是对的，直接用缓存，把做 scan 的权力交给你自己\n下一篇，会谈谈双猫说的 Chromium 只返回一个 Fallback 字体的问题。敬请期待。\n",
+  "wordCount" : "670",
+  "inLanguage": "en",
+  "datePublished": "2022-11-26T22:02:04+08:00",
+  "dateModified": "2022-11-26T22:02:04+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -85,7 +164,7 @@ if (!value[object] &amp;&amp; kind == r-&gt;u.test-&gt;kind)
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -344,7 +423,7 @@ patch -p1 &lt; ../fc-emoji-subtract.patch
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

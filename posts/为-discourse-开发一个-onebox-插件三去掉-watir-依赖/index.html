@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
@@ -21,16 +21,16 @@
     &lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt;
 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+<link rel="canonical" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://marguerite.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
 <noscript>
     <style>
         #theme-toggle,
@@ -67,7 +67,85 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
+  <meta property="og:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖">
+  <meta property="og:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult(’’)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：
+&lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt; 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-11-28T16:07:00+08:00">
+    <meta property="article:modified_time" content="2020-11-28T16:07:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖">
+<meta name="twitter:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
+    browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] })
+    browser.goto(link)
+    browser.image(id: reload_id).click
+但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
+我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
+    &lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt;
+      Refresh
+      &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt;
+    &lt;/div&gt;
+点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：
+    &lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt;
+使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://marguerite.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+      "item": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+  "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
+  "description": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: [\u0026#39;--headless\u0026#39;, \u0026#39;--window-size=1200x600\u0026#39;, \u0026#39;--no-sandbox\u0026#39;, \u0026#39;--disable-dev-shm-usage\u0026#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u0026lt;div accesskey=\u0026#39;r\u0026#39; class=\u0026#39;btn btn-outline-primary build-refresh float-right\u0026#39; onclick=\u0026#39;updateBuildResult(\u0026amp;#39;\u0026amp;#39;)\u0026#39; title=\u0026#39;Refresh Build Results\u0026#39;\u0026gt; Refresh \u0026lt;i class=\u0026#39;fas fa-sync-alt\u0026#39; id=\u0026#39;build-reload\u0026#39;\u0026gt;\u0026lt;/i\u0026gt; \u0026lt;/div\u0026gt; 点击它的时候执行的是“updateBuildResult(\u0026rsquo;\u0026rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：\n\u0026lt;script src=\u0026#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js\u0026#34;\u0026gt;\u0026lt;/script\u0026gt; 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600', '--no-sandbox', '--disable-dev-shm-usage'] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u003cdiv accesskey='r' class='btn btn-outline-primary build-refresh float-right' onclick='updateBuildResult(\u0026#39;\u0026#39;)' title='Refresh Build Results'\u003e Refresh \u003ci class='fas fa-sync-alt' id='build-reload'\u003e\u003c/i\u003e \u003c/div\u003e 点击它的时候执行的是“updateBuildResult(’’)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：\n\u003cscript src=\"/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js\"\u003e\u003c/script\u003e 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：\nfunction updateBuildResult(t) { var i = [] , o = {}; $(\".result div.collapse:not(.show)\").map(function(e, t) { var n = $(t).data(\"main\") ? $(t).data(\"main\") : \"project\"; o[n] === undefined \u0026\u0026 (o[n] = []), $(t).data(\"repository\") === undefined ? i.push(n) : o[n].push($(t).data(\"repository\")) }); var e = $(\"#buildresult\" + t + \"-box\").data(); e.show_all = $(\"#show_all_\" + t).is(\":checked\"), e.collapsedPackages = i, e.collapsedRepositories = o, $(\"#build\" + t + \"-reload\").addClass(\"fa-spin\"), $.ajax({ url: $(\"#buildresult\" + t + \"-urls\").data(\"buildresultUrl\"), data: e, success: function(e) { $(\"#build\" + t + \" .result\").html(e) }, error: function() { $(\"#build\" + t + \" .result\").html(\"No build results available\n\") }, complete: function() { $(\"#build\" + t + \"-reload\").removeClass(\"fa-spin\"), initializePopovers('[data-toggle=\"popover\"]') } }) } 可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。\n我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：\nurl 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：\n\u003cdiv class='bg-light' data-buildresult-url='/package/buildresult' id='buildresult-urls'\u003e \u003cul class='nav nav-tabs pt-2 px-3 flex-nowrap' data-index='' data-package='marketo' data-project='home:MargueriteSu' id='buildresult-box' role='tablist'\u003e 是 /package/buildresult。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 下面的 ",
+  "wordCount" : "560",
+  "inLanguage": "en",
+  "datePublished": "2020-11-28T16:07:00+08:00",
+  "dateModified": "2020-11-28T16:07:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://marguerite.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -85,7 +163,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -290,7 +368,7 @@
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
