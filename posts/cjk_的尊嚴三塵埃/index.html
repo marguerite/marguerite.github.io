@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>CJK 的尊嚴（三）塵埃 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
@@ -21,16 +21,16 @@
 「在 KDE 活着自由得多」—— @csslayer
 套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
+<link rel="canonical" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
 <noscript>
     <style>
         #theme-toggle,
@@ -67,93 +67,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="CJK 的尊嚴（三）塵埃">
-  <meta property="og:description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
-虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
-它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
-但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
-正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西，但這取決於 GNOME 的要求，大策略是他們定的。」
-意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。
-另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。
-這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。
-但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。
-這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
-@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
-「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2012-05-16T00:00:00+08:00">
-    <meta property="article:modified_time" content="2012-05-16T00:00:00+08:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CJK 的尊嚴（三）塵埃">
-<meta name="twitter:description" content="首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：
-虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節
-它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。
-但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。
-正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西，但這取決於 GNOME 的要求，大策略是他們定的。」
-意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。
-另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。
-這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。
-但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。
-這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。
-@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？
-「在 KDE 活着自由得多」—— @csslayer
-套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://marguerite.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "CJK 的尊嚴（三）塵埃",
-      "item": "https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "CJK 的尊嚴（三）塵埃",
-  "name": "CJK 的尊嚴（三）塵埃",
-  "description": "首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：\n虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節\n它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。\n但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。\n正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西，但這取決於 GNOME 的要求，大策略是他們定的。」\n意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。\n另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。\n這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。\n但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。\n這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。\n@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？\n「在 KDE 活着自由得多」—— @csslayer\n套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：\n虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：關於 GNOME 整合 IBUS 事件的技術細節\n它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。\n但它的結論是錯的。所以看技術就好。但也不是它想錯，是事情後來變化了。\n正在開發 IBUS 的日本人 Takao Fujiwara 說：「也許我可以加一個判斷 ibus.pc 是否存在的東西，但這取決於 GNOME 的要求，大策略是他們定的。」\n意思就是說，IBUS 的開發者私下裏也覺得應該有個開關，但到最後給不給這個開關，還是要看 GNOME 的「大策略」。\n另外即使有這樣的開關，這個開關也不是給用戶的，是給帖子裏的發行版維護者的。就像虎戰士說的，你的發行版沒給你開，還有的選擇，那就是能自己開的 gentoo。這比「drop GNOME」的選擇好了一些，至少還可以有 GNOME 用，雖然折騰过程不比直接 drop 掉簡單。\n這正是我這樣的發行版維護者所喜聞樂見的。至少態度先擺出來。到時候你整合的好，用戶歡迎，自然給你打開; 整合的不好，也有 fallback。這也是我當初去 GNOME DESKTOP DEVEL LIST 發言的目的。目的達到了。我就沒有必要再干預什麼了。因爲我的發行版同樣有用着 GNOME 的小白。\n但目前有沒有，不確定。要說之前是看負面，現在只能看平。看正面還太早。因爲回覆者沒有決定權。\n這依然集中在「編譯依賴」這個環節，而不是「運行 runtime」這個環節。也就是說，你發行版沒開，會怎樣，誰來管。太多技術我不知道，但屢次被提到的一個東西叫 CLUTTER，還有虎戰士提到的 DAEMON，CENTER，究竟不開後會不會死球。想把這個噴出水平我來不了。就像 Xu 私下裏說的，到時候中毒已深，解套可得幾個 release。\n@csslayer 作爲「其他輸入法」的開發者，私下對所謂「中文用戶」的素質極爲失望，在郵件列表裏面這麼說：「即使，即使，GNOME 只有一個 IBUS，我依然能做 FCITX 的 GNOME 支持。」。至於爲什麼沒有對 GNOME 失望，拜託，就沒抱希望好嗎？\n「在 KDE 活着自由得多」—— @csslayer\n套用老 K 的話，我也可以自信的告訴我的發行版的用戶：「即使，即使 GNOME 只有一個 IBUS，我大 KDE 依然有辦法讓 FCITX 作爲 openSUSE 簡體中文的默認輸入法，GCIN 作爲 openSUSE 繁體中文的默認輸入法。而不會讓大家之前的投票都作廢」。\n至於 GNOME，之前一直強調說「它像 KERNEL 一樣不能用「死給你看」的無賴方法做事」是因爲作爲一個有着衆多用戶的桌面環境，它很重要。\n但現在看來它一點都不重要，因爲它就沒在乎你用戶咋看，只要你去反饋，你立刻就被打上「一小撮折騰用戶」的標籤，因爲低級用戶是不應該會報 BUG 的，看，這個事實立刻就被他們的邏輯給歪曲了，「不應該會」，逼急了會不會？所以「高級用戶選擇，低級用戶使用」在他們眼裏根本站不住腳，所以不是我們這些所謂的「高級用戶」想代表你們，而是我們一開始就根本沒法代表你們。至於低級用戶自己去，拜託，技術列表好不好，不談技術直接列入 「Troll 腦殘」，甚至哪怕你談 KDE， 談 KERNEL 都不行。但是他們說：「我們要的是一個面向普通用戶的即拆即用的系統」。\n（別跟我談文化語言差異，先去推上問問我是哪兒畢業的。你抗議，就會有道歉，不抗議，就永遠是那種自大的口吻，我道歉是不想讓中文開發者太難做，另外是真的有點累了。我一個 KDE 腦殘粉，在 LT 上挨着自己人罵，去 GNOME 郵件列表給你們爭取利益？李鴻章難做啊。）\n就像某位開發者說「早就不會去做與上游爭的傻事了，雖然選擇越來越少，但還有選擇」。\n所以，天助自助者，用腳投票吧。\n好了，到這裏，不贊同的我的可以走了。不愛看損人的也可以走了。下面我開始我自己的真正內容。\n豬一樣的隊友 甚至你到郵件列表上罵人我都不會裝和事佬，因爲你們說的就是我想說的。那叫 DPS。沒 DPS 會不會滅團？ 不會，如果 MT 和 HUT 夠強。但是 GNOME 副本裏要有個給大 BOSS 加血，給己方加虛弱的己方奶媽呢？\n（下面我要指名道姓了，我也沒有私人的東西曬出來讓你說沒原則。所有東西都來自於公開事實。你在我的博客上回噴是肯定刪的。起訴呢？一我準備好了接訴狀，二我的博客在大陸不存在。）\n這個人就是郵件列表中的 Ma Xiaojun。\n爲什麼說他不是 NPC 而是「己方」。 因爲一他是中國人，搞的我都有點想當新加坡人了。\n二根據 Xu 無意中爆料的郵件，他的目的是：「把 GNOME 搞壞，然後就有千千萬萬的開發者/維護者搶着修 IBUS 了。當然，誰愛修誰修，他是不修。他想要讓 GNOME 學 UNITY，想要死給用戶看，這樣就有技術進步了。」\n首先他知道，沒有那麼多千千萬萬的開發者/維護者。能「修」的開發者就那麼十幾個，能維護的每個發行版就那麼兩個。這在我的「CJK 的尊嚴（二）聖戰」裏已經很清楚的說明了原因了。\n其次他用 MAC，他要的是技術進步，用戶死活不在他的考慮範圍之內，因爲他不用。\n這就是爲什麼他能在所有人都站在用戶的立場上 FIGHTING 的時候他能給這些戰士們貼標籤諸如「那些覺得 IBUS 是屎的人同時也覺得 GNOME/UNITY 是屎」，這在 GNOME 列表裏等於說只要是出言反對的不管說什麼都是在潑髒水，全然不可信。他們的投票結果因爲用戶沒有昧着良心投給 IBUS 的所以都是髒水。（至於爲什麼沒有投給 IBUS 我前一篇文章有說，而且現在有了，是山木 @hillwood。）他們對 GNOME 提的建議覺得 GNOME 應該改進的地方全是潑髒水。（技術上的事，Takao 和另一位開發者已經對 @csslayer 表示了贊同，用戶體驗的事，GNOME 的人自己都說非常感謝你的反饋，LT 上面用着 IBUS 的人也有反對 GNOME 那麼做的。無論技術什麼實現，在用戶的角度強行綁定就是不對。EVOLUTION 這種例子評論中用戶自己都給解釋的很清楚了）\n此時此地，我想說 Ma 同學非常的獨立客觀啊。這就是我們所有出言反對的人的真實想法。但作爲開發者，他用什麼，他喜好什麼，全然沒關係，他報上游 BUG 是爲了滿足下游用戶的需求。\n爲什麼說他給己方加虛弱？ 實例一，抹黑統計數據 首先，我說我有 openSUSE 用戶的調查，目前 100% 選了 FCITX（調查的事情我上一篇文章解釋的很清楚了），然後他說：\n「大家好啊，我是另一個野生 LINUX 中文用戶，我支持 IBUS。」\n尼瑪？那就是我吹牛逼呢是不？\nLT 評論同樣一個論調「哎呀，又被代表了」「100% 太扯了吧」。\n這不是「代表」的問題，是在你參與投票之前，你的傾向根本不存在。我在 LINUXSIR 的投票貼裏說的很清楚「即使你支持 IBUS，也請來投票，不然贊成替換的多了，你的傾向就會被覆蓋掉。」\n中國不乏這種裝大爺的事，十分的見怪不怪，選票遞到你手裏，你寫個「多拉 A 夢」交上去，扭頭就說「哎呀，又他媽的被代表了」。同樣的調查，憑什麼人家收的到你收不到？因爲工作錯過什麼事情，那不是很正常嗎？董事會還有參加不了的呢，「哎呀又被代表了」，不想被代表，就要積極參與，夠清楚了嗎？\n實際上代表你們的是 Ma 同學：「我不認爲任何社區應該要麼忍，要麼滾。我會報 BUG」他自己會報 BUG，因此所有人都應該報 BUG。\n同樣也代表了開發者/維護者和用戶：「GNOME 能不能把 CJK 做好依賴於本地用戶的參與，這需要兩邊都做事。我對此很樂觀。」是不是很有獨立客觀範兒？反正我不做事，需要你們兩邊一起做事，我很樂觀。\nGNOME 的死不死需要所有 GNOME 用戶的口水，這需要 GNOME 持續的往差了做和用戶的積極參與。我對此很樂觀。反正我該上班上班該吃飯吃飯，啥都不耽誤。\n同時也存在另一個論調「欽點的就是有前景」。就像我在第一篇裏說的：「今天是民國 102 年，滿清遺毒，還真的存在嗎？」答案是廣泛存在，而且你們意識不到。「欽點」？自由軟件世界裏從來沒有「欽點」這個說法。領導人哪個不是「欽點」的，你們爲什麼還要反對他？然後就真有前景了？\n另外一個重要事實是，他用 MAC，偶爾用的發行版是 FEDORA，根本代表不了 openSUSE 的用戶。之前用 UBUNTU，被論壇用戶給罵跑了。看，用戶們，他又來禍害你們了。\n實例二，潑好心人髒水。 到處都有人感慨：「@csslayer 用着一個只有 kde 的系統（chakra），卻爲 GNOME 用戶做了那麼多事，真的是很不容易」\n他直接說「（只要）覺得 IBUS 不好的同時也覺得 GNOME 不好」。覺得好不好是一回事，有沒有心幫你改是另一回事。\n還說「這裏的人都能維護自己的輸入法」。是的，奧巴馬不當總統也能吃上飯，下次開聯合國大會的時候你去那麼說。GNOME 開發者都能維護自己的桌面環境，他們就不該開發 GNOME 了？\n實例三，搶着質疑 先說明一件事，搶着質疑沒錯。\n但是在對方明顯有傾向的情況下，搶着質疑己方，只會大大削弱己方的說服力。所以後來主力 MT @csslayer 都不發言了。\n在 GNOME 的郵件列表裏，這個傾向就是，GNOME 是好的。所以，說 GNOME 不好的，必須自證，說 GNOME，好的，毋庸置疑。好，這就是 Ma Xiaojun 生活的土壤。\n而我們要不要給他解釋呢？解釋吧，他聽不懂，Xu 在 GTALK 上給他解釋了整整三個小時。不解釋吧，看你自己說的話，自己人都懷疑你。因爲即使 Ma Xiaojun 想當漢奸也得對方肯收，所以對方也把他劃入我們陣營。甚至後來把他自己冒充大人物的東西，當作是「偉大和解」。這個後面談。\n好，Ma 都幹了什麼事情呢？\n@csslayer 和 Xu 正在從技術上解釋爲什麼崩潰是可以預見的時候，不懂技術的 Ma（Xu 解釋過）跳出來說：「爲什麼掛是必然的？我覺得不是。即使掛了，我覺得也不那麼壞」另外這句裏還有一句像洋主子邀功的話，大意是說，你們做吧，決定權在你們手裏。什麼時候一個輸入法，需要洋人做決定了？但我懶得批了，爲什麼他們做不了決定的原因前面兩篇文章都有講。\n看這句話的邏輯，是不是車軲轆話誰都會說？反正在這個有傾向的列表裏他無需自證（實際上他證不來）。「爲什麼一定不能吃屎？我覺得不是。即使吃屎了，我覺得也不那麼壞」是的，在礦難或地震的時候，沒有吃的，吃屎也不那麼壞，能活下來。還有吃觀音土的。\n但洋人會怎麼想？哦？你自己說的事情，同胞都不相信你，那我憑什麼相信呢？\n同樣的還有「你看起來假設崩潰必然發生。我不這麼認爲。」\n同樣的還有「爲什麼不能是 GBUS？我覺得 GFCITX 也不錯哦。」\n他總是在你很詳細的解釋了一件事情之後（當時不是向他，他從來就沒成爲過主角，雖然他一直在做這種主導 LIST 的嘗試）。做出這樣簡單的無需自證的反問。「Ma Xiaojun 看起來是個傻逼。我不這麼認爲。他就是個傻逼」要是我和 Xu 都認爲他是這個傻逼，這樣的話顯然無需自證。但他自己看了會非常莫名。\n爲什麼不能是 GBUS 發生在我向老外很清楚明白的解釋了爲什麼不能是 GBUS 之後：IBUS 首先是一個全系統的輸入法，然後才是一個正準備被整合進 GNOME 的輸入法，所以它不能是 GBUS。因爲還有 KDE。（就因爲明確的告訴他，我還被列表管理員警告了一回。他們是這麼說的：這是個關於 GNOME 整合的帖子，因此 IBUS 在 KDE 上死活都不關我事。\n作爲一個 FOSS 社區，你都不負責任到不管人家死活就強推一件事的地步了，還有希望嗎？還不夠 CLOSE 嗎？\n因此我決定反水變成 GNOME 和 IBUS 的腦殘粉，主要任務就是推進他們一切錯誤的決定，保證掛在用戶看，保證 GNOME 早死早超生。\n還有這條「我不明白你的原因」。實際上是他自己說：「我沒見過過一輩子還在的輸入法，但 GNOME 永存。即使 GNOME 3 變了很多東西，我還能認出來文本管理器和文件管理器。」\n是不是一個目的是讓 GNOME 掛在用戶看的人說出這樣挺 GNOME 的話來你都五體投地了？GNOME 3 永存，輸入法必死，難道還不能說明某一個輸入法自己本身不能作爲一個標準？\n還有這條「LINUX 內核是靈活的不代表任何其他的內核都需要是靈活的。自由軟件，自己改。」\n原文是，如果有一天 LINUX 內核說我們選 KDE，GNOME 怎麼辦？還不夠清楚麼？普通用戶要麼用 KDE，要麼滾。自己改？反正 Ma Xiaojun 自己是改不來也不會改，但是裝逼的話誰都會說，沒有 Linus 的腦，卻長了 Linus 的嘴。這樣的話會專門開一個子標題來講，別急。\n還有這條「比喻錯誤」。\n說的是：GNOME 不能用單一輸入法（而應該是一個標準），就像 LINUX 不能只用一個 DE 一樣。這不夠清楚麼？現實是實際上世界上有那麼多桌面環境，LINUX 自然不能只用一個。不然內核開發者明天就少一多半。但他不管的，雖然他說我是一個開發者，我很在乎理論，作爲一個開發者，總是能從衆多解法中挑出最傻逼的那個，總是幻想着不現實的「理論」，明天我們就有新的「相對論」了？意思是我們人類不過是地球上的一些岩石腦子中的童話故事？任何一個尊重現實的人都覺得這樣的神經病趁早關一輩子。\n（寫到這裏，有人警告我說不要再寫了，不然你名聲都壞完了。我這人在你們的世界中存在嗎？所以談這個有必要嗎？快意恩仇就好。有人說不要跟傻逼一般見識，不，你越不一般見識，傻逼越來越多，就好比你越不清理垃圾評論，垃圾評論就會越來越多一樣，治理傻逼，從我做起，從小事做起。\n我知道你們一般人都不會在這種明顯人身攻擊的文章上回覆的，但心裏一定特別爽。我這人寫文沒別的特點，就是通感特別強。保證感同身受的爽死你們。）\n還有這條「這種推給用戶立刻就壞然後接着修接着壞的情況到處都有。我們現在停下來，問題就能得到解決嗎？」。\n看吧，又把自己往 GNOME 開發者的角色裏代入了。如果我直接面對用戶，我是肯定不敢說「哎呀，打個包讓你系統三天不能開機的事情誰都幹過。」，「哎呀，我們朝鮮發射個火箭炸得你家祖屋片瓦無存的事情美國也幹過，認了吧」，即使我幹 NVIDIA 顯卡的時候真的讓山木 @hillwood 的電腦三天不能開機。但我還是會說「謝謝你發現了它。我這就修好」。但是呢，他是「意淫」的開發者，自然敢說。\n我們現在停下來，問題就能得到解決嗎？你正在搶劫，有人阻止你，「我們現在停下來，我們沒錢的問題就能得到解決嗎？」\n實例四：裝大佬 例如：我經歷了自由軟件世界如此之多的失敗，但我依然心存希望\n是不是你要不是個 Mozilla 的人，你都沒臉說這話？馬丁路德金啊，I have a dream…\n還有這句：把一個精心選擇的輸入法框架推送到 freedesktop.org\n實際上我高度懷疑他連 freedesktop 是什麼都不知道。別讓我自證，我這兒是有傾向的，凡是支持我傾向的東西都不需要自證。\n實際上這話是 @csslayer 說的，但原文是推送標準。於是他加上倆形容詞，替換爲他和他的洋主子想看到的「輸入法框架」就貼出來了。嚇壞我了，太牛逼了，嬰兒一落地，就喊一句「海賊王，我當定了」，連發行版的軟件包都沒推送過的人，上來就要推送 freedesktop 標準，世界就是被這幫孩子們玩壞的。\n還有這句：我從 KDE 第一天就認識它。\n太尼瑪霸道了！反正不貼身份證，我都想背誦了！「你知道相對論嗎？」「我從相對論第一天就認識它。」「你知道地心世界嗎？」「我從地球產生就認識它。」\n這得是學術多麼牛逼的人才敢講出來的一句話啊！我相信圍觀列表的 LINUX 內核五大牛人之一 ALAN COX 也不敢說吧。\n還有這句：我剛給你們這幫人註冊了一個頁面\n是不是想到了點什麼不堪回首的往事？小學你媽有沒有給你報過特長班？\n事先說明，GNOME/openSUSE/FCITX/DEBIAN/FEDORA，總之，參與的各方都有自己的維基。手賤不？\n我們發行版大佬直接沒甩他。\n另外還讓我想起一件事，當初也是在 FCITX 郵件列表，這人也是「我爲你們開了一個維基頁面」。什麼意思？我只管開，不管寫，但以後這個頁面的成就是誰的？我的。你們特麼的都是給我打工的。\n另外如果大家做個小統計，就會發現即使我和 Xu，不理他，他也是每篇文章必回的。不信大家去看我博客的各個頁面，都有他的留言。你回覆，他就等着你回覆好和你吵架呢。\n所以我決定，發在主樓，然後刪掉他的所有回覆。\n就像我昨晚在推特說的：\n在真正反水前最后说一句。邮列里那个ma xiaojun是最大的那条臭鱼，基本你说对的他不懂也会站在gnome那边反驳，这和他一贯的洋奸行为极为匹配，lp，fcitx开发，fcitx维基。这人有极强的领导欲和投机意识，智商极低。要是一年后gnome用户受苦。请不要忘了这个功臣。\n这是个自以为比开发者还懂各种项目核心的流氓。对了。他的目的也是让gnome整合，保证必挂，这样就有人去开发ibus了，但他肯定不去。经教育失败没人理他了。目前他积极保证必挂中\n此鉴于他的破坏性行为和意识，我建议各大发行版和中文社区不要接纳他为成员，回答他的任何问题。因为他的目的就是让你挂，然后就有千千万万开发者抢着修你。这人目前在fedora社区。你们自己看着办。\n對了，我現在的也是 GNOME/IBUS 的腦殘粉了。主要工作内容是支持gnome一切决定，确保该整合足够傻逼一定会挂，以敦促大家放弃gnome。\n之前一直说gnome不能挂因为他很重要，我突然释怀了。gnome根本就不重要。老k和fcitx一直都属于我大kde。那尼玛挂了才好啊。所以我是fcitx在ibus的卧底了。后续邮列发言是卧底工作需要。我的朋友们还请不要介意。大家一起演好这场戏，让gnome早死早超生 結\n今天我要求 LT 刪除了我在 LT 所有的轉載。我可受不了我在自己博客寫文，別的站上要我吃屎這種滑稽的行爲。所以乾脆拉在自己地方。要有人來拉，那我就叫他吃了。\n和 LT 的站長黑日白月沒有關係，我和他依然是個人的好朋友。只是 LT 這個站已經不太適合我發文了，因爲沒有我想面對的受衆。一邊願意學，得我願意教。師傅看你不順眼，那你永遠掃廁所。也不要說什麼 LT 不歡迎你這種話，白月明確說明只要想來，LT 依然歡迎。\n總之這是一個洋務派之所以失敗的故事。帶着一堆老佛爺整天要錢蓋萬壽山這誰都受不了，這邊修鐵路那邊重金買回來拆誰都受不了。此類發出反對聲音的事情我再也不會參與，他們做啥，我贊成啥，直到欺負的沒有一個人對它有好感爲止。反正像你們說的，我能維護我的任何東西，我是高級用戶。\n更重要的是，我也有 MAC。\n參考文獻：\n關於 GNOME 整合 IBUS 事件的技術細節 —— 虎戰士\n",
-  "wordCount" : "431",
-  "inLanguage": "en",
-  "datePublished": "2012-05-16T00:00:00+08:00",
-  "dateModified": "2012-05-16T00:00:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://marguerite.github.io/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -171,7 +85,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -320,12 +234,18 @@
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
@@ -337,13 +257,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+</a>
 
 <script>
     let menu = document.getElementById('menu')

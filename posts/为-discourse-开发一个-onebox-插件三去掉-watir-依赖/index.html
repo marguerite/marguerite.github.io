@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
@@ -21,16 +21,16 @@
     &lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt;
 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+<link rel="canonical" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
 <noscript>
     <style>
         #theme-toggle,
@@ -67,85 +67,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖">
-  <meta property="og:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
-browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
-我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
-&lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt; Refresh &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt; &lt;/div&gt; 点击它的时候执行的是“updateBuildResult(’’)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：
-&lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt; 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2020-11-28T16:07:00+08:00">
-    <meta property="article:modified_time" content="2020-11-28T16:07:00+08:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖">
-<meta name="twitter:description" content="我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：
-    browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#39;, &#39;--window-size=1200x600&#39;, &#39;--no-sandbox&#39;, &#39;--disable-dev-shm-usage&#39;] })
-    browser.goto(link)
-    browser.image(id: reload_id).click
-但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。
-我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：
-    &lt;div accesskey=&#39;r&#39; class=&#39;btn btn-outline-primary build-refresh float-right&#39; onclick=&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39; title=&#39;Refresh Build Results&#39;&gt;
-      Refresh
-      &lt;i class=&#39;fas fa-sync-alt&#39; id=&#39;build-reload&#39;&gt;&lt;/i&gt;
-    &lt;/div&gt;
-点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：
-    &lt;script src=&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;&gt;&lt;/script&gt;
-使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://marguerite.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
-      "item": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
-  "name": "为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖",
-  "description": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: [\u0026#39;--headless\u0026#39;, \u0026#39;--window-size=1200x600\u0026#39;, \u0026#39;--no-sandbox\u0026#39;, \u0026#39;--disable-dev-shm-usage\u0026#39;] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u0026lt;div accesskey=\u0026#39;r\u0026#39; class=\u0026#39;btn btn-outline-primary build-refresh float-right\u0026#39; onclick=\u0026#39;updateBuildResult(\u0026amp;#39;\u0026amp;#39;)\u0026#39; title=\u0026#39;Refresh Build Results\u0026#39;\u0026gt; Refresh \u0026lt;i class=\u0026#39;fas fa-sync-alt\u0026#39; id=\u0026#39;build-reload\u0026#39;\u0026gt;\u0026lt;/i\u0026gt; \u0026lt;/div\u0026gt; 点击它的时候执行的是“updateBuildResult(\u0026rsquo;\u0026rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：\n\u0026lt;script src=\u0026#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js\u0026#34;\u0026gt;\u0026lt;/script\u0026gt; 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：\nbrowser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600', '--no-sandbox', '--disable-dev-shm-usage'] }) browser.goto(link) browser.image(id: reload_id).click 但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。\n我们测试用的界面是 marketo package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：\n\u003cdiv accesskey='r' class='btn btn-outline-primary build-refresh float-right' onclick='updateBuildResult(\u0026#39;\u0026#39;)' title='Refresh Build Results'\u003e Refresh \u003ci class='fas fa-sync-alt' id='build-reload'\u003e\u003c/i\u003e \u003c/div\u003e 点击它的时候执行的是“updateBuildResult(’’)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：\n\u003cscript src=\"/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js\"\u003e\u003c/script\u003e 使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：\nfunction updateBuildResult(t) { var i = [] , o = {}; $(\".result div.collapse:not(.show)\").map(function(e, t) { var n = $(t).data(\"main\") ? $(t).data(\"main\") : \"project\"; o[n] === undefined \u0026\u0026 (o[n] = []), $(t).data(\"repository\") === undefined ? i.push(n) : o[n].push($(t).data(\"repository\")) }); var e = $(\"#buildresult\" + t + \"-box\").data(); e.show_all = $(\"#show_all_\" + t).is(\":checked\"), e.collapsedPackages = i, e.collapsedRepositories = o, $(\"#build\" + t + \"-reload\").addClass(\"fa-spin\"), $.ajax({ url: $(\"#buildresult\" + t + \"-urls\").data(\"buildresultUrl\"), data: e, success: function(e) { $(\"#build\" + t + \" .result\").html(e) }, error: function() { $(\"#build\" + t + \" .result\").html(\"No build results available\n\") }, complete: function() { $(\"#build\" + t + \"-reload\").removeClass(\"fa-spin\"), initializePopovers('[data-toggle=\"popover\"]') } }) } 可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。\n我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：\nurl 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：\n\u003cdiv class='bg-light' data-buildresult-url='/package/buildresult' id='buildresult-urls'\u003e \u003cul class='nav nav-tabs pt-2 px-3 flex-nowrap' data-index='' data-package='marketo' data-project='home:MargueriteSu' id='buildresult-box' role='tablist'\u003e 是 /package/buildresult。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 下面的 ",
-  "wordCount" : "560",
-  "inLanguage": "en",
-  "datePublished": "2020-11-28T16:07:00+08:00",
-  "dateModified": "2020-11-28T16:07:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://marguerite.github.io/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -163,7 +85,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -204,19 +126,19 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </div>
   </header> 
   <div class="post-content"><p>我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>    browser <span style="color:#f92672">=</span> <span style="color:#66d9ef">Watir</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Browser</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">:chrome</span>, <span style="color:#e6db74">chromeOptions</span>: { <span style="color:#e6db74">args</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;--headless&#39;</span>, <span style="color:#e6db74">&#39;--window-size=1200x600&#39;</span>, <span style="color:#e6db74">&#39;--no-sandbox&#39;</span>, <span style="color:#e6db74">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#f92672">]</span> })
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>    browser <span style="color:#f92672">=</span> <span style="color:#66d9ef">Watir</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Browser</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">:chrome</span>, <span style="color:#e6db74">chromeOptions</span>: { <span style="color:#e6db74">args</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;--headless&#39;</span>, <span style="color:#e6db74">&#39;--window-size=1200x600&#39;</span>, <span style="color:#e6db74">&#39;--no-sandbox&#39;</span>, <span style="color:#e6db74">&#39;--disable-dev-shm-usage&#39;</span><span style="color:#f92672">]</span> })
 </span></span><span style="display:flex;"><span>    browser<span style="color:#f92672">.</span>goto(link)
 </span></span><span style="display:flex;"><span>    browser<span style="color:#f92672">.</span>image(id: reload_id)<span style="color:#f92672">.</span>click
 </span></span></code></pre></div><p>但是随之带来的依赖是非常恐怖的，我们需要一个 chrome-driver 和一个 chromium。要知道 discourse 没有装在本地的，都是装在 VPS 上面，一个 chromium 带来的空间和内存使用是十分恐怖的。于是我们通过这篇文章来教你如何干掉 watir 依赖。</p>
 <p>我们测试用的界面是 <a href="https://build.opensuse.org/package/show/home:MargueriteSu/marketo">marketo</a> package，使用 chromium 右键查看网页源代码，我们发现 Refresh 按钮是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">accesskey</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;r&#39;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;btn btn-outline-primary build-refresh float-right&#39;</span> <span style="color:#a6e22e">onclick</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39;</span> <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Refresh Build Results&#39;</span>&gt;
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">accesskey</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;r&#39;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;btn btn-outline-primary build-refresh float-right&#39;</span> <span style="color:#a6e22e">onclick</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;updateBuildResult(&amp;#39;&amp;#39;)&#39;</span> <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Refresh Build Results&#39;</span>&gt;
 </span></span><span style="display:flex;"><span>      Refresh
 </span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;fas fa-sync-alt&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;build-reload&#39;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
 </span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
 </span></span></code></pre></div><p>点击它的时候执行的是“updateBuildResult(&rsquo;&rsquo;)”这个 javascript 函数。对于现代网页开发而言，基本上 javascript 都写在一个文件里然后在 html 中引用的，我们翻遍了网页源代码只发现了一个引用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/assets/webui/application-ab8f02f997c1b9a61cc597f3012f2ad83e4a8e135329131cb4df389335ad4ec1.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
 </span></span></code></pre></div><p>使用 chromium 的“检查”功能打开调试器，通过 Sources 标签页可以打开这个 js 文件，自动 pretty 一下后是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">updateBuildResult</span>(<span style="color:#a6e22e">t</span>) {
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">updateBuildResult</span>(<span style="color:#a6e22e">t</span>) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> []
 </span></span><span style="display:flex;"><span>      , <span style="color:#a6e22e">o</span> <span style="color:#f92672">=</span> {};
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#34;.result div.collapse:not(.show)&#34;</span>).<span style="color:#a6e22e">map</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">t</span>) {
@@ -247,11 +169,11 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </span></span></code></pre></div><p>可以看到这里使用了一个 jquery 的 ajax 请求，访问 url，传递 e 这个 data，就会得到 build status。</p>
 <p>我们这时候就想是不是可以通过 ruby 去模拟这个 ajax 请求来直接获得数据，就不需要使用 watir gem 去点一下按钮了。说干就干：</p>
 <p>url 要的是网页上 id=“buildresult-urls” 的东西的 buildresultUrl 字段，我们找一下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bg-light&#39;</span> <span style="color:#a6e22e">data-buildresult-url</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;/package/buildresult&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;buildresult-urls&#39;</span>&gt;
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bg-light&#39;</span> <span style="color:#a6e22e">data-buildresult-url</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;/package/buildresult&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;buildresult-urls&#39;</span>&gt;
 </span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">ul</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;nav nav-tabs pt-2 px-3 flex-nowrap&#39;</span> <span style="color:#a6e22e">data-index</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span> <span style="color:#a6e22e">data-package</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;marketo&#39;</span> <span style="color:#a6e22e">data-project</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;home:MargueriteSu&#39;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;buildresult-box&#39;</span> <span style="color:#a6e22e">role</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;tablist&#39;</span>&gt;
 </span></span></code></pre></div><p>是 <code>/package/buildresult</code>。而需要传的值是 e 也就是 buildresult-box 里的 data。看到是 index, package, project 的内容。另外我们还看到了 collapsedPackages 和 collapsedRespositories 的内容，一个是数组 i 一个是散列 o，内容分别是 <code>&lt;div class=&quot;result&quot;&gt;&lt;/div&gt;</code> 下面的 <code>&lt;div class=&quot;collapsed&quot;</code> 里的 <code>data-main</code> 和 <code>data-repository</code> 项。但网页源代码里 <code>&lt;div class=&quot;result&quot;&gt;</code> 是空的。</p>
 <p>我想这跟 <code>updateBuildResult()</code> 这个函数需要面对的情景有关的，我们现在的情景是 div result 是空的，而它在按钮被按下过一次后是有值的。反正 Get 请求没有参数都可以，我们就先来写一下试一试也无妨：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
 </span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;uri&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://build.opensuse.org/package/buildresult?index=&amp;package=marketo&amp;project=home%3AMargueriteSu&#39;</span>
@@ -260,7 +182,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </span></span><span style="display:flex;"><span>resp <span style="color:#f92672">=</span> <span style="color:#66d9ef">Net</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTTP</span><span style="color:#f92672">.</span>get_response(uri)
 </span></span><span style="display:flex;"><span>puts resp<span style="color:#f92672">.</span>body
 </span></span></code></pre></div><p>结果返回了 404。一想也对嘛，毕竟 openSUSE 的 web developer 是 darix, 不可能不验证嘛。但是 package build status 是不需要登录 openSUSE 账户就能看见的，那么验证的方式应该就是 cookie 了，我们在 chriomium 网页调试器的 Netowrk 界面点开请求看一下是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">:authority</span>: <span style="color:#ae81ff">build.opensuse.org</span>
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">:authority</span>: <span style="color:#ae81ff">build.opensuse.org</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">:method</span>: <span style="color:#ae81ff">GET</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">:path</span>: <span style="color:#ae81ff">/package/buildresult?project=home%3AMargueriteSu&amp;package=marketo&amp;index=&amp;show_all=false</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">:scheme</span>: <span style="color:#ae81ff">https</span>
@@ -278,9 +200,9 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </span></span><span style="display:flex;"><span><span style="color:#f92672">x-requested-with</span>: <span style="color:#ae81ff">XMLHttpRequest</span>
 </span></span></code></pre></div><p>好么，不只是 cookie 里有 token，还有 x-csrf-token。验证一般就是验证 User Agent 是不是爬虫，cookie 内容，再就是如果是 ajax 请求，我们用普通的 GET 可能也不行，服务器可能会查 x-requested-with 甚至是 referer。</p>
 <p>cookie 我们可以通过先访问一下网页来得到，但是 csrf-token 怎么得到呢？网页源代码里面有：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;csrf-token&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;XJTaLoLQsp6EyezGStiZgW2O5FectHPabI+hcnEdT/jfPPOGYHEYdqO8+pYEaWS3oyTmEN29HL7fmWv1OVgJLA==&#34;</span> /&gt;
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;csrf-token&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;XJTaLoLQsp6EyezGStiZgW2O5FectHPabI+hcnEdT/jfPPOGYHEYdqO8+pYEaWS3oyTmEN29HL7fmWv1OVgJLA==&#34;</span> /&gt;
 </span></span></code></pre></div><p>同样这些 index, package, project 也都在网页源代码里，show_all 就一直让它为 false 好了。于是我们写出了第二版：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;net/http&#34;</span>
 </span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;uri&#34;</span>
 </span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;nokogiri&#34;</span>
 </span></span><span style="display:flex;"><span>
@@ -316,7 +238,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> http<span style="color:#f92672">.</span>request(request)
 </span></span><span style="display:flex;"><span>puts response<span style="color:#f92672">.</span>body
 </span></span></code></pre></div><p>运行一下，结果得到了正确的页面。我们这么直接 puts 肯定不行，需要一个数据结构的嘛：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;json&#39;</span>
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;json&#39;</span>
 </span></span><span style="display:flex;"><span>new_doc <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nokogiri</span><span style="color:#f92672">::</span><span style="color:#66d9ef">HTML</span>(response<span style="color:#f92672">.</span>body)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>buildstatus <span style="color:#f92672">=</span> new_doc<span style="color:#f92672">.</span>at(<span style="color:#e6db74">&#34;div[id=&#39;package-buildstatus&#39;]&#34;</span>)
@@ -337,7 +259,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>puts <span style="color:#66d9ef">JSON</span><span style="color:#f92672">.</span>pretty_generate(buildresult)
 </span></span></code></pre></div><p>于是就得到了一个散列结构和很好看的输出：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+<div class="hightlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;openSUSE_Tumbleweed&#34;</span>: [
 </span></span><span style="display:flex;"><span>    {
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;arch&#34;</span>: <span style="color:#e6db74">&#34;x86_64&#34;</span>,
@@ -357,12 +279,18 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
@@ -374,13 +302,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+</a>
 
 <script>
     let menu = document.getElementById('menu')

@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Introducing the brand new nodejs packaging | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.
 Today the brand-new nodejs-packaging answers all the questions.
 For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">
+<link rel="canonical" href="http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,73 +57,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="Introducing the brand new nodejs packaging">
-  <meta property="og:description" content="There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn’t mean it’s dead. It’s actually evolving.
-Today the brand-new nodejs-packaging answers all the questions.
-For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2016-01-23T00:00:00+08:00">
-    <meta property="article:modified_time" content="2016-01-23T00:00:00+08:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Introducing the brand new nodejs packaging">
-<meta name="twitter:description" content="There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&rsquo;t mean it&rsquo;s dead. It&rsquo;s actually evolving.
-Today the brand-new nodejs-packaging answers all the questions.
-For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://marguerite.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "Introducing the brand new nodejs packaging",
-      "item": "https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Introducing the brand new nodejs packaging",
-  "name": "Introducing the brand new nodejs packaging",
-  "description": "There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn\u0026rsquo;t mean it\u0026rsquo;s dead. It\u0026rsquo;s actually evolving.\nToday the brand-new nodejs-packaging answers all the questions.\nFor a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn’t mean it’s dead. It’s actually evolving.\nToday the brand-new nodejs-packaging answers all the questions.\nFor a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:\nThe old nodejs-packaging analyzes package.json on module basis. That is, every module is a package, just like things we do for Perl, Python and Ruby. But wait, how many nodejs modules exist? 2 millions. And how many modules that a nodejs application may depend on? For npm, it’s 200+; for jshint, it’s 200+; for gulp, it’s 95. No need to mention the much more complicated ones like atom editor, jangouts, or yakyak.\nWe used to have 400+ packages in devel:languages:nodejs, while providing only 2 outdated applications (azure and npm). Because it was a nightmare for maintenance. Take npm as example:\nIt updates almost every week. There’s no way for the maintainer (me, sad) to know what are the new dependencies (nodejs-packaging didn’t provide such a feature: you only know the next step, but you can’t see the whole map due to the tree hierarchy of dependencies); There’s no way for the maintainer to know what are the updated dependencies; and there’s no way for the maintainer to know what dependencies are removed in advance too.\nIt means you have to just start packaging the new npm and examine all the growing 200+ dependencies on the fly. But you have just one week time in total.\nEven if someone would made an automatic packaging tool (actually no one implemented that although we had some discussions before), there’re still two difficulties ahead:\nYou can’t just let the packages lay in devel:languages:nodejs, you should submit it to Factory. Well, 200+ submit requests per week with almost the same nodejs- names are just too hard for reviewing.\nnodejs has a mechanism that allows modules to place the dependencies they need to local node_modules directories. The initial aim was to give developers the freedom and possibility not to follow upstream so tight and focus on their own development. But it leads to the fact that most of the modules actually depend on older versions of other modules.\nAnd, the “older versions” may different. that is, module A may requires 1.0.0 version of module C, while module B relies on 2.0.0 version of module C, and the latest version of module C is actually 4.0.0.\nSo you have to maintain 1.x/2.x/4.x versions of module C. in RPM, a package can only provide one version. then funny things happened: nan-0_8,nan-1_0…while considering such case is too common because nodejs upstream officially supports so, the poor multiver feature of the old nodejs-packaging is not enough.\nThere must be a change.\nIn my reimplementation of nodejs-packaging, I used bundled packaging on application basis:\nIf you want to package jslint for example, you just need to package jslint. No need to worry about all its dependencies (200+). They will be bundled into the main package under node_modules directory.\nSomeone may worry about the duplicate of bundled dependencies across applications. Actually the waste of disk spaces is so small: the standalone gulp takes 95kb while the bundled one takes 495kb. You’ll have to write 200~300kb of specfiles for the dependencies if packaged separately. And 400kb is not a liability for modern hard disks I think.\nBundles can be used as RPM dependency too. that is, gulp can rely on gulp-util package. Both of them are bundles.\nDependencies (Provides/Requires) are automatically handled. eg, inner dependencies for gulp-util will not be applied on gulp.\nIn the future, I may analyze the .json generated and cherry-pick the most common modules into another “big” package to further reduce the waste of spaces.\nHow to package for nodejs application now? Firstly, break the application into logically reasonable pieces (bundles). eg, I want to package dependencies for our search page for better deployment:\ngulp gulp-concat gulp-less gulp-rename gulp-uglify In the old times, we have to package hundreds of modules. Now we just need to package those five (actually it’s 6, because all those stuff need gulp-util).\nSecond, osc mkpac gulp-util \u0026\u0026 cd gulp-util. Then run npkg gulp-util (with nodejs-packaging installed on your machine), it will generate\ngulp-util.json gulp-util.license gulp-util.source (gulp-util.json is the file used by packaging macros to bundle stuff correctly; gulp-util.license contains the collected licenses of all things in the bundle; gulp-util.source is the formatted text for Source tags in RPM specfile)\nand download all the tarballs of dependencies plus the main gulp-util tarball inside current directory.\nThird, cp -r /usr/share/npkg/template ./gulp-util.spec. Fill the blanks, osc add the sources and submit.\nEverything is okay now. You can consider yourself just packaged 200+ packages in one shoot. How to use bundles as RPM dependencies?\nJust write Requires: npm(gulp-util) = 3.0.7 in specfile and run npkg gulp gulp:3.0.7.\nIn the foreseeable future, devel:languages:nodejs will be active again. More applications will be added soon. And the nodejs packaging policy on our wiki will be discussed and updated too.\nIf you run into any abnormal situation eg, extra dependencies are detected (a self-fulfilled bundle should not rely on outside dependencies unless told so), usually it’s a bug that should be looked into by me. Feel free to report on github.\nPS: The new nodejs-packaging is fully compatible with the old one, you can still package in the old way. Most of the times you won’t be aware of the changes. But personally I think the further you walk in the wrong direction, the more painful it will be.\n",
-  "wordCount" : "952",
-  "inLanguage": "en",
-  "datePublished": "2016-01-23T00:00:00+08:00",
-  "dateModified": "2016-01-23T00:00:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://marguerite.github.io/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -141,7 +75,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -231,12 +165,18 @@ painful it will be.</p>
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
@@ -248,13 +188,7 @@ painful it will be.</p>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+</a>
 
 <script>
     let menu = document.getElementById('menu')

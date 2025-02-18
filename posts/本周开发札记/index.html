@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>本周开发札记 | Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 <meta name="keywords" content="">
 <meta name="description" content="盘点一下本周自己在 openSUSE 上面做的工作：
@@ -13,16 +13,16 @@ openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 
 对 devel:languages:nodejs 源进行了 big cleanup
 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
+<link rel="canonical" href="http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
 <noscript>
     <style>
         #theme-toggle,
@@ -59,75 +59,7 @@ openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="本周开发札记">
-  <meta property="og:description" content="盘点一下本周自己在 openSUSE 上面做的工作：
-解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
-对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2016-01-23T00:00:00+08:00">
-    <meta property="article:modified_time" content="2016-01-23T00:00:00+08:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="本周开发札记">
-<meta name="twitter:description" content="盘点一下本周自己在 openSUSE 上面做的工作：
-解决了 wine 的 desktop file 长期以来位于未知类别的 bug
-openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。
-对 devel:languages:nodejs 源进行了 big cleanup
-主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://marguerite.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "本周开发札记",
-      "item": "https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "本周开发札记",
-  "name": "本周开发札记",
-  "description": "盘点一下本周自己在 openSUSE 上面做的工作：\n解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。\n对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "盘点一下本周自己在 openSUSE 上面做的工作：\n解决了 wine 的 desktop file 长期以来位于未知类别的 bug openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 desktop entry specification 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。\n对 devel:languages:nodejs 源进行了 big cleanup 主要是为了我马上要开发的 nodejs-packaging 做准备。npm 由独立打包回归到了与 nodejs 一同打包，而我开发的 nodejs-packaging 又准备使用 bundled packaging 的模式，那么独立打包 npm 时的一些依赖包就不再需要了。这些依赖很早就被我用自动化脚本（简单的 shell script 和 ruby）从 openSUSE:Factory 批量删除了，现在 d:l:nodejs 源里还有一些 broken 状态的尸体。用自动化脚本批量 revoke 了一些 factory-auto-submit 导致的被 rejected 的 SR，然后跑脚本 wipebinaries 从服务器删除 RPM，从服务器 remote delete 掉。\n对 golang-packaging 做了三次 bugfix release 它总是会 filter 掉含有 test,example 字样的编译结果 (类似 test.a，没用)，但是针对 importpath 里有这种字样的（比如 github.com/stretchr/testify）要进行跳过，不然它就什么 Provides/Requires 也抓不出来了。之前仅针对 importpath 本身作了判断，实际上 buildroot 里也会有，因为包名是 golang-github-stretchr-testify 这种，加上了对 buildroot 的判断。\n还修复了 golang.attr 里面写错 prefix 的问题。\n修了 TW 编译失败的 libtunepimp 这个值得一提的是失败的原因：\n有些 autotools 工程喜欢用 expr 来比较版本号，这实际上是非常错误的。因为在 expr 下面 1.10 是小于 1.4 的。正确的比较方法是使用 bc：\necho \"$TAGLIB_VERSION \u003e= 1.4\" | /usr/bin/bc -l 还值得一提的就是在 .m4 文件里，你是用不了 [ 和 ] 的，因为那是保留的，正确的写法是 @\u003c:@ 和 @:\u003e@。\n对 Leap 推送了 nodejs 更新 之前推的更新又把 nodejs-npm 重命名回 npm 了。因为独立打包的 npm 在 Tumbleweed 和 devel:languages:nodejs 里已经移除了（之前在 released product 里一直也都没存在过），命名空间又可用了。但是产生了一个小问题，会导致老的 nodejs-npm 卸载不掉，必须手动卸载然后安装 npm。\n更新了 TexLive 2015 其实编译已经完全通过了，但我放弃了。\n因为我编译完发现会产生一些莫名奇妙的 release numbers，而在 version 标签里面的 svn version numbers 我又不知道怎么来的。\n在 opensuse-packaging 列表上面问才发现，openSUE 下面的 texlive 工程是自动编译的，由 Publishing:Texlive Meta 这个软件包里的脚本控制，我们甚至打包了整个 ctan…那我的硬盘不够跑的，Werner 已经有了，我就没必要干破坏自动化的事情了。\n更新了一些软件包 Cutegram，WeCase，doubanfm-qt5。\n把文泉驿微米黑更新到最新的 nightly build 版本（wenq.org 论坛里的那个 NB 其实房教授一直不定期的跑）。\n把一些失效的中文项目比如 lwqq，openfetion 进行了禁用编译、保留软件包工程的操作。\n在 home:MargueriteSu 里打包了 shadowsocks-go\n在 home:opensuse_zh:infinality 打包了最新的打过 infinality 补丁的 cairo, freetype2, fontconfig。\n帮助 syncthing 的打包者修复了编译（go 应用）\n把 toxcore, qtox 提交到了 server:messaging 源，等通过后让 qtox 进入 Tumbleweed\n新打包 basket5，basket 笔记的 KF5 移植，功能都保留着，非常好用。\nsadlen 的 marknoto/markpado。前者是一个笔记应用，后者是一个非常好的 KDE 5 下面的 Markdown 编辑器，基于 katepart。我本人都在用。\nTODO 本周末主要的任务就是把 Fedora 的 nodejs-packaging 的原理搞明白，用 Ruby port 到 openSUSE，并支持我们的 bundled packaging 模式。\n接下来在本地搭建一个 discourse 服务器看下内存占用，毕竟 @phoenixlzx 现在是根本不要前在给我们跑论坛和域名，总不好又恬着大脸要加内存吧（想再搞一次捐款，可确实没什么可以送的）\n写文章的话准备写一下我的博客程序 ghost 是怎么搭建的，或者谈一下我对 devel:languages:nodejs 源自动化打包的蓝图设计。\n至于论坛活动啊，调试 ocserv/telepathy-kde/privoxy，这些长期的或者尚未取得进展的活动就不值得预告了。\n",
-  "wordCount" : "272",
-  "inLanguage": "en",
-  "datePublished": "2016-01-23T00:00:00+08:00",
-  "dateModified": "2016-01-23T00:00:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://marguerite.github.io/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -145,7 +77,7 @@ openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -228,12 +160,18 @@ openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer>
+  </footer><script src="https://utteranc.es/client.js"
+        repo="marguerite/marguerite.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
@@ -245,13 +183,7 @@ openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a><script src="https://utteranc.es/client.js"
-        repo="marguerite/marguerite.github.io"
-        issue-term="title"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
+</a>
 
 <script>
     let menu = document.getElementById('menu')
