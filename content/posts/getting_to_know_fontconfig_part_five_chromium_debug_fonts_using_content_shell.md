@@ -303,9 +303,9 @@ content_shell_wrapper.sh:
     fantasy_font_family: Impact
     math_font_family: Latin Modern Math 
     
-## sans-serif 的 Fallback 不好使，sans 好使？
+## sans-serif 不能 Fallback，sans 可以？
 
-我们前面已经说过 Skia 了，如果喂给它  sans-serif 应该会直接有 Noto Sans CJK SC 回来，为什么 NULL Typeface 呢？
+我们前面已经说过 Skia 了，如果喂给它 sans-serif 应该会直接有 Noto Sans CJK SC 回来，为什么 NULL Typeface 呢？
 
 两个原因：
 
@@ -327,11 +327,11 @@ content_shell_wrapper.sh:
     [INFO:font_cache_skia.cc(266)] [FontCache::CreateTypeface] font_description.SkiaFontStyle(width: 5, weight: 700, slant: 0)
     [INFO:font_cache_skia.cc(317)] [FontCache::CreateFontPlatformData] NULL typeface sans-serif
     
-会去要 Normal width, Bold weight, Upright slant 的 sans-serif。然后就不知道为什么网页里面没写加粗，会去要加粗的 sans-serif 了，另外，即使要粗体应该也不会一个没有，也许我应该写个 skia demo debug 一下。
+会去要 Normal width, Bold weight, Upright slant 的 sans-serif。先是不知道为什么网页里面没写加粗，会去要加粗的 sans-serif，另外，即使要粗体应该也不会一个没有，也许我应该写个 skia demo debug 一下。
 
 ## 制作 skia debug 工具
 
-单独编译 skia 不太可取，因为我的 chromium 代码树下已经有 skia 了。于是就有了以下取巧的方案：
+单独编译 skia 不太可取（如何 linkn libskia.a 我搞不好，而且我的 /home 已经被 content_shell 占满了），因为我的 chromium 代码树下已经有 skia 了。于是就有了以下取巧的方案：
 
 在 `src/skia/BUILD.gn` 里添加这样的代码：
 
@@ -418,13 +418,13 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
     family name created: ok
     typeface is null
     
-与 blink 返回的结果是一样的。我们要一下 normal weight（即把 700 改为 400）看看：
+与 blink 返回的结果是一样的。我们试一下 normal weight（即把 700 改为 400）看看：
 
     font_mgr created: ok
     family name created: ok
     typeface is null
     
-结果是一样的。不是因为字体 weight 的问题导致的 skia 取不到 sans-serif 的 typeface。再调试这个问题之前，我们先来看一下 sans/Sans/SansSerif 的：sans/Sans 能够成功，SansSerif/sansserif/Sans-Serif 依然为空。
+结果是一样的。不是因为字体 weight 的问题导致的 skia 取不到 sans-serif 的 typeface。我们再来看一下 sans/Sans/SansSerif：sans/Sans 能够成功创建 SkTypeface，SansSerif/sansserif/Sans-Serif 依然为空。
 
 ## 调试 Skia 的 fontconfig
 
@@ -548,21 +548,21 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
     MatchFont didn't get a match!
     typeface is null
     
- 看到是这个 pattern match 有些问题。导致匹配到的是 Noto Sans。
+ 感觉这个 pattern match 有些问题，匹配到的是 Noto Sans。
  
- 先来说下这个 matchFamilyName 函数的逻辑，post_config_family 是 `get_string(pattern, FC_FAMILY)` 生成的，然后是把 fc-match -all 出来的 FontSet（未排序）与 post_config_family 和 familyStr 一起做 `MatchFont`。
+ 先来说下这个 matchFamilyName 函数的逻辑，post_config_family 是 `get_string(pattern, FC_FAMILY)` 生成的，然后是把 fc-match -all 出来的 FontSet 与 post_config_family 和 familyStr 一起做 `MatchFont`。
  
- `get_string` 主要是 `FcPatternGetString(pattern, FC_FAMILY)`，它最终等价于 `FcPatternObjectGetWithBinding (pattern, FC_FAMILY, 0, FcValue *v, NULL)`，最后在 loop family name 的时候，由于 ID 给的 0, 导致循环一次后 id-- 就不再满足条件了，也就是只能返回第一个 family name。
+ `get_string` 主要是 `FcPatternGetString(pattern, FC_FAMILY)`，它最终等价于 `FcPatternObjectGetWithBinding (pattern, FC_FAMILY, 0, FcValue *v, NULL)`，最后在 loop family name 的时候，由于 ID 给的 0, 导致循环一次后 `id--` 就不再满足 `!id` 条件了，也就是只能返回第一个 family name。
  
- `MatchFont` 的作用是找到 font_set 里面第一个安装在系统上的字体，找到了并且不是允许 Fallback 的字体（sans/monospace/serif 这种通用字体名就属于允许 Fallback 的字体，可惜 skia 不认为 sans-serif 是允许 Fallback 的字体），就查询它的 family name 并与 post_config_family 相比较。否则直接返回该第一个安装的字体（因为可以 Fallback, 名字不需要一样）。
+ `MatchFont` 的作用是找到 font_set 里面第一个安装在系统上的 CFF/TrueType 字体，找到了并且不是允许 Fallback 的字体（sans/monospace/serif 这种通用字体名就属于允许 Fallback 的字体，可惜 skia 不认为 sans-serif 是允许 Fallback 的字体），就查询它的 family name 并与 post_config_family 相比较。否则直接返回该第一个安装的字体（因为可以 Fallback, 名字不需要一样）。这就解释了为什么 sans 可以而 sans-serif 不行，因为 sans-serif 比 sans 要多过一遍失败概率很大的逻辑。
  
  matchFamilyName 函数的后半部分是查找匹配上的字体文件在系统上是否存在。
  
  下面回来说这套逻辑为什么错了，以及为什么匹配到了 Noto Sans。
  
- 它其实是假设了默认初始化得到的 sans-serif pattern 里面的第一个字体，与应用了 FcFontSort all 后的第一个字体（match -a sans-serif）是一样的。但是它忽略了默认初始化得到的 pattern 并没有考虑这个排第一的字体在不在系统上。而 match -a 的字体考虑了存在性。就导致会对不上。
+ 它其实是**假设默认初始化（FcDefaultSubstitle）得到的 sans-serif pattern 里面的第一个字体，与应用了 FcFontSort all 后的 FontSet 里面的第一个字体（match -a sans-serif）是一样的**。但是它忽略了默认初始化得到的 pattern 并没有考虑这个排第一的字体在不在系统上。而 match -a 的字体则考虑了存在性。就导致两者的 Family Name 极大可能匹配不上。
  
- 这套逻辑本身就很荒谬啊，**因为如果100%一样的话，写代码完全可以省略掉 FcFontSort all 这种情况，让 FcFontSort 只针对 sort 这种情况就好了嘛**。
+ 这套逻辑本身就很荒谬啊，**如果两者100%一样的话，代码完全可以省略掉 FcFontSort all 这种情况，让 FcFontSort 只针对 sort 这种情况就好了嘛**。上游应该是只考虑了具体字体，没有考虑通用字体。或者说没有想到两者的 Family Name 匹配不上不只有字体没有安装这种一种情况。比如 Roboto 这种具体字体，默认 pattern 的第一个肯定是它自己，如果它安装在系统上，那么 match -a 'Roboto' 肯定也是它。但是 sans-serif 这种通用字体，所有人都假设没有 Family Name 为 sans-serif 的具体字体安装在系统上，它的 pattern 都是 prepend/append 得来，pattern 中的字体始终是名称不同的具体字体。这种情况下，FcDefaultSubstitute 得到的 pattern 会是非常长的，但是 fc-match -a 会把真正存在于系统上的字体提到前面，两者再比较 Family Name 就没什么实际意义了。
  
  为了说明这一点，我们来构造上面的查询：
  
@@ -570,7 +570,7 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
      
 这个查询与上面的代码至少写 Skia 代码那位应该认为是等价的。
 
-结果是：
+`fc-match -a` 结果是：
 
     FcConfigSubstitute donePattern has 50 elts (size 64)
       family: "Noto Sans CJK SC"(w)
@@ -587,8 +587,54 @@ src/skia/skia_debug_tool/fontmgr_default_linux.h:
     FcConfigSubstitute donePattern has 17 elts (size 32)
       family: "Noto Sans"(w) "Noto Sans SC"(w) "Noto Sans HK"(w) "Noto Sans TC"(w) "Noto Sans JP"(w) "Noto Sans KR"(w) "Noto Sans CJK SC"(w) "Arial"(w) "Albany AMT"(w) "Verdana"(w) "Roboto"(w) "Noto Kufi Arabic"(w) "Noto Naskh Arabic"(w) "Noto Sans"(w) "Noto Sans Armenian"(w) "Noto Sans Avestan"(w) "Noto Sans Balinese"(w) "Noto Sans Bamum"(w) "Noto Sans Batak"(w) "Noto Sans Bengali"(w) "Noto Sans Brahmi"(w) "Noto Sans Buginese"(w) "Noto Sans Buhid"(w) "Noto Sans Canadian Aboriginal"(w) "Noto Sans Carian"(w) "Noto Sans Cherokee"(w) "Noto Sans Coptic"(w) "Noto Sans Cypriot"(w) "Noto Sans Deseret"(w) "Noto Sans Devanagari"(w) "Noto Sans Egyptian Hieroglyphs"(w) "Noto Sans Ethiopic"(w) "Noto Sans Georgian"(w) "Noto Sans Glagolitic"(w) "Noto Sans Gothic"(w) "Noto Sans Gujarati"(w) "Noto Sans Gurmukhi"(w) "Noto Sans Hanunoo"(w) "Noto Sans Hebrew"(w) "Noto Sans Imperial Aramaic"(w) "Noto Sans Inscriptional Pahlavi"(w) "Noto Sans Inscriptional Parthian"(w) "Noto Sans JP"(w) "Noto Sans Javanese"(w) "Noto Sans Kaithi"(w) "Noto Sans Kannada"(w) "Noto Sans Kayah Li"(w) "Noto Sans Kharoshthi"(w) "Noto Sans KR"(w) "Noto Sans Lao"(w) "Noto Sans Lepcha"(w) "Noto Sans Limbu"(w) "Noto Sans Linear B"(w) "Noto Sans Lisu"(w) "Noto Sans Lycian"(w) "Noto Sans Lydian"(w) "Noto Sans Malayalam"(w) "Noto Sans Mandaic"(w) "Noto Sans Meetei Mayek"(w) "Noto Sans Mongolian"(w) "Noto Sans Myanmar"(w) "Noto Sans New Tai Lue"(w) "Noto Sans NKo"(w) "Noto Sans Ogham"(w) "Noto Sans Old Italic"(w) "Noto Sans Old Persian"(w) "Noto Sans Old South Arabian"(w) "Noto Sans Old Turkic"(w) "Noto Sans Ol Chiki"(w) "Noto Sans Osmanya"(w) "Noto Sans Phags-pa"(w) "Noto Sans Phoenician"(w) "Noto Sans Rejang"(w) "Noto Sans Runic"(w) "Noto Sans Samaritan"(w) "Noto Sans Saurashtra"(w) "Noto Sans Shavian"(w) "Noto Sans Sinhala"(w) "Noto Sans Sumero-Akkadian Cuneiform"(w) "Noto Sans Sundanese"(w) "Noto Sans Syloti Nagri"(w) "Noto Sans Symbols"(w) "Noto Sans Syriac Eastern"(w) "Noto Sans Syriac Estrangela"(w) "Noto Sans Syriac Western"(w) "Noto Sans SC"(w) "Noto Sans Tagalog"(w) "Noto Sans Tagbanwa"(w) "Noto Sans Tai Le"(w) "Noto Sans Tai Tham"(w) "Noto Sans Tai Viet"(w) "Noto Sans Tamil"(w) "Noto Sans Telugu"(w) "Noto Sans Thai"(w) "Noto Sans Tifinagh"(w) "Noto Sans TC"(w) "Noto Sans Ugaritic"(w) "Noto Sans Vai"(w) "Noto Sans Yi"(w) "Liberation Sans"(w) "Droid Sans"(w) "Arimo"(w) "Cantarell"(w) "SUSE Sans"(w) "Bitstream Vera Sans"(w) "Nimbus Sans L"(w) "Luxi Sans"(w) "Mukti Narrow"(w) "KacstBook"(w) "Nachlieli CLM"(w) "Helvetica"(w) "Khmer OS System"(w) "Lohit Punjabi"(w) "Lohit Oriya"(w) "Pothana2000"(w) "TSCu_Paranar"(w) "BPG Glaho"(w) "Terafik"(w) "FreeSans"(w) "Meiryo"(w) "MS PGothic"(w) "MS Gothic"(w) "HGPGothicB"(w) "HGGothicB"(w) "IPAPGothic"(w) "IPAGothic"(w) "IPAexGothic"(w) "VL PGothic"(w) "VL Gothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "CMEXSong"(w) "FZSongTi"(w) "WenQuanYi Micro Hei"(w) "WenQuanYi WenQuanYi Bitmap Song"(w) "WenQuanYi Zen Hei"(w) "AR PL ShanHeiSun Uni"(w) "FZMingTiB"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Gulim"(w) "Baekmuk Dotum"(w) "Noto Sans"(w) "DejaVu Sans"(w) "Verdana"(w) "Arial"(w) "Albany AMT"(w) "Luxi Sans"(w) "Nimbus Sans L"(w) "Nimbus Sans"(w) "Helvetica"(w) "Lucida Sans Unicode"(w) "BPG Glaho International"(w) "Tahoma"(w) "Nachlieli"(w) "Lucida Sans Unicode"(w) "Yudit Unicode"(w) "Kerkis"(w) "ArmNet Helvetica"(w) "Artsounk"(w) "BPG UTF8 M"(w) "Waree"(w) "Loma"(w) "Garuda"(w) "Umpush"(w) "Saysettha Unicode"(w) "JG Lao Old Arial"(w) "GF Zemen Unicode"(w) "Pigiarniq"(w) "B Davat"(w) "B Compset"(w) "Kacst-Qr"(w) "Urdu Nastaliq Unicode"(w) "Raghindi"(w) "Mukti Narrow"(w) "malayalam"(w) "Sampige"(w) "padmaa"(w) "Hapax Berbère"(w) "MS Gothic"(w) "UmePlus P Gothic"(w) "Microsoft YaHei"(w) "Microsoft JhengHei"(w) "WenQuanYi Zen Hei"(w) "WenQuanYi Bitmap Song"(w) "AR PL ShanHeiSun Uni"(w) "AR PL New Sung"(w) "Hiragino Sans"(w) "PingFang SC"(w) "PingFang TC"(w) "PingFang HK"(w) "Hiragino Sans CNS"(w) "Hiragino Sans GB"(w) "MgOpen Modata"(w) "VL Gothic"(w) "IPAMonaGothic"(w) "IPAGothic"(w) "Sazanami Gothic"(w) "Kochi Gothic"(w) "AR PL KaitiM GB"(w) "AR PL KaitiM Big5"(w) "AR PL ShanHeiSun Uni"(w) "AR PL SungtiL GB"(w) "AR PL Mingti2L Big5"(w) "ＭＳ ゴシック"(w) "ZYSong18030"(w) "TSCu_Paranar"(w) "NanumGothic"(w) "UnDotum"(w) "Baekmuk Dotum"(w) "Baekmuk Gulim"(w) "Apple SD Gothic Neo"(w) "KacstQura"(w) "Lohit Bengali"(w) "Lohit Gujarati"(w) "Lohit Hindi"(w) "Lohit Marathi"(w) "Lohit Maithili"(w) "Lohit Kashmiri"(w) "Lohit Konkani"(w) "Lohit Nepali"(w) "Lohit Sindhi"(w) "Lohit Punjabi"(w) "Lohit Tamil"(w) "Meera"(w) "Lohit Malayalam"(w) "Lohit Kannada"(w) "Lohit Telugu"(w) "Lohit Oriya"(w) "LKLUG"(w)
  
- 这里面这堆字体是我的 fontconfig 规则里的，具体点说是 /usr/share/fontconfig/conf.avail/60-latin.conf，**不是任何人的锅，这是个官方默认配置**。但是有规则不代表有字体啊。
+ pattern 中这堆字体是 `/usr/share/fontconfig/conf.avail/60-latin.conf` 引入的，**不是任何人的锅，是官方默认配置**。但是有规则不代表有字体啊。
+
+即使是为了过滤掉系统上不存在的字体，也没有把 `FcDefaultSubstitute` 的结果与 `FcFontSort` 的结果比较，因为 `FcFontSort` 里面有两次 qsort，`MatchFont` 自己本身又有一次 `isValidPattern` 也就是验证字体文件是否存在，这三次的开销其实是非常大的，这可是 blink 引擎啊，全世界基于 chromium 的浏览器都在用的基础设施...
+
+那应该怎么修改呢？首先 `IsFallbackFontAllowed` 的字体逻辑现在是没毛病的，也就是取第一个存在的 CFF/TrueType 字体。而第二种具体字体的逻辑，则存在开销较大的毛病，应该优化成这种逻辑：如果是 sans-serif，就返回默认 pattern 中第一个存在的字体，如果不是，直接判断第一个字体存在不存在即可。
  
  所以我们修正这里 post_config_family 初始化部分：
  
-     const char* post_config_family = get_string(pattern, FC_FAMILY);
+    const char* post_config_family = get_string(pattern, FC_FAMILY);
+    if (!post_config_family) {
+    +   FcPatternDestroy(pattern);
+    +   return false;
+    -   post_config_family = "";
+    }
+
+    - FcResult result;
+    - FcFontSet* font_set = FcFontSort(fc, pattern, 0, nullptr, &result);
+    - if (!font_set) {
+    -    FcPatternDestroy(pattern);
+    -    return false;
+    - }
+
+    - FcPattern* match = this->MatchFont(font_set, post_config_family, familyStr);
+    - if (!match) {
+    -    FcPatternDestroy(pattern);
+    -    FcFontSetDestroy(font_set);
+    -    return false;
+    - }
+
+    - FcPatternDestroy(pattern);
+
+    - // From here out we just extract our results from 'match'    
+
+    + if (IsFallbackFontAllowed(familyStr)) {
+    +      
+    + }
+    - post_config_family = get_string(match, FC_FAMILY);
+    - if (!post_config_family) {
+    -    FcFontSetDestroy(font_set);
+    -    return false;
+    - }
+
+    - const char* c_filename = get_string(match, FC_FILE);
+    + const char* c_filename = get_string(pattern, FC_FILE);
+    if (!c_filename) {
+        - FcFontSetDestroy(font_set);
+        + FcPatternDestroy(pattern);
+        return false;
+    }
+
+    // 不管是通用字体还是具体字体都需要变为 FontSet

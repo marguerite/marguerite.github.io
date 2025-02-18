@@ -5,3 +5,18 @@ theme = "papermod"
 [params]
 comments = true
 enableEmoji = true
+[markup]
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = false
+    h1_Lines = ''
+    h1_inline = false
+    lineAnchors = ''
+    lineNoStart = 1
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = true
+    style = 'monokai'
+    tabWidth = 4
+    wrapperClass = 'hightlight'
