@@ -2,25 +2,25 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.143.1"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.143.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/">
+<link rel="canonical" href="http://localhost:1313/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/index.xml">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,28 +57,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-<meta name="twitter:description" content="">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-  "url": "https://marguerite.github.io/",
-  "description": "",
-  "logo": "https://marguerite.github.io/favicon.ico",
-  "sameAs": [
-      
-  ]
-}
-</script>
+</noscript>
 </head>
 
 <body class="list" id="top">
@@ -96,7 +75,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -128,6 +107,23 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 我们 openSUSE 中文论坛用的是 discourse，有一天给用户贴了一个 OBS 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：discourse-openbuildservice-onebox 插件。
+以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 onebox gem。
+Ruby 作为一门脚本语言，所有对象的方法都可以被重写。学名叫做 Meta Programming。这是理解 onebox gem 的基础。
+我们下面来看 discourse 是怎么使用 onebox gem 的，下面是 app/models/post_analyzer.rb 的 cook 函数，这个函数负责把你输入的文字转为 html 保存在 postgresql 数据库，是最基础的函数之一：
+def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_urls &lt;&lt; url if opts[:invalidate_oneboxes] Oneboxer.invalidate(url) InlineOneboxer.invalidate(url) end onebox = Oneboxer.cached_onebox(url) @found_oneboxes = true if onebox.present? onebox end cooked = result.to_html if result.changed? cooked end 可以看到 discourse 自己还有一个 Oneboxer 的 wrapper，这里使用了 Oneboxer.apply 和 Oneboxer.cache_onebox 函数。接下来我们接着看 lib/oneboxer.rb：
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-11-28 14:59:00 +0800 CST'>November 28, 2020</span></footer>
+  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Color Emoji in openSUSE
     </h2>
   </header>
@@ -141,7 +137,7 @@
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2020-11-04 00:00:00 +0800 CST'>November 4, 2020</span></footer>
-  <a class="entry-link" aria-label="post link to Color Emoji in openSUSE" href="https://marguerite.github.io/posts/color_emoji_in_opensuse/"></a>
+  <a class="entry-link" aria-label="post link to Color Emoji in openSUSE" href="http://localhost:1313/posts/color_emoji_in_opensuse/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -157,7 +153,7 @@
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2020-11-04 00:00:00 +0800 CST'>November 4, 2020</span></footer>
-  <a class="entry-link" aria-label="post link to fontconfig 几个常见的坑" href="https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"></a>
+  <a class="entry-link" aria-label="post link to fontconfig 几个常见的坑" href="http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -176,7 +172,7 @@ Github Pages 是由 Jekyll 驱动的静态博客，使用 Markdown 来写文章�
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2016-12-31 00:00:00 +0800 CST'>December 31, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格" href="https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/"></a>
+  <a class="entry-link" aria-label="post link to 30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格" href="http://localhost:1313/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -191,7 +187,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to Introducing the brand new nodejs packaging" href="https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/"></a>
+  <a class="entry-link" aria-label="post link to Introducing the brand new nodejs packaging" href="http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -206,7 +202,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2016-01-23 00:00:00 +0800 CST'>January 23, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 本周开发札记" href="https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"></a>
+  <a class="entry-link" aria-label="post link to 本周开发札记" href="http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -226,7 +222,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2016-01-18 00:00:00 +0800 CST'>January 18, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 脑洞大开的周末" href="https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"></a>
+  <a class="entry-link" aria-label="post link to 脑洞大开的周末" href="http://localhost:1313/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -244,7 +240,7 @@ For a long time and traditionally we openSUSE prefer to keep consistence with Fe
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2016-01-12 00:00:00 +0800 CST'>January 12, 2016</span></footer>
-  <a class="entry-link" aria-label="post link to 高手创造工具" href="https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/"></a>
+  <a class="entry-link" aria-label="post link to 高手创造工具" href="http://localhost:1313/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -269,7 +265,7 @@ sudo zypper --no-refresh install --force rpm-reinstall-demo-0.0.0-5.1.x86_64.rpm
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2015-08-02 00:00:00 +0800 CST'>August 2, 2015</span></footer>
-  <a class="entry-link" aria-label="post link to RPM specfile 中  值的研究" href="https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/"></a>
+  <a class="entry-link" aria-label="post link to RPM specfile 中  值的研究" href="http://localhost:1313/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -299,42 +295,21 @@ Deepin 2014 发布和主要的三个演讲（Gitcafe，Crossover，Seafile）没
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2014-07-11 00:00:00 +0800 CST'>July 11, 2014</span></footer>
-  <a class="entry-link" aria-label="post link to 关于 Deepin 用户开发者大会的浅见" href="https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>做这个的初衷很简单：IRC 对小白太远了。
-它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。
-但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）
-于是最蠢的来了：qwebirc，是一个自由开源的网页 IRC 客户端，最早是给 QuakeNet 游戏网开发的。这是目前我能找到的唯一一个开源的。
-看了下，发现它居然不支持多语言！好吧，硬 hack 出了一个繁体中文版（别问为什么不用简体，因为硬 hack 就是只能使用一种语言，没有动态切换，那简体用户繁体一样能看懂，自豪吧？）。
-安装依赖（openSUSE 下） sudo zypper in nginx python-Twisted python-simplejson java-1_7_0-openjdk 下载 然后随便找个文件夹，因为 qwebirc 和 HTTP 服务器的关系不是常规那样的，常规是在 /srv/www/htdocs（又叫 webroot）下面放一些 html/php 文件，然后 HTTP 服务器让那个文件夹下面的东西能被访问，但是 qwebirc 其实是自己跑起来了一个专用的 http 服务器，为什么呢？据说是通用 HTTP 服务器设计不是用来服务大量的、长期活动的连接的，它们可以处理的是大量的但是都是一次性的连接，这种基于线程或者多进程的服务器（Apache 被点名了）没办法处理太多的这种连接，到时候会把你的网站一起拽下线呦！
-但 qwebirc 的专用服务器是开在 9090 端口的，你不想访问 yourircserver.com:9090 这种丑丑的链接吧？所以你需要一个反向代理，还不能用被怒黑的 Apache。。。也就 nginx 了吧？好在我们别的服务器也是用的 nginx，因为 openSUSE 社区穷 VPS 内存小。。。
-言归正传。找到文件夹了吧？然后在命令行下载最新的稳定版 qwebirc：
-wget http://qwebirc.org/download-stable-zip 它没后缀但它是个 zip，解压：
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2013-10-12 00:00:00 +0800 CST'>October 12, 2013</span></footer>
-  <a class="entry-link" aria-label="post link to openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/"></a>
+  <a class="entry-link" aria-label="post link to 关于 Deepin 用户开发者大会的浅见" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
-    <a class="prev" href="https://marguerite.github.io/">
+    <a class="prev" href="http://localhost:1313/">
       «&nbsp;Prev&nbsp;
     </a>
-    <a class="next" href="https://marguerite.github.io/page/3/">Next&nbsp;&nbsp;»
+    <a class="next" href="http://localhost:1313/page/3/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

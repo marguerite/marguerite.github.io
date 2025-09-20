@@ -2,25 +2,25 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.143.1"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.143.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/">
+<link rel="canonical" href="http://localhost:1313/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/index.xml">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,28 +57,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-<meta name="twitter:description" content="">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-  "url": "https://marguerite.github.io/",
-  "description": "",
-  "logo": "https://marguerite.github.io/favicon.ico",
-  "sameAs": [
-      
-  ]
-}
-</script>
+</noscript>
 </head>
 
 <body class="list" id="top">
@@ -96,7 +75,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -128,6 +107,27 @@
 
 <article class="first-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">openSUSE Tumbleweed 上启用 SELINUX
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>论坛的服务器是 tumbleweed，一直以来想启用 selinux 增强一下安全性，但最早 openSUSE 是 apparmor 系的（其实什么系都无所谓，因为个人电脑没启用过这些），就很犹豫，有 selinux 相关的包但是不敢用。现在官方已经切换到 selinux 了，而且新版本的 tumbleweed ISO 默认就是启用 selinux 的，我决定冲一次。
+安装和启用 sudo zypper in -t pattern selinux 就会安装全部 selinux 相关的包，然后进 YaST 引导加载器模块，把 kernel parameter 的最后加上：
+security=selinux selinux=1 保存让 YaST 重新生成 initrd 即可。
+最后编辑 /etc/selinux/config
+SELINUX=permissive SELINUXTYPE=targeted 刚开始一定不能是 enforcing，不然可能会被卡在外面进不去系统。最后：
+sudo touch /.autorelabel 重启自动标记系统内全部文件即可。
+重启之后，看看有没有 avc（Access Vector Cache，访问矢量高速缓存）错误和 selinux error。
+sudo ausearch -m avc,user_avc,selinux_err,user_selinux_err -ts boot 结果出现一个：
+avc: denied { relabelto } for pid=2128 common=&#34;snapperd&#34; name=&#34;info.xml&#34; dev=&#34;sda4&#34; ino=6425 scontext=scontext=system_u:system_r:snapperd_t:s0-s0:c0.c1023 tcontext=system_u:object_r:snapperd_data_t:s0 tclass=file 调试 好多年前我把 AppArmor 翻译为“应用装甲”的时候也是了解过强制访问控制系统的知识的，selinux 就是把文件的访问权限按照“用户：角色：数据类型：级别：分类”去强化一下。如果任意一项不满足条件，就拒绝访问。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-09-20 10:37:00 -0800 -0800'>September 20, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE Tumbleweed 上启用 SELINUX" href="http://localhost:1313/posts/opensuse_tumbleweed_%E5%90%AF%E7%94%A8_selinux/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境
     </h2>
   </header>
@@ -143,7 +143,7 @@ set_environment.sh:
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2025-02-12 00:00:00 +0800 CST'>February 12, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/"></a>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -161,7 +161,7 @@ FallbackFontList fallback_fonts; FcPattern* pattern = FcPatternCreate(); FcPatte
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2025-02-10 00:00:00 +0800 CST'>February 10, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之四：Chromium 字体查询机制" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"></a>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux Fontconfig 之四：Chromium 字体查询机制" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -178,7 +178,7 @@ fcitx5 的 libime 提供了 libime-pinyindict 工具用来把文本转为词库�
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2025-02-07 00:00:00 +0800 CST'>February 7, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to openSUSE 下制作 fcitx5-pinyin 的拼音词库" href="https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/"></a>
+  <a class="entry-link" aria-label="post link to openSUSE 下制作 fcitx5-pinyin 的拼音词库" href="http://localhost:1313/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -196,7 +196,7 @@ FcConfigSubstitute (config, font, FcMatchScan) FcFileScanFontConfig 中的这段
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-26 22:02:04 +0800 CST'>November 26, 2022</span></footer>
-  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第三部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/"></a>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第三部分" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_three/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -217,7 +217,7 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-25 19:17:09 +0800 CST'>November 25, 2022</span></footer>
-  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第二部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/"></a>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第二部分" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_two/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -234,7 +234,7 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-25 12:13:29 +0800 CST'>November 25, 2022</span></footer>
-  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第一部分" href="https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/"></a>
+  <a class="entry-link" aria-label="post link to 深入理解 Linux fontconfig 第一部分" href="http://localhost:1313/posts/getting_to_know_fontconfig_part_one/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -249,7 +249,7 @@ config = FcInitLoadConfigAndFonts (); 这个函数在 fcinit.c。实际封装了
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-23 20:01:29 +0800 CST'>November 23, 2022</span></footer>
-  <a class="entry-link" aria-label="post link to 使用 google 的 fontmake 复活文泉驿项目" href="https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/"></a>
+  <a class="entry-link" aria-label="post link to 使用 google 的 fontmake 复活文泉驿项目" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -266,7 +266,7 @@ browser = Watir::Browser.new(:chrome, chromeOptions: { args: [&#39;--headless&#3
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span></footer>
-  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"></a>
+  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -282,35 +282,18 @@ module Onebox module Engine class OpenBuildServiceOnebox include Engine include 
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2020-11-28 16:07:00 +0800 CST'>November 28, 2020</span></footer>
-  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem 我们 openSUSE 中文论坛用的是 discourse，有一天给用户贴了一个 OBS 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：discourse-openbuildservice-onebox 插件。
-以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 onebox gem。
-Ruby 作为一门脚本语言，所有对象的方法都可以被重写。学名叫做 Meta Programming。这是理解 onebox gem 的基础。
-我们下面来看 discourse 是怎么使用 onebox gem 的，下面是 app/models/post_analyzer.rb 的 cook 函数，这个函数负责把你输入的文字转为 html 保存在 postgresql 数据库，是最基础的函数之一：
-def cook(raw, opts = {}) [...] result = Oneboxer.apply(cooked) do |url| @onebox_urls &lt;&lt; url if opts[:invalidate_oneboxes] Oneboxer.invalidate(url) InlineOneboxer.invalidate(url) end onebox = Oneboxer.cached_onebox(url) @found_oneboxes = true if onebox.present? onebox end cooked = result.to_html if result.changed? cooked end 可以看到 discourse 自己还有一个 Oneboxer 的 wrapper，这里使用了 Oneboxer.apply 和 Oneboxer.cache_onebox 函数。接下来我们接着看 lib/oneboxer.rb：
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2020-11-28 14:59:00 +0800 CST'>November 28, 2020</span></footer>
-  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem" href="https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/"></a>
+  <a class="entry-link" aria-label="post link to 为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine" href="http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
-    <a class="next" href="https://marguerite.github.io/page/2/">Next&nbsp;&nbsp;»
+    <a class="next" href="http://localhost:1313/page/2/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by

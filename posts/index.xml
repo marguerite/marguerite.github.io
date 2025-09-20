@@ -2,17 +2,49 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
-    <link>https://marguerite.github.io/posts/</link>
+    <link>http://localhost:1313/posts/</link>
     <description>Recent content in Posts on Marguerite Su: Golang/Ruby Programmer, openSUSE Member</description>
     <generator>Hugo -- 0.143.1</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 12 Feb 2025 00:00:00 +0800</lastBuildDate>
-    <atom:link href="https://marguerite.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 20 Sep 2025 10:37:00 -0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>openSUSE Tumbleweed 上启用 SELINUX</title>
+      <link>http://localhost:1313/posts/opensuse_tumbleweed_%E5%90%AF%E7%94%A8_selinux/</link>
+      <pubDate>Sat, 20 Sep 2025 10:37:00 -0800</pubDate>
+      <guid>http://localhost:1313/posts/opensuse_tumbleweed_%E5%90%AF%E7%94%A8_selinux/</guid>
+      <description>&lt;p&gt;论坛的服务器是 tumbleweed，一直以来想启用 selinux 增强一下安全性，但最早 openSUSE 是 apparmor 系的（其实什么系都无所谓，因为个人电脑没启用过这些），就很犹豫，有 selinux 相关的包但是不敢用。现在官方已经切换到 selinux 了，而且新版本的 tumbleweed ISO 默认就是启用 selinux 的，我决定冲一次。&lt;/p&gt;
+&lt;h4 id=&#34;安装和启用&#34;&gt;安装和启用&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;sudo zypper in -t pattern selinux
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;就会安装全部 selinux 相关的包，然后进 YaST 引导加载器模块，把 kernel parameter 的最后加上：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;security=selinux selinux=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;保存让 YaST 重新生成 initrd 即可。&lt;/p&gt;
+&lt;p&gt;最后编辑 /etc/selinux/config&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELINUX=permissive
+SELINUXTYPE=targeted
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;刚开始一定不能是 &lt;code&gt;enforcing&lt;/code&gt;，不然可能会被卡在外面进不去系统。最后：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo touch /.autorelabel
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;重启自动标记系统内全部文件即可。&lt;/p&gt;
+&lt;p&gt;重启之后，看看有没有 avc（Access Vector Cache，访问矢量高速缓存）错误和 selinux error。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo ausearch -m avc,user_avc,selinux_err,user_selinux_err -ts boot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果出现一个：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;avc: denied { relabelto } for pid=2128 common=&amp;quot;snapperd&amp;quot; name=&amp;quot;info.xml&amp;quot; dev=&amp;quot;sda4&amp;quot; ino=6425
+ scontext=scontext=system_u:system_r:snapperd_t:s0-s0:c0.c1023
+ tcontext=system_u:object_r:snapperd_data_t:s0 tclass=file
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;调试&#34;&gt;调试&lt;/h4&gt;
+&lt;p&gt;好多年前我把 AppArmor 翻译为“应用装甲”的时候也是了解过强制访问控制系统的知识的，selinux 就是把文件的访问权限按照“用户：角色：数据类型：级别：分类”去强化一下。如果任意一项不满足条件，就拒绝访问。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>深入理解 Linux Fontconfig 之五：构建 Chromium 字体调试环境</title>
-      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</link>
+      <link>http://localhost:1313/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</link>
       <pubDate>Wed, 12 Feb 2025 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</guid>
+      <guid>http://localhost:1313/posts/getting_to_know_fontconfig_part_five_chromium_debug_fonts_using_content_shell/</guid>
       <description>&lt;p&gt;上一篇文章我们提到了 content_shell 可以用来调试 blink 引擎，今天我们就来编译一份 content_shell 并魔改它用来调试网页字体查询。&lt;/p&gt;
 &lt;h2 id=&#34;编译-content_shell&#34;&gt;编译 content_shell&lt;/h2&gt;
 &lt;p&gt;主要参考了 &lt;a href=&#34;https://chromium.googlesource.com/chromium/src/+/main/docs/linux/build_instructions.md&#34;&gt;Checking out and building Chromium on Linux&lt;/a&gt;&lt;/p&gt;
@@ -36,9 +68,9 @@ export NO_AUTH_BOTO_CONFIG=~/.boto
     </item>
     <item>
       <title>深入理解 Linux Fontconfig 之四：Chromium 字体查询机制</title>
-      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</link>
+      <link>http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</link>
       <pubDate>Mon, 10 Feb 2025 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</guid>
+      <guid>http://localhost:1313/posts/getting_to_know_fontconfig_part_four_how_chromium_do_font_fallback/</guid>
       <description>&lt;p&gt;要谈 Chromium 的字体查询机制，首先要分开 UI 字体和网页字体。UI 字体是渲染 Chromium 菜单栏中文本使用的，网页字体是渲染网页中的文本的。前者的代码主要在 ui/gfx 域下，后者是由 third_party/blink 渲染引擎处理。&lt;/p&gt;
 &lt;h2 id=&#34;ui-字体的渲染&#34;&gt;UI 字体的渲染&lt;/h2&gt;
 &lt;p&gt;官方文档：&lt;a href=&#34;https://www.chromium.org/developers/design-documents/rendertext/&#34;&gt;RenderText and Chrome UI text drawing&lt;/a&gt;&lt;/p&gt;
@@ -62,9 +94,9 @@ if (FcConfigSubstitute(config, pattern, FcMatchPattern) == FcTrue) {
     </item>
     <item>
       <title>openSUSE 下制作 fcitx5-pinyin 的拼音词库</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</link>
+      <link>http://localhost:1313/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</link>
       <pubDate>Fri, 07 Feb 2025 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E4%B8%8B%E5%88%B6%E4%BD%9C_fcitx5-pinyin_%E7%9A%84%E6%8B%BC%E9%9F%B3%E8%AF%8D%E5%BA%93/</guid>
       <description>&lt;p&gt;年前换了 am5 平台，把 Windows 7 搞坏了（B650m 主板没有 PS/2，amd 又没有 Win7 下的 USB 驱动），只能在 openSUSE 处理一些工作上的事情。我面临的问题是：输入一些奇奇怪怪的国内公司名字的时候，搜狗输入法NG版本（基于 CPIS），记忆比较快，但是它有几个硬伤解决不了，比如候选词面板上的数字上屏，有时候会跳，输入3上的是第5个字; 比如使用输入法切换到英文输入模式就切换不回来了;比如一些基本的汉字打不出来，比如覆盖的覆字。而 fcitx5 呢，记忆又太慢，我不得不一次次的去敲比如“鑫永俪”。于是我想到了一个办法，就是把我常用的公司名字制作成拼音词库。&lt;/p&gt;
 &lt;p&gt;fcitx5 的 libime 提供了 libime-pinyindict 工具用来把文本转为词库，要求的文本格式是这样的：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;鑫永俪	xin&#39;yong&#39;li	0
@@ -110,9 +142,9 @@ if len(sys.argv) &amp;gt; 1:
     </item>
     <item>
       <title>深入理解 Linux fontconfig 第三部分</title>
-      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/</link>
+      <link>http://localhost:1313/posts/getting_to_know_fontconfig_part_three/</link>
       <pubDate>Sat, 26 Nov 2022 22:02:04 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_three/</guid>
+      <guid>http://localhost:1313/posts/getting_to_know_fontconfig_part_three/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://marguerite.su/posts/getting_to_know_fontconfig_part_two/&#34;&gt;上一篇&lt;/a&gt;说到，我们 debug 了 &lt;code&gt;FcConfigSubstitute&lt;/code&gt; 和 &lt;code&gt;FcConfigReference&lt;/code&gt;，最后找到了 &lt;code&gt;FcFileScanFontConfig&lt;/code&gt;，一番魔改后发现 &lt;code&gt;&amp;lt;match target=&amp;quot;scan&amp;quot;&amp;gt;&lt;/code&gt; 虽然应用了，但是没有影响最终 FontSet 中 &amp;ldquo;Noto Scan CJK SC&amp;rdquo; 的 charset。&lt;/p&gt;
 &lt;p&gt;我们这篇要继续 debug：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FcConfigSubstitute (config, font, FcMatchScan)
@@ -129,9 +161,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>深入理解 Linux fontconfig 第二部分</title>
-      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/</link>
+      <link>http://localhost:1313/posts/getting_to_know_fontconfig_part_two/</link>
       <pubDate>Fri, 25 Nov 2022 19:17:09 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_two/</guid>
+      <guid>http://localhost:1313/posts/getting_to_know_fontconfig_part_two/</guid>
       <description>&lt;p&gt;这是深入理解 Linux fontconfig 系列的第二部分，第一部分请&lt;a href=&#34;https://marguerite.su/posts/getting_to_know_fontconfig_part_one/&#34;&gt;移步&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;前面说到了 &lt;code&gt;FcConfigSubstitute&lt;/code&gt;这个函数，它实际封装了：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FcConfigSubstituteWithPat (FcConfig    *config,
@@ -157,9 +189,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>深入理解 Linux fontconfig 第一部分</title>
-      <link>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</link>
+      <link>http://localhost:1313/posts/getting_to_know_fontconfig_part_one/</link>
       <pubDate>Fri, 25 Nov 2022 12:13:29 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/getting_to_know_fontconfig_part_one/</guid>
+      <guid>http://localhost:1313/posts/getting_to_know_fontconfig_part_one/</guid>
       <description>&lt;p&gt;这篇文章是之前两篇关于 fontconfig 文章的后续，前文见第一篇 &lt;a href=&#34;https://marguerite.su/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91&#34;&gt;fontconfig 几个常见的坑&lt;/a&gt;，第二篇 &lt;a href=&#34;https://marguerite.su/posts/color_emoji_in_opensuse&#34;&gt;Color Emoji in openSUSE&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;偶然在网上看到 Alynx Zhou 的&lt;a href=&#34;https://sh.alynx.one/posts/Fontconfig-NotoColorEmoji-Antialias/&#34;&gt;Fontconfig 和 Noto Color Emoji 和抗锯齿&lt;/a&gt;里面说看过我的文，没想到我对 fontconfig 的研究在中文圈还是排在前头的 ⌣。原来大家对后续还是有期待的。&lt;/p&gt;
 &lt;p&gt;先说一下我 2020 年写完那两篇文章干什么去了。我在 Color Emoji in openSUSE 里面不是提到过几个 .rb 代码文件嘛，有些人说找不到它们，其实它们在我的 fork 里面：&lt;a href=&#34;https://github.com/marguerite/fonts-config&#34;&gt;marguerite/fonts-config&lt;/a&gt;。后来我又重写了 openSUSE 的 fonts-config, 在 &lt;a href=&#34;https://github.com/marguerite/fonts-config-ng&#34;&gt;marguerite/fonts-config-ng&lt;/a&gt;。可以自动生成 Emoji Glyph 的 Blacklist，也就是 81_emoji_blacklist_glyphs.conf。&lt;/p&gt;
@@ -182,18 +214,18 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>使用 google 的 fontmake 复活文泉驿项目</title>
-      <link>https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</link>
+      <link>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</link>
       <pubDate>Wed, 23 Nov 2022 20:01:29 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</guid>
+      <guid>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8_google_%E7%9A%84_fontmake_%E5%A4%8D%E6%B4%BB%E6%96%87%E6%B3%89%E9%A9%BF%E9%A1%B9%E7%9B%AE/</guid>
       <description>&lt;p&gt;最早是 openSUSE 中文论坛上的一个帖子&lt;a href=&#34;https://forum.suse.org.cn/t/topic/13044/29&#34;&gt;疑似文泉驿字体BUG&lt;/a&gt;把我带入字体的坑的，以前我只是停留在玩 fontconfig 的阶段。为了解决这个BUG，我简单的学习了一下 fontforge，发现带草字头和竹字头的字形简直是太多了，绝对不能手改，于是萌生了编程化地解决这个BUG的想法。接着无意中就把文泉驿的 ttc 转成了 ufo3 格式，并且在 README.md 中发愿要使用 googlefonts 的 fontmake 工具来编译文泉驿。&lt;/p&gt;
 &lt;p&gt;其实当初没有想那么多的，转换成 ufo3 格式并使用 fontmake 来编译文泉驿有什么好处呢？首先文泉驿作为一个中古字体（只能说比什么 UMing 之类的要新一点），它一直以来不是那么开源的。我理解的开源要有源代码，作为普通用户我很难去把 ttc 当成是源代码的（当然对于会 fontforge 的人来说 ttc 就约等于源代码），我理解的源代码就是能作为文本打开的。wenq.org 曾经是有一个在线编辑器的，用户们可以众筹在线编辑字形，FangQ 会在后台把用户编辑的字形搜集起来去做新的 ttc。随着时间，这套机制已经是废弃了的，也就可以说我们无法再获取到它的源代码了。把文泉驿转存成 ufo3 格式，它的每一个字形都是文本化的 glif 格式，相当于复现了源代码。有了源代码一切都好办了，未来我们还可以再制作在线编辑器，让文泉驿原来的模式继续下去。其次使用 fontmake 来编译文泉驿，相当于让文泉驿与所有现代字体比如 Noto Sans CJK 又站在了同一起跑线上。最近几年字体制作发展的很快，前几年我在 github 上是很少能看见字体项目的，但自从 Adobe 和 Google 在 github 上开源了他们的一些字体工具后呢，现在各种拼接字体大行其道了，比如更纱黑体这种，甚至偶尔还会给我推送一些做原创字体的项目。这些曾经都是与文泉驿无缘的，正如我所说的，大多数人不认为 ttc 是源代码，所以没法利用文泉驿。但现在好了，我可以用 fontmake 编译文泉驿，就表示说 fontbakery 我也可以用，ttfautohint 我也可以用，换句话说，如果我的 ufo3 格式通过了 fontbakery 的 adobefonts 或 googlefonts 的系列检查，且不论字形美丑，至少在字体质量上当年手搓出来的文泉驿是可以进化到 Noto Sans CJK 的水平的。&lt;/p&gt;
 &lt;p&gt;大多数工作是两年前做的，当时我写了一个 &lt;a href=&#34;https://github.com/marguerite/wenq/ufo&#34;&gt;ufo3&lt;/a&gt; 的解析库，修复了草字头和竹字头的问题，并且使用 fontforge 再次生成了 ttf 字体。后来去打包 fontmake 的时候遇到了 skia-pathops 的编译问题，项目就停滞了，甚至草字头和竹字头的问题最终也没有反馈回发行版中。&lt;/p&gt;</description>
     </item>
     <item>
       <title>为 Discourse 开发一个 Onebox 插件（三）去掉 watir 依赖</title>
-      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</link>
+      <link>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</link>
       <pubDate>Sat, 28 Nov 2020 16:07:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</guid>
+      <guid>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%89%E5%8E%BB%E6%8E%89-watir-%E4%BE%9D%E8%B5%96/</guid>
       <description>&lt;p&gt;我们在前两篇文章中已经基本实现了这个 engine，但是目前有一个非常恼人的依赖问题：由于 build.opensuse.org 的 package build status 是使用 javascript 加载的，而 nokogiri gem 并不支持 javascript，这就造成了我们需要使用 watir gem 去点一下网页上的 refresh 按钮，才能获取正确的 build status：&lt;/p&gt;
 &lt;div class=&#34;hightlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    browser &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Watir&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Browser&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;:chrome&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;chromeOptions&lt;/span&gt;: { &lt;span style=&#34;color:#e6db74&#34;&gt;args&lt;/span&gt;: &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--headless&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--window-size=1200x600&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--no-sandbox&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--disable-dev-shm-usage&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; })
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    browser&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;goto(link)
@@ -210,9 +242,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>为 Discourse 开发一个 Onebox 插件（二）从零开始写 custom engine</title>
-      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</link>
+      <link>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</link>
       <pubDate>Sat, 28 Nov 2020 16:07:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</guid>
+      <guid>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%BA%8C%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E6%8F%92%E4%BB%B6/</guid>
       <description>&lt;p&gt;上一篇&lt;a href=&#34;http://marguerite.su/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/&#34;&gt;为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem&lt;/a&gt; 里，我们知道了 Onebox 是什么样的结构。这篇我们先来写一个 onebox 的自定义引擎。&lt;/p&gt;
 &lt;p&gt;我们先准备一个脚手架 openbuildservice_onebox.rb&lt;/p&gt;
 &lt;div class=&#34;hightlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;module&lt;/span&gt; Onebox
@@ -235,9 +267,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem</title>
-      <link>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</link>
+      <link>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</link>
       <pubDate>Sat, 28 Nov 2020 14:59:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</guid>
+      <guid>http://localhost:1313/posts/%E4%B8%BA-discourse-%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA-onebox-%E6%8F%92%E4%BB%B6%E4%B8%80%E7%90%86%E8%A7%A3-onebox-gem/</guid>
       <description>&lt;h2 id=&#34;为-discourse-开发一个-onebox-插件一理解-onebox-gem&#34;&gt;为 Discourse 开发一个 Onebox 插件（一）理解 Onebox gem&lt;/h2&gt;
 &lt;p&gt;我们 &lt;a href=&#34;https://forum.suse.org.cn&#34;&gt;openSUSE 中文论坛&lt;/a&gt;用的是 &lt;a href=&#34;https://github.com/discourse/discourse&#34;&gt;discourse&lt;/a&gt;，有一天给用户贴了一个 &lt;a href=&#34;http://build.opensuse.org/&#34;&gt;OBS&lt;/a&gt; 的链接，突然想到是不是可以让它也能像 github 一样有一个漂亮的预览小窗口 🤓 于是说干就干：&lt;a href=&#34;https://github.com/openSUSE-zh/discourse-openbuildservice-onebox&#34;&gt;discourse-openbuildservice-onebox&lt;/a&gt; 插件。&lt;/p&gt;
 &lt;p&gt;以下是教程，由于涉及到目前最大的 Ruby on Rails 程序 discourse，会分成几部分来讲解。第一部分我们来试着理解一下 discourse 出品的 &lt;a href=&#34;https://github.com/discourse/onebox&#34;&gt;onebox&lt;/a&gt; gem。&lt;/p&gt;
@@ -264,9 +296,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>Color Emoji in openSUSE</title>
-      <link>https://marguerite.github.io/posts/color_emoji_in_opensuse/</link>
+      <link>http://localhost:1313/posts/color_emoji_in_opensuse/</link>
       <pubDate>Wed, 04 Nov 2020 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/color_emoji_in_opensuse/</guid>
+      <guid>http://localhost:1313/posts/color_emoji_in_opensuse/</guid>
       <description>&lt;p&gt;上一篇文章里我们讲了 fontconfig 常见的几个坑，今天我们来继续讲一讲 openSUSE 的 Colored Emoji 支持。也就是如何配置 Noto Color Emoji 这个字体用于网页显示（用于终端显示是另一回事，涉及到比如 vte 的 teminal 之类的，有几个相关的 bug 涉及到比如宽度之类的；GTK/Qt 显示又是另一回事，涉及到 cairo）。&lt;/p&gt;
 &lt;p&gt;为什么是这个字体呢？我也很无奈啊…Noto 系列是 openSUSE 的默认字体，可以说除了英文 locale 别的都是 Noto 来显示的，Noto Color Emoji 跟其它 Noto 字体的 metrics 兼容。这一点就秒杀了其它 Emoji 字体。再者 Emoji 字体本身就不多，目前为止也就 45-generic.conf 里列出的那么不到十个，EmojiOne Color 因为版权问题不再开发了，真正 Linux 上能用的 Colored Emoji 也就剩下一个 Twitter Color Emoji 了。剩下的要么专有的要么没有颜色。&lt;/p&gt;
 &lt;p&gt;我们先来回忆一下之前的说法：&lt;/p&gt;
@@ -276,9 +308,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>fontconfig 几个常见的坑</title>
-      <link>https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</link>
+      <link>http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</link>
       <pubDate>Wed, 04 Nov 2020 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</guid>
+      <guid>http://localhost:1313/posts/fontconfig_%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9D%91/</guid>
       <description>&lt;p&gt;最近 Microsoft 加入 OIN，贡献了它的 60000+ 项专利，这使得 openSUSE 的 freetype2 终于能够开启 ClearType 引擎了。之前 infinality 项目贡献了三大块，我们引入了两大块，但是其中第一大块的 ClearType 引擎没有默认开启，第三大块的非专利色彩滤镜也一直没有。现在专利的问题没有了，freetype2 终于更新到完全体了，它现在有两个引擎，第一个引擎是 Adobe 的 CFF 引擎，主要用于 Noto Sans CJK，第二个引擎就是 infinality 贡献的 ClearType 引擎了。总之都是好东西。&lt;/p&gt;
 &lt;p&gt;后端更新了，我也需要更新 fonts-config 来默认设置 rgba 和 hintstyle。openSUSE 的 fonts-config 是一系列跟 fontconfig 一样的字体配置文件，已经很老了，于是我需要 modernize 它一下。在这个过程中我几乎看了网上能够找到的全部 fontconfig 相关文章。里面大坑套小坑，有必要专门写文来澄清一下：&lt;/p&gt;
 &lt;h2 id=&#34;第一个坑从-monospace-中清除-sans-serif&#34;&gt;第一个坑：从 monospace 中清除 sans-serif&lt;/h2&gt;
@@ -297,9 +329,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>30 秒钟在 Github Pages 上搭建一个 openSUSE 风格的部落格</title>
-      <link>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</link>
+      <link>http://localhost:1313/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</link>
       <pubDate>Sat, 31 Dec 2016 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</guid>
+      <guid>http://localhost:1313/posts/30_%E7%A7%92%E9%92%9F%E5%9C%A8_github_pages_%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA_opensuse_%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%83%A8%E8%90%BD%E6%A0%BC/</guid>
       <description>&lt;p&gt;之前的 Ghost 管理密码丢了 :-(&lt;/p&gt;
 &lt;p&gt;昨晚花了一个晚上的时间把之前丢失的部落格文章通过 web.archives.org 找回到了 2011 年。09~10 年的部落格文章等想怀旧的时候再继续找。下一步应该研究的是怎么恢复和整合评论。
 不过这个坑就不一定哪天来填啦。&lt;/p&gt;
@@ -319,18 +351,18 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>Introducing the brand new nodejs packaging</title>
-      <link>https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/</link>
+      <link>http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/</link>
       <pubDate>Sat, 23 Jan 2016 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/introducing_the_brand_new_nodejs_packaging/</guid>
+      <guid>http://localhost:1313/posts/introducing_the_brand_new_nodejs_packaging/</guid>
       <description>&lt;p&gt;There has been no activities for nodejs in openSUSE for a while. (Since 13.2) But it doesn&amp;rsquo;t mean it&amp;rsquo;s dead. It&amp;rsquo;s actually evolving.&lt;/p&gt;
 &lt;p&gt;Today the brand-new &lt;a href=&#34;https://github.com/marguerite/nodejs-packaging&#34;&gt;nodejs-packaging&lt;/a&gt; answers all the questions.&lt;/p&gt;
 &lt;p&gt;For a long time and traditionally we openSUSE prefer to keep consistence with Fedora in RPM packaging (Although small differences still present). So did nodejs packaging. We used the nodejs-packaging tool from Fedora to package for openSUSE before. But it introduced lots of troubles:&lt;/p&gt;</description>
     </item>
     <item>
       <title>本周开发札记</title>
-      <link>https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</link>
+      <link>http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</link>
       <pubDate>Sat, 23 Jan 2016 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</guid>
+      <guid>http://localhost:1313/posts/%E6%9C%AC%E5%91%A8%E5%BC%80%E5%8F%91%E6%9C%AD%E8%AE%B0/</guid>
       <description>&lt;p&gt;盘点一下本周自己在 openSUSE 上面做的工作：&lt;/p&gt;
 &lt;h4 id=&#34;解决了-wine-的-desktop-file-长期以来位于未知类别的-bug&#34;&gt;解决了 wine 的 desktop file 长期以来位于未知类别的 bug&lt;/h4&gt;
 &lt;p&gt;openSUSE 的 wine 从 Ubuntu 抄来了一些 desktop files。而这些文件的 Categories 都是错的（Categories=Wine;Emulator;Documentation;）。根据 freedesktop 的 &lt;a href=&#34;http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html&#34;&gt;desktop entry specification&lt;/a&gt; 规定，Emulator; 只能跟在 Games; 或者 System; 后面使用，所以是错的，而 Wine; 本身不是一个合法的 Desktop Category; Documentation; 又不符合。统一调整到了 System;Emulator; 类别，而一些可以独立使用的比如 notepad 则视同原生 App 调整到了对应的比如 Utility;Texteditor; 类别。&lt;/p&gt;
@@ -339,9 +371,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>脑洞大开的周末</title>
-      <link>https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</link>
+      <link>http://localhost:1313/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</link>
       <pubDate>Mon, 18 Jan 2016 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</guid>
+      <guid>http://localhost:1313/posts/%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%E7%9A%84%E5%91%A8%E6%9C%AB/</guid>
       <description>&lt;p&gt;这个周末其实只打算维护下我的 &lt;a href=&#34;https://github.com/marguerite/upsteam-notifier&#34;&gt;upstream-notifier&lt;/a&gt; 的😂。好吧原来我只是想更新几个软件包，结果觉得既然都去更新包了，不如把给 upnoti 用的 json 也写了。&lt;/p&gt;
 &lt;p&gt;写的过程中要测试，发现 github 上面的有些项目的 release page 底下没有内容，于是又改 upnoti 的 github mod 支持这种情况。然后又觉得 upnoti 太慢，加了 multithread 支持，然后又开始优化性能，代码风格之类的。&lt;/p&gt;
 &lt;p&gt;好不容易搞定了，这时 home:opensuse_zh 已经更新完几个包了，没法生产环境测试了，又去 d:l:go 里把 docker 的几个依赖抓回来，发现 golang-packaging 在 sles11 上面 test 宏出错，又给自己加了一项工作任务。&lt;/p&gt;
@@ -353,9 +385,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>高手创造工具</title>
-      <link>https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</link>
+      <link>http://localhost:1313/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</link>
       <pubDate>Tue, 12 Jan 2016 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</guid>
+      <guid>http://localhost:1313/posts/%E9%AB%98%E6%89%8B%E5%88%9B%E9%80%A0%E5%B7%A5%E5%85%B7/</guid>
       <description>&lt;p&gt;今天整理出来了自己这些年碰过的软件包，不算 M17N 之类拥有 repo maintainer 角色的源里的软件包，就有 178 个。加上那些总量要过 300 了。&lt;/p&gt;
 &lt;p&gt;金融领域，一个基金经理维护 20 只左右股票组成的资产池就需要一个庞大的团队。300+ 的软件包几乎可以说是早到了 upper limit 了。至于技术，基本上再提高就不会是在打包这里了，而是去真正的学习各种编程语言来解决编译错误了，这其实做的已经是 upstream developer 的事情了。我的 github profile 这些年累积下来很好看，它说我的主力编程语言有 4 种（笑～），还被 Google HR 发过邮件（笑～）。&lt;/p&gt;
 &lt;p&gt;我维护着很多的中文社区相关的包。偶尔有一种莫名其妙的责任感：有用户在 forum.suse.org.cn 说哪个软件 openSUSE 没有，就想赶紧包出来，潇洒一 post。或者谁说 openSUSE 出了什么 bug，感觉就跟自己系统不能用了一样。几乎每天在 build.opensuse.org 和论坛上面站台，打包点东西，帮 factory 修修 bug。&lt;/p&gt;
@@ -365,9 +397,9 @@ if (!value[object] &amp;amp;&amp;amp; kind == r-&amp;gt;u.test-&amp;gt;kind)
     </item>
     <item>
       <title>RPM specfile 中  值的研究</title>
-      <link>https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</link>
+      <link>http://localhost:1313/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</link>
       <pubDate>Sun, 02 Aug 2015 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</guid>
+      <guid>http://localhost:1313/posts/rpm_specfile_%E4%B8%AD__%E5%80%BC%E7%9A%84%E7%A0%94%E7%A9%B6/</guid>
       <description>&lt;p&gt;研究这个问题是因为论坛上的一个讨论：&lt;a href=&#34;https://forum.suse.org.cn/viewtopic.php?f=15&amp;amp;t=4004/&#34;&gt;zypper reinstall package&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;略过楼主的实现是否正确不谈（因为他不给我看 specfile 估计是公司的软件），简单来说可以分成几个子问题：&lt;/p&gt;
 &lt;p&gt;第一个是 RPM specfile 的 %postun 部分的 $1 变量到底是什么：&lt;/p&gt;
@@ -390,9 +422,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>关于 Deepin 用户开发者大会的浅见</title>
-      <link>https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</link>
+      <link>http://localhost:1313/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</link>
       <pubDate>Fri, 11 Jul 2014 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</guid>
+      <guid>http://localhost:1313/posts/%E5%85%B3%E4%BA%8E_deepin_%E7%94%A8%E6%88%B7%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%9A%84%E6%B5%85%E8%A7%81/</guid>
       <description>&lt;p&gt;这篇文章是唱反调的，可能会不舒服的可以离席了。&lt;/p&gt;
 &lt;p&gt;最早长微博写了一半（好吧我弄了一个真·@openSUSE娘），觉得一个喧嚣的场合不太合适搞技术的（好吧我又给自己脸上贴金了）坐下来互相交流（喷），于是就发在这里，也特意选择 DAU 大会这个话题冷下来的时候说，避免给他们造成负面的影响。深度团队要觉得我是个倒灶的就无视掉好了。&lt;/p&gt;
 &lt;p&gt;先说两点：&lt;/p&gt;
@@ -414,9 +446,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>openSUSE 下配合 Nginx 搭建 qwebirc 网页 IRC</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</link>
+      <link>http://localhost:1313/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</link>
       <pubDate>Sat, 12 Oct 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E4%B8%8B%E9%85%8D%E5%90%88_nginx_%E6%90%AD%E5%BB%BA_qwebirc_%E7%BD%91%E9%A1%B5_irc/</guid>
       <description>&lt;p&gt;做这个的初衷很简单：IRC 对小白太远了。&lt;/p&gt;
 &lt;p&gt;它不像论坛，打开网页就能刷; 不像 QQ/Gtalk，软件是人都能找到，装上就能上。它需要专用客户端（比如 konversation），而且装完你还不能上，还有一堆命令等着你，何况还有 20 年早期互联网流传下来的各种名词、礼仪。总之它是一整个与世隔绝的黑客生态圈。&lt;/p&gt;
 &lt;p&gt;但是吧，不学还不行，你看哪个开发者不会使用 IRC 的？于是我想先降低一下它对小白们的陌生感，做一个给蠢人用的玩意。（成功把自己从其它蠢人中分离开以示区别哦耶！）&lt;/p&gt;
@@ -435,9 +467,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>openSUSE 特殊国情有关的 FAQ</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</link>
+      <link>http://localhost:1313/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</link>
       <pubDate>Tue, 26 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E7%89%B9%E6%AE%8A%E5%9B%BD%E6%83%85%E6%9C%89%E5%85%B3%E7%9A%84_faq/</guid>
       <description>&lt;p&gt;引子 —— 能解决的是技术，不能解决的是人心。&lt;/p&gt;
 &lt;h4 id=&#34;为什么我们开发者要用-gtalk-和-irc&#34;&gt;为什么我们开发者要用 Gtalk 和 IRC？&lt;/h4&gt;
 &lt;p&gt;跟 Google 没一毛钱关系。我们需要一个全球性的网络，因为我们面对的不只是用户，还有其它国家地区的开发者。就 openSUSE 来说，我没有理由去要求台湾地区的开发者用 QQ，也没有理由去要求他们的用户在官方论坛转简体。我们需要开放而成熟的技术，以便于进行二次开发。二次开发就是「修复」一些原本没有「坏」的东西来满足自己的需要，非开放而不能为。Gtalk 后面的 XMPP 协议坏了吗？没有，但是我需要与 IRC #opensuse-cn 互通的机器人、需要群组机器人、需要网页的聊天记录，于是我「修复」了它。现在我们有了 ~~&lt;a href=&#34;mailto:talk@suse.ws&#34;&gt;talk@suse.ws&lt;/a&gt;，有了 &lt;a href=&#34;https://talk-marguerite.rhcloud.com&#34;&gt;https://talk-marguerite.rhcloud.com&lt;/a&gt;。~~Update: Gtalk 群组地址变更为 &lt;a href=&#34;mailto:talk@suse.org.cn&#34;&gt;talk@suse.org.cn&lt;/a&gt;。（IRC/Gtalk/QQ 群三网合一），聊天记录地址变更为 &lt;a href=&#34;https://forum.suse.org.cn/log.html&#34;&gt;https://forum.suse.org.cn/log.html&lt;/a&gt;&lt;/p&gt;
@@ -456,9 +488,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>培育开源 NGO 的一些思考</title>
-      <link>https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link>
+      <link>http://localhost:1313/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link>
       <pubDate>Sat, 23 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</guid>
+      <guid>http://localhost:1313/posts/%E5%9F%B9%E8%82%B2%E5%BC%80%E6%BA%90_ngo_%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</guid>
       <description>&lt;p&gt;这是周六北京 GNOME 小组活动 openSUSE 社区的讲稿。撰稿人是我。主讲人是来自 SuSE 的 Lance Wong。&lt;/p&gt;
 &lt;p&gt;大家来自不同的社区，面对的问题也不同。我这次先来拨一拨 openSUSE 中文社区这只洋葱。&lt;/p&gt;
 &lt;p&gt;首先提到 openSUSE，大家想到的应该是：&lt;/p&gt;
@@ -492,9 +524,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>openSUSE 中文社区面临的若干问题</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</link>
+      <link>http://localhost:1313/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</link>
       <pubDate>Thu, 21 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E4%B8%AD%E6%96%87%E7%A4%BE%E5%8C%BA%E9%9D%A2%E4%B8%B4%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</guid>
       <description>&lt;p&gt;一直有人批评 openSUSE 的玛格丽特时代带了意识形态，还给我总结出两个凡是：凡是 openSUSE 的都是好的，凡是 openSUSE 上出现的问题都是用户不对。那我就来巴一些坏处，只有一个声音是不对的。但我巴坏处肯定是想让它好，毕竟我是玛格丽特女王大人。&lt;/p&gt;
 &lt;p&gt;（一） 中文社区&lt;/p&gt;
 &lt;p&gt;Ubuntu 肯定是最大的中文社区，Arch 肯定是最活跃的中文社区，Fedora 肯定是最爱交际的中文社区，openSUSE 肯定是最宅的中文社区。&lt;/p&gt;
@@ -504,9 +536,9 @@ drwxr-xr-x 1 root       root     0 8 月   2 22:25 demo
     </item>
     <item>
       <title>OpenShift 搭建 rawdog 实现部落格聚合</title>
-      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</link>
+      <link>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</link>
       <pubDate>Tue, 19 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</guid>
+      <guid>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_rawdog_%E5%AE%9E%E7%8E%B0%E9%83%A8%E8%90%BD%E6%A0%BC%E8%81%9A%E5%90%88/</guid>
       <description>&lt;p&gt;因为 &lt;a href=&#34;https://planet.opensuse.org/&#34;&gt;Planet openSUSE&lt;/a&gt; 的管理员一直 unavailable，导致我无法正常的推送对 Planet 的修复和处理中文新成员的加入，考虑到中文博客又太多，总去找一个 unavailable 的人，两边都互相嫌嘛，于是就架设了这个：&lt;del&gt;community.suse.org.cn&lt;/del&gt; Update: 挂了&lt;/p&gt;
 &lt;p&gt;这篇文章中的教学其实我只完成了一半，python wsgi 前台是 Arch 维护者 &lt;a href=&#34;http://blog.felixc.at/&#34;&gt;Felix Yan&lt;/a&gt; 帮写的，所以在前面感谢一下 co-worker。
 准备&lt;/p&gt;
@@ -517,9 +549,9 @@ rawdog 架设&lt;/p&gt;
     </item>
     <item>
       <title>openshift 搭建和 IRC 频道互通的 Gtalk 群聊</title>
-      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</link>
+      <link>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</link>
       <pubDate>Sun, 17 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</guid>
+      <guid>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA%E5%92%8C_irc_%E9%A2%91%E9%81%93%E4%BA%92%E9%80%9A%E7%9A%84_gtalk_%E7%BE%A4%E8%81%8A/</guid>
       <description>&lt;p&gt;Long long ago，大概八九个月前，看到翁学天的 ikde 群居然能和 IRC 互通，感觉很惊艳，于是也想弄一个替代现在的 &lt;a href=&#34;mailto:opensuse_zh@im.partych.at&#34;&gt;opensuse_zh@im.partych.at&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;Party Chat 是一个很好的免折腾 Gtalk 群聊主机服务，架设在 Amazon 上面，但是有以下缺点：&lt;/p&gt;
 &lt;ul&gt;
@@ -543,9 +575,9 @@ rawdog 架设&lt;/p&gt;
     </item>
     <item>
       <title>openshift 安装 owncloud 取代 Google Reader</title>
-      <link>https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</link>
+      <link>http://localhost:1313/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</link>
       <pubDate>Fri, 15 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</guid>
+      <guid>http://localhost:1313/posts/openshift_%E5%AE%89%E8%A3%85_owncloud_%E5%8F%96%E4%BB%A3_google_reader/</guid>
       <description>&lt;p&gt;Google Reader’s sunset is the dawn of ownCloud news.&lt;/p&gt;
 &lt;p&gt;翻译过来就是 GR 的夕阳正是 ownCloud 新闻订阅的佛晓。&lt;/p&gt;
 &lt;p&gt;相信 Google Reader 在 7 月 1 号关闭对大家都是一个打击，虽然大家的未读都是 1000+。但是一种生活方式突然变了，总归有点怅然。至少我听闻这个消息的时候第一反应就是：妈呀！我的那么多红心怎么办！&lt;/p&gt;
@@ -572,9 +604,9 @@ rawdog 架设&lt;/p&gt;
     </item>
     <item>
       <title>SUSE 新年飨礼</title>
-      <link>https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</link>
+      <link>http://localhost:1313/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</link>
       <pubDate>Fri, 08 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</guid>
+      <guid>http://localhost:1313/posts/suse_%E6%96%B0%E5%B9%B4%E9%A3%A8%E7%A4%BC/</guid>
       <description>&lt;p&gt;亲爱的 openSUSE 贡献者们，&lt;/p&gt;
 &lt;p&gt;为了感谢您在过去的一年中为 openSUSE 项目所做的杰出贡献，值此新版发布在即，SUSE Desktop Team 的 FJKong 孔叔从 SUSE 市场部虎口夺食，抢到了一些礼品送给大家（实物图见下文）。礼品价值不是很高、数量也很少（因为我们没有社区经费，礼物也不是 SUSE 官方支出，纯属孔叔和市场部员工的个人情宜（？哈哈）得到的，所以我们会尽量把礼物交给已经证明最能呵护它们的贡献者），主要是为了表达一份微不足道的心意，openSUSE 没有忘记你们，正是你们或多或少的在他人眼里可能很怪很傻很宅的贡献，支持着 openSUSE 一直有勇气有动力面对不可知的未来，在这个 complicated 的世界里艰难前行。&lt;/p&gt;
 &lt;p&gt;同时新官上任的 SUSE Desktop Lead 梁辰晔（Da Liang）梁叔（原 SUSE 北京服务器组的 Senior）携 Desktop Team 全体同仁 Lance， 王伶卓，向 openSUSE 中文圈的用户们致意。（郑宇 jzheng 郑叔从 SUSE 暂时跳槽到 Canonical 准备创业中，但仍然在 openSUSE 社区和论坛上积极出没）&lt;/p&gt;
@@ -600,9 +632,9 @@ rawdog 架设&lt;/p&gt;
     </item>
     <item>
       <title>openSUSE 下的 Fcitx 输入法</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</link>
+      <link>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</link>
       <pubDate>Tue, 05 Mar 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%9A%84_fcitx_%E8%BE%93%E5%85%A5%E6%B3%95/</guid>
       <description>&lt;p&gt;这是给 openSUSE Marketing team 做的，大概会写到 news.opensuse.org 的 12.3 发布日志上。介绍了一些 Fcitx 的多语言支持和高级功能。&lt;/p&gt;
 &lt;p&gt;Youku：&lt;/p&gt;
 &lt;p&gt;Download:&lt;/p&gt;
@@ -610,9 +642,9 @@ rawdog 架设&lt;/p&gt;
     </item>
     <item>
       <title>openSUSE Linux 战渣浪详解教程</title>
-      <link>https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</link>
+      <link>http://localhost:1313/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</link>
       <pubDate>Sun, 24 Feb 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</guid>
+      <guid>http://localhost:1313/posts/opensuse_linux_%E6%88%98%E6%B8%A3%E6%B5%AA%E8%AF%A6%E8%A7%A3%E6%95%99%E7%A8%8B/</guid>
       <description>&lt;p&gt;自从去年十一申请到哔哩哔哩账户，一直也没有加入阿婆主的行列中去，我心有愧…于是就做了一个授人以渔的从原理到实现的教程，讲述了一些阿婆主喜闻乐见的基础知识。&lt;/p&gt;
 &lt;h4 id=&#34;战渣浪-原理&#34;&gt;“战渣浪” 原理&lt;/h4&gt;
 &lt;ul&gt;
@@ -636,9 +668,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>openSUSE 下玩围棋</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</link>
+      <link>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</link>
       <pubDate>Sun, 24 Feb 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/</guid>
       <description>&lt;p&gt;Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。&lt;/p&gt;
 &lt;p&gt;主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。&lt;/p&gt;
 &lt;h4 id=&#34;引擎&#34;&gt;引擎&lt;/h4&gt;
@@ -665,9 +697,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>openshift 搭建 wordpress 教程</title>
-      <link>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</link>
+      <link>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</link>
       <pubDate>Mon, 18 Feb 2013 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</guid>
+      <guid>http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/</guid>
       <description>&lt;p&gt;最近把 suse.ws 搬家到了 Red Hat 的 openshift.com。原因是我个人博客的空间 IP 也被光荣认证了，而 openSUSE 简体中文官方主站不能在简体中文地区不能访问呀。又没有赞助就选了搞基的红帽子搞的 PaaS。&lt;/p&gt;
 &lt;p&gt;下面把搭建时候的要点简单说一下。&lt;/p&gt;
 &lt;h4 id=&#34;准备&#34;&gt;准备&lt;/h4&gt;
@@ -683,9 +715,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>Ruby on Rails 学习笔记－安装和 Hello World</title>
-      <link>https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</link>
+      <link>http://localhost:1313/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</link>
       <pubDate>Sun, 11 Nov 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</guid>
+      <guid>http://localhost:1313/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/</guid>
       <description>&lt;p&gt;因为想给 Open Build Service 加 i18n 支持，所以要学习下 Ruby on Rails。&lt;/p&gt;
 &lt;h4 id=&#34;什么是-ruby-on-rails&#34;&gt;什么是 Ruby on Rails？&lt;/h4&gt;
 &lt;p&gt;推特上有 Ruby 程序员说是「肉夹馍」的关系，意思是其实硬菜在 Ruby。&lt;/p&gt;
@@ -698,9 +730,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>当梦想照进现实  记 Ubuntu Tweak 的烂尾</title>
-      <link>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</link>
+      <link>http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</link>
       <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</guid>
+      <guid>http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/</guid>
       <description>&lt;p&gt;本文是从我的角度来揣摩主席的，说的可能不对（语序，那叫不可能对！）。首先澄清我不是在黑他（你一说这话就没好事，这不是黑是什么呀哎呦喂），主席 tualatrix chau，是第四帝国的老朋友，我朝金吾卫、奋威校尉 @shellex 和国子监祭酒、工部造作局大匠 @csslayer 的好基友，不过他既然已经是党内最高职务了，我这边就没有什么可以开出的价码了。只能说暗恨他不能为我所用什么的，不能说黑他。和他的关系是：认识、聊过、不熟。因此也别指望从这里得到什么独家新闻。算是从逻辑的角度很世故的看待这件事。（鬼扯，阴谋论就说阴谋论好啦！）&lt;a href=&#34;http://imtx.me/archives/1764.html&#34;&gt;事情&lt;/a&gt;大家已经很清楚了，所以就是社论。（明明是胡勒！）&lt;/p&gt;
 &lt;p&gt;大约两周前，@shellex 找工作，我和他聊去大公司还是 free lance 的问题，期间参与的还有 SuSE 的 desktop team leader joeyzheng。我当时做出的判断是：C 家的 home based 不好，它针对的对象不是应届生，是 SuSE 在职的那些走在 Google青云之路上想暂时歇歇脚的大小牛。解释下什么是青云之路，中国 IT 职场有条青云之路，非常 clear 的 path：&lt;/p&gt;
 &lt;ul&gt;
@@ -715,9 +747,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>解决 btrfs 开机 initramfs 加载时间过长</title>
-      <link>https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/</link>
+      <link>http://localhost:1313/posts/boot_btrfs_takes_too_long_to_load_initramfs/</link>
       <pubDate>Sat, 20 Oct 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/</guid>
+      <guid>http://localhost:1313/posts/boot_btrfs_takes_too_long_to_load_initramfs/</guid>
       <description>&lt;p&gt;这是困扰了我一年半的一个 bug，昨晚被 btrfs ML 的 cwillu 几封邮件解决了。&lt;/p&gt;
 &lt;p&gt;最早开始使用 btrfs 是在 10 年 11 月，那时我换上了听歌比 ssd 更有质感的 1TB 西数 7200 转机械硬盘，重装系统就装了那之前炒作的沸沸扬扬的「下一代文件系统」btrfs。不得不说，很少有人写文章像我这么求实了。「下一代文件系统」，那不就是「future never actually comes！」吗？！刚装机就遇到了一个 serious bug，那就是 btrfs 的几个进程 100% cpu 使用率，基本幻灯片。怀疑过 chromium，firefox 的数据库导致碎片，反正怀疑了一大堆，最终是升级到 3.2 莫名其妙的解决了。（后来 OBS 又在这上面吃了一回屎，12.2 发布前几周，RC 2 的时候，升级服务器换了 btrfs，结果卡的 scheduler 一动不动，编译服务变成了一块大网盘，最终跳掉了 RC3）&lt;/p&gt;
 &lt;p&gt;这次的这个 bug 是 12.2 后带来的。我之前的 RC 版本没注意，但根据我编辑维基的&lt;a href=&#34;http://en.opensuse.org/openSUSE:Most_annoying_bugs_12.2_dev&#34;&gt;记录&lt;/a&gt;，是在 RC 2 出现的。当时是因为我看到了 lizards 的一篇小短文，叫做「openSUSE 2 秒启动」，本来想试做然后发到 suse.ws 的。结果人家全部两秒，我的 NetworkManager 就要 80000+ms 才能启动。这不是坑人么。于是找到 NM 的维护者 BinLi 报了 bug。&lt;/p&gt;
@@ -725,9 +757,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>CJK 的尊嚴（三）塵埃</title>
-      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</link>
+      <link>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</link>
       <pubDate>Wed, 16 May 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</guid>
+      <guid>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/</guid>
       <description>&lt;p&gt;首先，按照 @csslayer 的說法，紅地毯鋪到大門口，再該傳教傳教該懲戒懲戒。彙報下進展：&lt;/p&gt;
 &lt;p&gt;虎戰士（@tigersoldier) 寫了一篇很客觀的技術文：&lt;a href=&#34;http://bit.ly/JnFdPJ&#34;&gt;關於 GNOME 整合 IBUS 事件的技術細節&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;它的技術方面說的很客觀，「正確與否」我不懂（拜托要是真参考了我的「技术文」要给 pingback 哦），老 K 可能說那是個渣，但至少它解釋給普通用戶聽應該夠，注意，那也是一篇傳教文，該腦補腦補，該過濾過濾。&lt;/p&gt;
@@ -744,9 +776,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>CJK 的尊嚴（三）聖戰</title>
-      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</link>
+      <link>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</link>
       <pubDate>Tue, 15 May 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</guid>
+      <guid>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/</guid>
       <description>&lt;p&gt;前面 po 了給各位 openSUSE 使用者的彙報，被「戰友」粱水龍轉載到了中文開源界排名很高的 Linuxtoy 上。發生了一些不必要的爭執。其中很多人的辯論基礎都是錯的，甚至沒有站在正確的主題上。原因在於他們對輸入法的不瞭解，雖然大家都在用。&lt;/p&gt;
 &lt;p&gt;前文是流程彙報，沒有解釋技術細節（這也是多數後續爭執沒踩對節拍的原因），所以我寫了這篇投資者教育，會盡力解釋我明白的技術細節。至於我也不明白的，相信大家在瞭解了我懂的技術細節之後再討論，真正的輸入法開發者是不介意在關鍵問題上教大家一些東西的。這對整個中文開源圈都是好事。&lt;/p&gt;
 &lt;p&gt;但請不要覺得我應該天經地義的爲你們架起這座橋樑，我比客服貴多了。不止是在 FOSS 社區，生活中也是這樣，一個人可以自行決定她想說什麼而又不說什麼，所以這次要還不帶耳朵，說些空中樓閣的「理論」，那就沒有下次了。就像真正的輸入法開發者說的：「let it be， let it be 二逼」。但沒有人是真想做 XX 的都是無意中犯錯的對麼？只要不是無藥可救，那就都有地方願意收留你。&lt;/p&gt;
@@ -766,9 +798,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>CJK 的尊嚴</title>
-      <link>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</link>
+      <link>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</link>
       <pubDate>Sun, 13 May 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</guid>
+      <guid>http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/</guid>
       <description>&lt;p&gt;好吧，這名字起的有點義和團的 feeling？&lt;/p&gt;
 &lt;p&gt;民國 101 年 5 月 11 日，西歷 2012. 這一天絕對值得載入中文自由與開源軟件界史冊。如果有這樣的史冊的話。&lt;/p&gt;
 &lt;p&gt;首先這天我們 CJK 社區開發的 FOSS 軟件 fcitx/gcin 首次成爲 openSUSE 這種重量級發行版的默認輸入法。&lt;/p&gt;
@@ -787,9 +819,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>Instagram 中國式小資的末日狂歡</title>
-      <link>https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</link>
+      <link>http://localhost:1313/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</link>
       <pubDate>Tue, 10 Apr 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</guid>
+      <guid>http://localhost:1313/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/</guid>
       <description>&lt;p&gt;這事件最近炒的盛嚣直上的，甚至搞出來所謂的互聯網鄙視鏈。&lt;/p&gt;
 &lt;p&gt;其實和香港選特首民衆自導自演的鬧劇一樣滑稽。港人選出符合預期的特首的公敵絕不是CCP，而是自己。CCP才沒有闲情雅致就一彈丸之地拉扯，官與民斗有理弱三分，它的政治智慧沒有那麼低能。董，曾，梁，每个背著萬民傘上台的民选特首都如一丘之貉，那絕對要在自己身上找原因，而不是歸咎於北京。嫑說你們沒有選，因為讓你們選會更差。每個合格的政客都明白拉攏一小撮聰明人比忽悠一大票選民困難得多，因為聰明人只相信拿在手裡的利益而選民相信不著邊際的前景，我覺得港人和有八十年歷史對付過民國蘇聯和美帝的中宣部直接剛上那才叫人間悲劇。港人若不能明白政治就是妥協基礎上的周旋，見人騙人見鬼蒙鬼的敷衍，那永遠只能沉迷在亞洲民主先鋒的空中樓閣裏自瀆，還不如像我們一樣相信隨機。（剛開頭就離題，瑪麗蘇你是要鬧哪樣。。。&lt;/p&gt;
 &lt;p&gt;好吧，讓我們先來回顧一下instagram的歷史。instagram最初是創立於聖佛朗西斯科的一個多功能HTML5手機圖片簽到項目Burbn。像我一樣對項目名字的發音和拼寫有着異乎尋常的執着的孩子們是不是被雷蒙了，聽名字這就是個被語文老師死的早的序員們玩壞了永遠完成不了的一個坑啊。後來僥倖拿到了兩筆不知名風投於是華麗轉身，變成了所謂的互聯網未來之星，甚至國內的IT媒體所謂的「不聯網」。紅了大概有一年吧，形勢急轉直下，先是發佈了android應用，然後以迅雷不及掩耳盜鈴之勢賣給了臉書。這下哭爹喊娘、義憤填涌的人都傻眼了。&lt;/p&gt;
@@ -807,9 +839,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>开源软件的使用者算不算是吸血者</title>
-      <link>https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</link>
+      <link>http://localhost:1313/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</link>
       <pubDate>Wed, 04 Apr 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</guid>
+      <guid>http://localhost:1313/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/</guid>
       <description>&lt;p&gt;这是知乎上有人对于我那篇 openSUSE 为何人气远远不如 ubuntu 和 fedora 的衍生提问。&lt;/p&gt;
 &lt;p&gt;回答： 我觉得你应该修改问题。使用者，是个很中性好笼统的词。下定义就是这样，你定义的越笼统，越中性，越细节，越带感情色彩和主观因素。使用者分种类的，玩游戏不也有人民币玩家、金币农民、苦逼青少年、称霸服务器的搬砖工嘛。你可能会用“傻逼”也很笼统来反驳我，但下定义虽然可以衍生但不是词语组合，组合就一定会带上该词或字原来的某种属性; 吸血者，是个很负面好恐怖的词。一个中性是不是负面，答案永远是否定的。所以，不算。就跟你说，这个杯子是不是犯二，回答的人会想，what the xxxx？&lt;/p&gt;
 &lt;p&gt;不过考虑到您的思维路径可能是，看到我对于发行版是否吸血的解答，认为普通用户只使用不作为是不是也是吸血？下面就讨论下这个。&lt;/p&gt;
@@ -827,9 +859,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>openSUSE 的人气为何远不如 Ubuntu 和 Fedora?</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</link>
+      <link>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</link>
       <pubDate>Sat, 31 Mar 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/</guid>
       <description>&lt;p&gt;某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？&lt;/p&gt;
 &lt;p&gt;我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。&lt;/p&gt;
 &lt;p&gt;DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。&lt;/p&gt;
@@ -841,9 +873,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>openSUSE 的人气为何远不如 Ubuntu 和 Fedora? (二) 开源与市场、上游与下游</title>
-      <link>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</link>
+      <link>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</link>
       <pubDate>Sat, 31 Mar 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</guid>
+      <guid>http://localhost:1313/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora_%E4%BA%8C_%E5%BC%80%E6%BA%90%E4%B8%8E%E5%B8%82%E5%9C%BA%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8/</guid>
       <description>&lt;p&gt;本文是继上篇之后一些评论的回复，给春雷的回复解决了大多数人对于开源和市场的疑问，给 pansz 的回复解决大多数人对于上游和下游的误解，因此另开一篇，推荐阅读。&lt;/p&gt;
 &lt;p&gt;春雷： 不同意ubuntu吸血的论点。 市场本就是有分工的，有人忙内核，有人忙推广。ubuntu在推广角度的成功是不言而喻的，若没有ubuntu的成功，会有几个人来阅读这么长的关于linux的专文呢？ 如果说opensuse是学术性的，那么ubuntu就是将学术包装成市场可接受的产品，它们二者是互相促进、缺一不可。 opensuse在市场上得不到彰显，诚如文主谈到的，是公司管理方向的问题，是市场重点的取舍问题，与ubuntu发展桌面并无关系。 同时，让普通用户接受学术性的东西，并不是一件简单的事情，此领域与学术性研究领域属不同的分支，并无高低贵贱之分。一个技术优质的软件，若没有好的UI，同样会被人放弃，在市场上二者是同等重要的。&lt;/p&gt;
 &lt;p&gt;深层的东西在初期不被接受，是正常的现象；只有随着市场的逐步打开，人们对产品的逐步了解，才能逐渐从表象关注到本质，从这一点上说，我觉得opensuse要感谢ubuntu和fedora，并盼望他们被更广泛的人们所接受，因为他们其实也是在为opensuse和redhat之类的发行版做市场推广，只要他们生根，其它才能开花。&lt;/p&gt;
@@ -854,9 +886,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>WPS for Linux 预览</title>
-      <link>https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</link>
+      <link>http://localhost:1313/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</link>
       <pubDate>Fri, 30 Mar 2012 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</guid>
+      <guid>http://localhost:1313/posts/wps_for_linux_%E9%A2%84%E8%A7%88/</guid>
       <description>&lt;p&gt;前天在 Linuxtoy 上看到 Tommy 发布了申请社区邀请码的消息，姐去搞了一个。 （好像在 Linux 中文社区姐很有名？反正莫名其妙的就通过了。 于是开始搞 RPM。&lt;/p&gt;
 &lt;p&gt;当然啦，默认的字体不是这个，是方正。姐在 spec 里调整了字体安装目录，所以它使用的是我的系统字体冬青黑体。SuSE 的人对方正都不陌生，那是 SLES 的默认中文字体，但是怎么就一样米养两样人呢。除了作家 @tualatrix 一直苦大仇深的忍受着 ubuntu 的各种渣实现，觉得很「讚」，我，山木和老 K 都觉得有点一夜回到解放前的感嚼。但怎么说呢，一个商业公司为了 Linux  肯去买一套付费字体，这份心还是蛮热乎的。至于没买到好的，中文设计确实多难啊，理解一下吧。&lt;/p&gt;
 &lt;p&gt;因为是 alpha 版嘛，所以只提供了 presentation，所以只能就它评论一下了。（但是金山老总年前放出来的可是 writer 哦。。。是不是要阴谋论的猜他们有所图呢。。。算啦，序员是无辜的。&lt;/p&gt;
@@ -868,9 +900,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>Novell 的新年礼物 # 我膨胀了</title>
-      <link>https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</link>
+      <link>http://localhost:1313/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</link>
       <pubDate>Mon, 26 Dec 2011 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</guid>
+      <guid>http://localhost:1313/posts/novell_%E7%9A%84%E6%96%B0%E5%B9%B4%E7%A4%BC%E7%89%A9_%23_%E6%88%91%E8%86%A8%E8%83%80%E4%BA%86/</guid>
       <description>&lt;p&gt;諸位兄弟姊妹, 如果有一天你收到號稱開心大殺器的”We’re glad to inform you”, “因為你對 Mac OS X 作業系統的卓越貢獻, 我們很榮幸送上 Appstore $1000 金元券一張. by Apple.”, 一定開心的飛起來了吧?! 是的, 蘇現在就是這個感受, 美呆了~&lt;/p&gt;
 &lt;p&gt;從來沒有想過哪一天, 一個我沒有花費1分錢在它上面的作業系統會送給我這樣貴重的禮物. 這是這個耶誕節我收到的最好的禮物. 五年來從來沒有一天像今天這樣因為我使用的作業系統而驕傲和自豪, 以後我出門可以說, hi, 我是對作業系統有貢獻的人哦~ 一幫 Windows 會說:”OMG! 蘇你真的是太不可思議了!” 是的, #我膨脹了.&lt;/p&gt;
 &lt;p&gt;今年算是對 SUSE 貢獻比較大的一年, 因為我參與了 openSUSE Build Service 并很榮幸成為泛中華地區打包打的最好的人~ 當然啦, 這除了我英文比平均水平要高那麽一點, 可以翻譯英文 Wiki 到國語之外, 還要感謝 sh 家族的 @shellex 和 @shellexy 啦, 號稱腳本皇帝和 Stackoverflow 中文客服的花花對我的幫助真的好大好大呢! 他提供我的好多腳本都值得寫進 wiki 呢. 由于跨年比較忙, 這個等到農歷新年的時候我整理到 wiki 上吧.&lt;/p&gt;
@@ -878,9 +910,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>恶性卖萌的胜利</title>
-      <link>https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</link>
+      <link>http://localhost:1313/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</link>
       <pubDate>Wed, 07 Dec 2011 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</guid>
+      <guid>http://localhost:1313/posts/%E6%81%B6%E6%80%A7%E5%8D%96%E8%90%8C%E7%9A%84%E8%83%9C%E5%88%A9/</guid>
       <description>&lt;p&gt;今天下午还在gtalk上问火炬@virushuo关于@hecaitou和@chinesedancer的闹剧，晚上突然从别人的RT上看到他宣布退出推特的消息，我很惋惜。&lt;/p&gt;
 &lt;p&gt;一、支持率是哄出来的，永远别管大众要答案&lt;/p&gt;
 &lt;p&gt;每个人，在一个社群里都有自己的定位。虽然不一定是他想要的，但一定在他努力方向上的某个点。推特虽然多元，人欲也不过于此。比如北风想当大哥，虽然过程不是很美，至少现在无人不知（这件事之后我决定fo上北风，退出推北者list，北风可能还是一个小人，那又怎样，七情六欲谁都逃不过，他已经不再是左手酒右手刀的延庆太子了。火炬，life is short, you should try anything once）; 比如空姐; 比如艾未。每个人来这都有个不可为外人道的目的，这个层面上大家都是阴谋论。如果没有一个目的就来了，那她一定呆不长。民那桑，这些年昙花一现有多少，还要到following里面去数吗？&lt;/p&gt;
@@ -906,9 +938,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>HP Veer 初心：一个备胎的自我修养</title>
-      <link>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</link>
+      <link>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</link>
       <pubDate>Wed, 26 Oct 2011 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</guid>
+      <guid>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB/</guid>
       <description>&lt;p&gt;我的小白是十一假期被@tualatrix放毒买的，在那家传奇的淘宝店我发现了大陆linux中文界一个个响当当的ID。刚复工就收到了。过了这么长时间，相信该有的也都有了，当然裂裂@thruth那种每天降价100收购的自然是没有。开箱图在picplz有，这里放张小白近照：&lt;/p&gt;
 &lt;p&gt;简单说，veer适合以下种群使用：&lt;/p&gt;
 &lt;ul&gt;
@@ -955,9 +987,9 @@ Stream #0:1: Audio: ac3, 48000 Hz, 5.1(side), s16, 384 kb/s (default)
     </item>
     <item>
       <title>HP Veer 初心：一个备胎的自我修养（二）</title>
-      <link>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</link>
+      <link>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</link>
       <pubDate>Wed, 26 Oct 2011 00:00:00 +0800</pubDate>
-      <guid>https://marguerite.github.io/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</guid>
+      <guid>http://localhost:1313/posts/hp_veer_%E5%88%9D%E5%BF%83%E4%B8%80%E4%B8%AA%E5%A4%87%E8%83%8E%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E4%BA%8C/</guid>
       <description>&lt;p&gt;～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～&lt;/p&gt;
 &lt;p&gt;我的blog有音乐，控制器在最下面。我知道我有音乐，那是给我自己听的谢谢，别像谢耳朵一样到别人家收拾屋子。&lt;/p&gt;
 &lt;p&gt;～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～&lt;/p&gt;

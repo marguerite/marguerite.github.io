@@ -2,25 +2,25 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.143.1"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.143.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Marguerite Su: Golang/Ruby Programmer, openSUSE Member</title>
 
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="https://marguerite.github.io/">
+<link rel="canonical" href="http://localhost:1313/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.45e028aa8ce0961349adf411b013ee39406be2c0bc80d4ea3fc04555f7f4611a.css" integrity="sha256-ReAoqozglhNJrfQRsBPuOUBr4sC8gNTqP8BFVff0YRo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://marguerite.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://marguerite.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://marguerite.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://marguerite.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://marguerite.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://marguerite.github.io/index.xml">
-<link rel="alternate" hreflang="en" href="https://marguerite.github.io/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,28 +57,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://marguerite.github.io/">
-  <meta property="og:site_name" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-  <meta property="og:locale" content="zh-cn">
-  <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Marguerite Su: Golang/Ruby Programmer, openSUSE Member">
-<meta name="twitter:description" content="">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Marguerite Su: Golang/Ruby Programmer, openSUSE Member",
-  "url": "https://marguerite.github.io/",
-  "description": "",
-  "logo": "https://marguerite.github.io/favicon.ico",
-  "sameAs": [
-      
-  ]
-}
-</script>
+</noscript>
 </head>
 
 <body class="list" id="top">
@@ -96,7 +75,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://marguerite.github.io/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Marguerite Su: Golang/Ruby Programmer, openSUSE Member (Alt + H)">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -128,6 +107,27 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">openSUSE 下玩围棋
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Update：更新了评论里两位巨巨指正的技术错误和建议到正文中。
+主要是整理下 Linux 下面的围棋软件近况、设置方法和已知故障。
+引擎 GNUGo 这个是所有围棋软件的后端，简单说就是个棋力十二级的机器人。
+不是很明白这里的电脑棋力单位“级”与我们人类的棋力单位“段”的换算关系，因为电脑肯定没法参加人类的段位考试，而两者也很少对弈，围棋引擎很奇怪的，中低段位的人类和引擎对弈，基本很难赢。它的思考方法和这些段位的人类很不一样，比如人类会在开局考虑一些谋篇布局，而电脑只有那几个布局定式，根据你落子的位置优化选出一个; 人类在中盘会考虑大局，而电脑除非你不与它对抗（它就按照定式走），如果出现对抗那它的算法就是怎么堵截你在数学上最优，而人类肯定不是这样，有些禁忌位也一样有人放，即所谓的“妙手”、“妖刀”，当然更多的还是“俗手”、“蠢手”。而高段位的人类和引擎对弈中，引擎被虐的很惨，还不如三段的人类去下，因为高段位的变化很多，思考质量也不亚于电脑。
+围棋引擎流行的能跑在 Linux 下的有这些：Fuego（棋力 9 段，9×9 棋盘）, GNU Go（棋力 12 级）, MoGo, Pachi（棋力 4 段），其中开源最强的是 Fuego（因为闭源引擎用的多数不是蒙地卡罗方法，强是应该的）。
+当然这些强弱是对有几年棋龄的业余棋手而言的，我们这种入门小菜哪个都下不过，随意选个就开始好了。一般发行版都会带 GNUGo。我们就用它了。
+另外关于围棋程序比较好的网站是：Sensei’s Library，有各种引擎比较详细的介绍和测评，至于界面，还能用的我都在下面整理出来了，完整列表见此。 界面
+gGo Pandanet 电脑围棋界比较有名的熊猫网出的。Java 写的，最新版本发布于 2004 年。 RubyGo Ruby 写的，最新版本发布于 2005 年。 qGo Qt3 写的，最新版本发布于 2008 年。 CGoban 这其实是围棋网 KGS 的官方客户端。Java 写的，版本也比较老。 glGo Pandanet 出的，最后更新于 2008 年，但是依赖很烦，依然依赖 python 2.5。没有源代码（网页打不开），非开源软件。 这些都是老黄历了，网上宣传的基本也都是这些，因为这是 IGS 或者 KGS 这些业内比较知名的组织开发的。但是在现今的 Linux 上都比较难跑。我整理了一份比较好跑的界面：
+qGo2 这是 qGo 的 Qt4 移植，可以说几多波折，开发者换了一个又一个，因为它太强大了，支持这些战网：IGS, WING, LGS, CyberORO, Tygem, Tom, and eWeiqi 的对弈和观战（看好了后面两个是中国的），还是目前最强大的 sgf（通用围棋棋谱格式，用于复盘和自己打谱）编辑器。 quarry 这是一个本地围棋和五子棋客户端。用 GNUGo 或 GRhino 做后端。配置 GTP 后端的时候要加 -mode gtp –quiet 参数才能把 /usr/bin/gnugo 跑起来。 kigo 只用于 KDE，自动识别后端。我目前用这个。但是有一个 Bug 就是电脑不会认输，走不下去了就一直下虚手（跳过），需要你手动结束游戏才能统计“目”。 其中前两者我都有打包，但是还没有推送到 openSUSE 的 games 源，迫不及待的话可以用我的 home:MargueriteSu:branches:M17N 源里的 RPM。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2013-02-24 00:00:00 +0800 CST'>February 24, 2013</span></footer>
+  <a class="entry-link" aria-label="post link to openSUSE 下玩围棋" href="http://localhost:1313/posts/opensuse_%E4%B8%8B%E7%8E%A9%E5%9B%B4%E6%A3%8B/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">openshift 搭建 wordpress 教程
     </h2>
   </header>
@@ -145,7 +145,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2013-02-18 00:00:00 +0800 CST'>February 18, 2013</span></footer>
-  <a class="entry-link" aria-label="post link to openshift 搭建 wordpress 教程" href="https://marguerite.github.io/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"></a>
+  <a class="entry-link" aria-label="post link to openshift 搭建 wordpress 教程" href="http://localhost:1313/posts/openshift_%E6%90%AD%E5%BB%BA_wordpress_%E6%95%99%E7%A8%8B/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -164,7 +164,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-11-11 00:00:00 +0800 CST'>November 11, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to Ruby on Rails 学习笔记－安装和 Hello World" href="https://marguerite.github.io/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/"></a>
+  <a class="entry-link" aria-label="post link to Ruby on Rails 学习笔记－安装和 Hello World" href="http://localhost:1313/posts/ruby_on_rails_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%AE%89%E8%A3%85%E5%92%8C_hello_world/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -181,7 +181,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="https://marguerite.github.io/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
+  <a class="entry-link" aria-label="post link to 当梦想照进现实  记 Ubuntu Tweak 的烂尾" href="http://localhost:1313/posts/%E5%BD%93%E6%A2%A6%E6%83%B3%E7%85%A7%E8%BF%9B%E7%8E%B0%E5%AE%9E__%E8%AE%B0_ubuntu_tweak_%E7%9A%84%E7%83%82%E5%B0%BE/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -197,7 +197,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-10-20 00:00:00 +0800 CST'>October 20, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to 解决 btrfs 开机 initramfs 加载时间过长" href="https://marguerite.github.io/posts/boot_btrfs_takes_too_long_to_load_initramfs/"></a>
+  <a class="entry-link" aria-label="post link to 解决 btrfs 开机 initramfs 加载时间过长" href="http://localhost:1313/posts/boot_btrfs_takes_too_long_to_load_initramfs/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -222,7 +222,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-05-16 00:00:00 +0800 CST'>May 16, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）塵埃" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"></a>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）塵埃" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E5%A1%B5%E5%9F%83/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -249,7 +249,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-05-15 00:00:00 +0800 CST'>May 15, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）聖戰" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/"></a>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴（三）聖戰" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4%E4%B8%89%E8%81%96%E6%88%B0/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -273,7 +273,7 @@ git clone 返回给你的那个 repo，php/wp-config-example.php 改成 php/wp-c
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2012-05-13 00:00:00 +0800 CST'>May 13, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to CJK 的尊嚴" href="https://marguerite.github.io/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/"></a>
+  <a class="entry-link" aria-label="post link to CJK 的尊嚴" href="http://localhost:1313/posts/cjk_%E7%9A%84%E5%B0%8A%E5%9A%B4/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -299,7 +299,7 @@ PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑
 </p>
   </div>
   <footer class="entry-footer"><span title='2012-04-10 00:00:00 +0800 CST'>April 10, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to Instagram 中國式小資的末日狂歡" href="https://marguerite.github.io/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/"></a>
+  <a class="entry-link" aria-label="post link to Instagram 中國式小資的末日狂歡" href="http://localhost:1313/posts/instagram_%E4%B8%AD%E5%9C%8B%E5%BC%8F%E5%B0%8F%E8%B3%87%E7%9A%84%E6%9C%AB%E6%97%A5%E7%8B%82%E6%AD%A1/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -325,41 +325,21 @@ PS：請理性評論。不要給人貼標籤，「別那樣，人不是用來挑
 </p>
   </div>
   <footer class="entry-footer"><span title='2012-04-04 00:00:00 +0800 CST'>April 4, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to 开源软件的使用者算不算是吸血者" href="https://marguerite.github.io/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">openSUSE 的人气为何远不如 Ubuntu 和 Fedora?
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>某迷失的孩纸：openSUSE 的 KDE 界面非常华丽，但多数人会在 Ubuntu 和 Fedora 之间做选择。是否因为它默认的是 DVD 版本（臃肿）、更新源也比较缓慢，又缺乏相关的中文社区，从而抵消了其界面炫目的优势？
-我的回答： 我是 openSUSE 中文维基唯一的非官方维护者，openSUSE 简体中文翻译团队召集人，linuxsir SuSE 版块的版主，openSUSE 官方论坛 forums.opensuse.org 的唯一非官方版主，openSUSE 开放式编译服务中文软件源维护者。
-DVD 盘不能决定人气。 openSUSE 的下载页面提供了多种方案，CD 甚至网络安装都是有的，甚至它提供的 CD 盘是分 GNOME/KDE 的。这种意义上，官方做的真的很不错，DVD 盘应该被认为是福利而不是罪魁这样子。主要是市场做的不够好，烧钱不够，时机选错。这点后面我会专门说，中国分部它甚至没有财力去派发光盘。
-更新源比较缓慢，这是历史遗留的错觉。 在 Linux 被中国认知的那个年代里，每家的下载都很慢，这跟我们当时国际出口少国际网速不给力有关系，那时只有一条太平洋海缆，人人家里都是拨号，真的快不起来。我的上一任，也就是 linuxsir 论坛的原版主 @thruth，原 opera 的市场部经理，告诉我，他在北外读书时，抢占了北外所有的出国带宽，都要下几天。这种情况你怎么能期待用户去爱它呢？在这个青黄不接的时候，别家都去派光盘了，SuSE 没有。它一开始就没有重视中国大陆市场，那个年代它的重心在台湾。由于众所周知的原因，台湾想派盘都派不过来，何况当时台湾的盘他们都没有派完。 现在国内的网络环境改善了，国际出口添加了俄罗斯，太平洋海缆添加到了三条。我们一般访问德国使用的是西伯利亚—乌克兰—东德—柏林这条线，不像访问英国要走太平洋海缆去美国，然后再走大西洋海缆去英国。从这点上说，如果你下载 SuSE 的源，按理应该比 Ubuntu 的快。当然没有人这么比过，也没有人能感觉的出来。非要感觉出来，那就没法细说了，甚至意识形态都有关系。比如德国不是传统欧美国家，你一听服务器在德国就会觉得哎呀中国没有对其做优化啊之类。事实也确实有点这方面的原因，.de 的域名在 dns 的 root 服务器上确实少数，openSUSE 的源外表看是 .org 实际都是会跳转成 .de。中德的思想意识、社会形态差异比英美的大很多，这点也是原因，后面我会谈。 SuSE 自己也做了很多努力，当然所有的下载站都在做，比如 CDN 根据你的 IP 选择服务器。中国一般都被定向到日本服务器，刷起来现在是飞快的。而新浪网易也都有 SuSE 的镜像。只是，还是后面会谈的，人手不够，烧钱不够，国内镜像的同步时间其实要比其他国家的镜像慢六七小时的。
-缺乏相关的中文社区。这点是很重要的原因。但我不能用人气不高来回答为什么人气不高。
-好了，我下面集中谈一下为什么人气不高。
-一。openSUSE 确实是好发行版。
-它的 GNOME 国内国外公认第一好，甚至要超过 Ubuntu 的评价，至于和 Mint 的比较还要观察。国内 Ubuntu 形势比人强比较抢话语权，但你要问用过 openSUSE GNOME 和 Ubuntu GNOME 2 的老人，评价都是这个。我不谈 GNOME 3, 因为 Ubuntu 这个一贯占其他发行版便宜、大搞特殊化的发行版搞了 Unity，实际上 GNOME3 openSUSE 和 Mint 做的不相上下。Ubuntu 有话语权，曝光率比较高，实际上它这个要再不重视就要死了，比较容易给人占人便宜的印象。实际的技术都是这些老发行版在开发，比如红帽和 SuSE 对内核的贡献，对 GNOME/KDE 的贡献，对驱动的贡献都很大。Ubuntu 的开发者都被集中起来吸收这些技术，然后开发用户界面，美化，搞特殊化的不跨发行版因为对 Linux 社区整体贡献为零的这些东西，比如你去 omgubuntu 看开发的都是 lens 这些没技术含量又不能跨发行版的东西，但人家就是正儿八经的推广。属于吸血者，Debian 尸骨未寒的例子摆在那里。营销什么的老牌 Linux 包括红帽没人跟新贵比这个。就好比暴发户和贵族的区别。红帽 10亿美元营收，SuSE 也不差，人家不在乎，人家在乎企业客户的评价。这也是 openSUSE 包括 Fedora 的硬伤，后面会谈，对桌面用户的重视不够。但是贵族如果发力，还是暴发户望尘莫及的，毕竟社区力量和开发者多的多。国内 Ubuntu 社区比较大给了你错觉认为全球都比较大，实际上不是的，全球最大的社区是红帽的。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2012-03-31 00:00:00 +0800 CST'>March 31, 2012</span></footer>
-  <a class="entry-link" aria-label="post link to openSUSE 的人气为何远不如 Ubuntu 和 Fedora?" href="https://marguerite.github.io/posts/opensuse_%E7%9A%84%E4%BA%BA%E6%B0%94%E4%B8%BA%E4%BD%95%E8%BF%9C%E4%B8%8D%E5%A6%82_ubuntu_%E5%92%8C_fedora/"></a>
+  <a class="entry-link" aria-label="post link to 开源软件的使用者算不算是吸血者" href="http://localhost:1313/posts/%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E7%AE%97%E4%B8%8D%E7%AE%97%E6%98%AF%E5%90%B8%E8%A1%80%E8%80%85/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
-    <a class="prev" href="https://marguerite.github.io/page/3/">
+    <a class="prev" href="http://localhost:1313/page/3/">
       «&nbsp;Prev&nbsp;
     </a>
-    <a class="next" href="https://marguerite.github.io/page/5/">Next&nbsp;&nbsp;»
+    <a class="next" href="http://localhost:1313/page/5/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://marguerite.github.io/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">Marguerite Su: Golang/Ruby Programmer, openSUSE Member</a></span> · 
 
     <span>
         Powered by
